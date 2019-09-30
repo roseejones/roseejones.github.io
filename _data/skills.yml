@@ -1,0 +1,66 @@
+- name: languages
+  skills:
+    - class: r-plain
+      skill_name: R
+    - class: python-plain
+      skill_name: Python
+    - class: javascript-plain
+      skill_name: JavaScript
+
+- name: databases
+  skills:
+    - class: postgresql-plain
+      skill_name: Postgresql
+    - class: mysql-plain
+      skill_name: MySQL
+    - class: nosql-plain
+      skill_name: NoSQL
+    - class: mongodb-plain
+      skill_name: MongoDB
+    - class: neo4j-plain
+      skill_name: Neo4J
+
+- name: resources
+  skills:
+    - class: git-plain
+      skill_name: Git
+    - class: github-plain
+      skill_name: GitHub
+    - class: heroku-original
+      skill_name: Heroku
+    - class: docker-plain
+      skill_name: Docker
+    - class: aws-plain
+      skill_name: AWS
+    - class: gcp-plain
+      skill_name: GCP
+
+- name: big data frameworks
+  skills:
+  - class: spark-plain
+    skill_name: Spark
+  - class: hadoop-plain
+    skill_name: Hadoop
+  - class: hive-plain
+    skill_name: Hive
+  - class: mapreduce-plain
+    skill_name: Mapreduce
+
+- name: general
+  skills:
+  - class: etl-plain
+    skill_name: ETL
+  - class: nlp-plain
+    skill_name: NLP
+  - class: statistics-plain
+    skill_name: Statistical Methods
+  - class: viz-plain
+    skill_name: Visualization
+  - class: network-plain
+    skill_name: Network Analysis
+  - class: ml-plain
+    skill_name: Machine Learning
+  - class: predictive-plain
+    skill_name: Predictive Modelling
+  - class: recsys-plain
+    skill_name: Recommender System
