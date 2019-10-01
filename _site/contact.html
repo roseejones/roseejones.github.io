@@ -61,29 +61,37 @@
 
     <div class="container">
   <h2 class="heading center">Have questions, comments, feedback? Feel free to reach out!</h2>
-  <form class="email_me" action="https://formspree.io/rosejones.ds@gmail.com" method="POST">
+
+  <form method="POST" class="email_me" action="https://formspree.io/rosejones.ds@gmail.com">
+
     <input type="text" name="_gotcha" style="display:none" />
+
     <div class="row">
+
       <div class="input-field col m6 s12">
         <i class="material-icons prefix">account_circle</i>
         <input id="icon_prefix" type="text" name="name" class="validate email_input">
         <label for="icon_prefix">Full Name</label>
       </div>
-      <div class="input-field col m6 s12">
-        <i class="material-icons prefix">phone</i>
-        <input id="icon_telephone" name="phone" type="tel" pattern="^\d{3}-\d{3}-\d{4}$" class="validate email_input">
-        <label for="icon_telephone" data-error="Make sure your number matches this format XXX-XXX-XXXX">Telephone</label>
-      </div>
+
       <div class="input-field col m6 s12">
         <i class="material-icons prefix">email</i>
         <input id="icon_prefix" name="_replyto" type="email" class="validate email_input">
         <label for="icon_prefix" data-error="Make sure you've entered a valid email">Email</label>
       </div>
+
       <div class="input-field col m6 s12">
         <i class="material-icons prefix">S</i>
         <input id="icon_prefix" type="text" name="_subject" class="email_input"/>
         <label for="icon_prefix">Subject</label>
       </div>
+
+      <div class="input-field col m6 s12">
+        <i class="material-icons prefix">phone</i>
+        <input id="icon_telephone" name="phone" type="tel" pattern="^\d{3}-\d{3}-\d{4}$" class="validate email_input">
+        <label for="icon_telephone" data-error="Make sure your number matches this format XXX-XXX-XXXX">Telephone</label>
+      </div>
+
     </div>
 
     <div class="row">
@@ -99,7 +107,9 @@
       <button class="fill col s8 offset-s2 m4 offset-m4" type="submit" name="action">Send
       </button>
     </div>
+
   </form>
+
   <br/>
   <div id="email_modal" class="modal">
     <div class="container">
