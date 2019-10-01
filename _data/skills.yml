@@ -30,9 +30,9 @@
       skill_name: Heroku
     - class: docker-plain
       skill_name: Docker
-    - class: aws-plain
+    - class: amazonwebservices-plain
       skill_name: AWS
-    - class: gcp-plain
+    - class: google-plain
       skill_name: GCP
 
 - name: big data frameworks

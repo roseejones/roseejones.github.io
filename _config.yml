@@ -21,7 +21,7 @@ description: >
 about_me: >
   I'm a technical Analytics and BI professional with strong business acumen. I have 3+ years of experience in leveraging product and marketing data to communicate KPIs/metrics and formulating actionable insights and visualization that enable decision making at scale.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://rosejones.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://roseejones.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
 linked_in_link: "https://www.linkedin.com/in/roseejones"
 github_link: "https://www.github.com/silverrainb"
 twitter_username: ""

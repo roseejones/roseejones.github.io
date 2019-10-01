@@ -7,7 +7,7 @@
     python-plain,
     mongodb-plain,
     docker-plain,
-    aws-plain
+    amazonwebservices-plain
   ]
   cover: /assets/images/project_covers/crypto-cover.png
   images: [
