@@ -15,7 +15,6 @@ function initializeScripts(){
 
   $('.email_me').submit(function(e){
     e.preventDefault();
-    debugger
     $.ajax({
         url: $(e.target).attr('action'),
         method: "POST",
