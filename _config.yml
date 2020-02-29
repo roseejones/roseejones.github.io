@@ -19,7 +19,7 @@ email: "datascientist@opayq.com"
 description: >
   Fast learner, problem solver and adaptable professional with strong data science skills with business acumen.
 about_me: >
-  I'm a technical Analytics and BI professional with strong business acumen. I have 3+ years of experience in leveraging product and marketing data to communicate KPIs/metrics and formulating actionable insights and visualization that enable decision making at scale.
+  Creative, adaptable and growth-driven machine learning engineer accomplished in Python, Javascript, SQL, and more
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://roseejones.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
 linked_in_link: "https://www.linkedin.com/in/roseejones"
@@ -30,7 +30,6 @@ select_options: clear-filters HTML5 CSS3 SCSS javaScript jQuery materialize char
 sass:
   sass_dir: assets/css/main.css
   style: :nested
-
 gems:
   - jekyll-feed
 exclude:

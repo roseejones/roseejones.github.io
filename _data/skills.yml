@@ -1,26 +1,80 @@
-- name: languages
+- name: Languages and Frameworks
   skills:
-    - class: r-plain
-      skill_name: R
     - class: python-plain
       skill_name: Python
+    - class: flask-plain
+      skill_name: Flask
     - class: javascript-plain
       skill_name: JavaScript
+    - class: node-plain
+      skill_name: Node
+    - class: explain-plain
+      skill_name: Express
+    - class: d3-plain
+      skill_name: D3
+    - class: html-plain
+      skill_name: HTML
+    - class: css3-original
+      skill_name: CSS
+    - class: bootstrap-plain
+      skill_name: Bootstrap
+    - class: r-plain
+      skill_name: R
+    - class: sql-plain
+      skill_name: SQL
 
-- name: databases
+
+- name: Machine Learning
+  skills:
+    - class:
+      skill_name: Classification
+    - class:
+      skill_name: Regression
+    - class:
+      skill_name: Clustering
+    - class:
+      skill_name: Feature Engineering
+    - class:
+      skill_name: Time series
+    - class:
+      skill_name: Predictive modeling
+    - class:
+      skill_name: NLP
+    - class:
+      skill_name: Recommender System
+    - class:
+      skill_name: Ensemble Methods
+
+
+- name: Big Data Frameworks
+  skills:
+    - class: spark-plain
+      skill_name: Spark
+    - class: hadoop-plain
+      skill_name: Hadoop
+    - class: hive-plain
+      skill_name: Hive
+    - class: mapreduce-plain
+      skill_name: Mapreduce
+
+
+- name: Databases
   skills:
     - class: postgresql-plain
-      skill_name: Postgresql
+      skill_name: PostgreSQL
     - class: mysql-plain
       skill_name: MySQL
-    - class: nosql-plain
-      skill_name: NoSQL
     - class: mongodb-plain
       skill_name: MongoDB
+    - class: nosql-plain
+      skill_name: NoSQL
+    - class: sqlalchemy-plain
+      skill_name: SQLAlchemy
     - class: neo4j-plain
       skill_name: Neo4J
 
-- name: resources
+
+- name: Resources
   skills:
     - class: git-plain
       skill_name: Git
@@ -35,32 +89,18 @@
     - class: google-plain
       skill_name: GCP
 
-- name: big data frameworks
-  skills:
-  - class: spark-plain
-    skill_name: Spark
-  - class: hadoop-plain
-    skill_name: Hadoop
-  - class: hive-plain
-    skill_name: Hive
-  - class: mapreduce-plain
-    skill_name: Mapreduce
 
-- name: general
+- name: General
   skills:
-  - class: etl-plain
-    skill_name: ETL
-  - class: nlp-plain
-    skill_name: NLP
-  - class: statistics-plain
-    skill_name: Statistical Methods
-  - class: viz-plain
-    skill_name: Visualization
-  - class: network-plain
-    skill_name: Network Analysis
-  - class: ml-plain
-    skill_name: Machine Learning
-  - class: predictive-plain
-    skill_name: Predictive Modelling
-  - class: recsys-plain
-    skill_name: Recommender System
+    - class: pass
+      skill_name: BDD
+    - class: pass
+      skill_name: TDD
+    - class: pass
+      skill_name: ETL
+    - class: pass
+      skill_name: RESTful WebServices
+    - class: pass
+      skill_name: Visualization
+    - class: pass
+      skill_name: Network Analysis

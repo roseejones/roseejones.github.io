@@ -25,12 +25,12 @@ function initializeScripts(){
       $('.email_input').removeClass('valid');
       $('#email_modal').modal('open');
     })
-  })
+  });
 
   $('.my-borders').css({
     height: '0px',
     width: '0px'
-  })
+  });
   // $('.carousel.carousel-slider').carousel({fullWidth: true});
   // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
 
@@ -48,7 +48,7 @@ function initializeScripts(){
       var nextId = (parseInt(thisId) + 1).toString();
       $('#' + nextId).modal('open')
     }, 200)
-  })
+  });
 
   $('#email_modal').modal({
     opacity: .8, // Opacity of modal background
@@ -56,7 +56,7 @@ function initializeScripts(){
     outDuration: 200, // Transition out duration
     startingTop: '30%', // Starting top style attribute
     endingTop: '35%',
-  })
+  });
 
   $('.project_list .modal').modal({
       dismissible: true, // Modal can be dismissed by clicking outside of the modal
@@ -67,7 +67,7 @@ function initializeScripts(){
       endingTop: '0%', // Ending top style attribute
       ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
         // alert("Ready");
-        modal_open = true
+        modal_open = true;
         $('.carousel.carousel-slider').carousel({fullWidth: true});
       },
       complete: function(e) {
@@ -79,7 +79,7 @@ function initializeScripts(){
   
   $(document).scrollTop();
 
-  var pagename = window.location.pathname.replace('/', '')
+  var pagename = window.location.pathname.replace('/', '');
   
   if(window.ga) {
     window.ga('set', 'page', window.location.pathname);
@@ -115,7 +115,7 @@ function initializeScripts(){
       active_tags = addActiveTags(buttons);
       showProjects(projects, active_tags);
     }
-  })
+  });
 
   $("nav ul li a").hover(function(e){
     $(e.target).parent().find('div').addClass('nav-hover-underlined');
@@ -133,7 +133,7 @@ function initializeScripts(){
 
     $("#filter").text(options[text]);
     $("#tags").toggle(400);
-  })
+  });
   // debugger
   $(window).scroll(() => {
     var scrollPos = $(document).scrollTop();
@@ -143,7 +143,7 @@ function initializeScripts(){
     }else {
       $('#scroll-top').css('display', 'none');
     }
-  })
+  });
 
   $('#scroll-top').click((e)=>{
     e.preventDefault();

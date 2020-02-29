@@ -42,7 +42,7 @@ function showProjects(projects, active_tags){
         project.show();
       }
     })
-  })
+  });
 
   var activeTagsAreEmpty = active_tags.length === 0;
 
