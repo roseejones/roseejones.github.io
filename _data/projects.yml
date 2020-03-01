@@ -17,29 +17,29 @@
     '/assets/images/project_images/crypto/crypto-trading-4.png'
   ]
 
-#- 608 ShinyR repo
 #- 620 Twitter Sentiment Analysis
-#- Build Model anything
 #- 643 recsys instacart
+#- Build Model anything
 
 
 
 - id: 1
-  title: Forecasting S&P500 Market Direction using Technical Indicators and ML Algorithms
-  url: https://github.com/silverrainb
-  github_url: https://github.com/silverrainb
-  description: This research applies and analyses the effectiveness of Random Forest, Gradient Boosting Machine (XGBoost implementation), Multi-Layer Perceptron, and Recurrent Neural Network Long Short-Term Memory in the context of statistical trading. In this research, we summarize the differences of these models from a technical point of view and compare their performance using metrics for classification accuracy. Each model is trained on returns of the S&P 500 index price from 1983 to 2019 with multiple lagged periods. All training processes use nested cross validation and random coarse to fine hyperparameter tuning. The day over day market direction is predicted based on the feature-engineered variables and momentum-based technical indicators.
+  title: Career Relocation Estimator
+  url: https://silverrainb.shinyapps.io/DS_job_relocation_estimator/
+  github_url: https://github.com/silverrainb/knowledge-and-visual-analytics/tree/master/final
+  description: The visualization is created using shinyR. The project is based on the premise that the OES data for Computer and Math-related occupations is representative of the Data Science profession and presents the map of the US with the information such as Median annual wage, Mean annual wage, Population, Employment, Employment per 1000, Location Quotient and Cost of living index. The visualization plots top 50 Urban Areas sorted by population with detailed information inside a tooltip which is accessible by click. The estimator calculates costs of relocation by calculating the standard of living comparing the present and prospect of location and provides an instant statement. The tooltip includes information in text and you can access the information by clicking the circles on the map. On the bottom of the Cost Index Explorer panel, you have an option to view the graph by Color or Size of drop-down variables.
   technologies: [
-    python-plain
+    r-plain
   ]
-  cover: /assets/images/project_covers/research-cover.png
+  cover: /assets/images/project_covers/shinyr-cover.png
   images: [
+            '/assets/images/project_covers/shinyr-cover.png'
   ]
 
 
 - id: 2
-  title: ttttForecasting S&P500 Market Direction using Technical Indicators and ML Algorithms
-  url: https://github.com/silverrainb
+  title: Forecasting S&P500 Market Direction using Technical Indicators and ML Algorithms
+  url: https://1drv.ms/b/s!AqHw2mMiFb9Tk_MVDRb6pfiaDagElg
   github_url: https://github.com/silverrainb
   description: This research applies and analyses the effectiveness of Random Forest, Gradient Boosting Machine (XGBoost implementation), Multi-Layer Perceptron, and Recurrent Neural Network Long Short-Term Memory in the context of statistical trading. In this research, we summarize the differences of these models from a technical point of view and compare their performance using metrics for classification accuracy. Each model is trained on returns of the S&P 500 index price from 1983 to 2019 with multiple lagged periods. All training processes use nested cross validation and random coarse to fine hyperparameter tuning. The day over day market direction is predicted based on the feature-engineered variables and momentum-based technical indicators.
   technologies: [
@@ -48,4 +48,18 @@
   cover: /assets/images/project_covers/research-cover.png
   images: [
     '/assets/images/project_covers/research-cover.png'
+  ]
+
+- id: 3
+  title: Recommender System - Instacart Market Basket
+  url: https://docs.google.com/presentation/d/1L5z-Qh6Vm6tWDemo1SQmHfFOD-QKREQm63htFZcvx-Q/edit#slide=id.g35f391192_00
+  github_url: https://github.com/silverrainb/dat643-final
+  description: Which products will an Instacart consumer purchase again? As supply chain management and retail tech are growing at a faster pace, maintaining a log and predicting customer’s next purchase is a highly valuable use case for Data science. Leveraging python and spark, this recommender system predicts the user’s next purchase, using Instacart market basket data.
+
+  technologies: [
+    python-plain
+  ]
+  cover: /assets/images/project_covers/instacart-cover.jpg
+  images: [
+    '/assets/images/project_covers/instacart-cover.jpg'
   ]

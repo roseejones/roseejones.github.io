@@ -3,18 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="d4a9987d-6b40-42d5-9006-b7b2eb13bba5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gemfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_data/projects.yml" beforeDir="false" afterPath="$PROJECT_DIR$/_data/projects.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/_site/assets/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/_site/assets/css/main.css.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/assets/css/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/_site/assets/css/main.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/feed.xml" beforeDir="false" afterPath="$PROJECT_DIR$/_site/feed.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/projects.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/projects.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/projects/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/projects/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/main.css.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/css/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/main.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,9 +26,17 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/assets/images/project_covers" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/images/project_covers" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/images/project_covers" />
+    </key>
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -60,7 +62,7 @@
       <updated>1569893692027</updated>
       <workItem from="1569893693335" duration="10917000" />
       <workItem from="1580439013040" duration="996000" />
-      <workItem from="1582999539388" duration="12468000" />
+      <workItem from="1582999539388" duration="15715000" />
     </task>
     <servers />
   </component>
@@ -68,6 +70,10 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="2401" y="226" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1583036181649">
+      <screen x="1680" y="-41" width="1920" height="1057" />
+    </state>
+    <state x="2401" y="226" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/3600.-41.1680.1027/1680.-41.1920.1057/0.23.1680.1027@1680.-41.1920.1057" timestamp="1583036181649" />
     <state x="1851" y="59" width="1520" height="827" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1583012777965">
       <screen x="1680" y="-41" width="1920" height="1057" />
     </state>
