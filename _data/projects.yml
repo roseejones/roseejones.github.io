@@ -1,8 +1,8 @@
-- id: 1
-  title: Crypto Currency Trading Demo
+- id: 0
+  title: Crpytocurrency Trading Demo
   url: https://github.com/silverrainb/data602-assignment3
   github_url: https://github.com/silverrainb/data602-assignment3
-  description: This crypto-trading project is console-based application built-in Python, using real-time data via GDAX API. The application takes orders, maintains a blotter and P/L. This project demonstrates usage of Python, EC2, MongoDB, Docker and applied predictive modelling.
+  description: This crypto-trading project is console-based application built-in Python, using real-time data via GDAX API. The application takes orders, maintains a blotter and P/L. This project demonstrates usage of Python, EC2, MongoDB, Docker and applied predictive modelling. To start, please refer to documentation on github.
   technologies: [
     python-plain,
     mongodb-plain,
@@ -16,7 +16,15 @@
     '/assets/images/project_images/crypto/crypto-trading-3.png',
     '/assets/images/project_images/crypto/crypto-trading-4.png'
   ]
-- id: 2
+
+#- 608 ShinyR repo
+#- 620 Twitter Sentiment Analysis
+#- Build Model anything
+#- 643 recsys instacart
+
+
+
+- id: 1
   title: Forecasting S&P500 Market Direction using Technical Indicators and ML Algorithms
   url: https://github.com/silverrainb
   github_url: https://github.com/silverrainb
@@ -26,11 +34,11 @@
   ]
   cover: /assets/images/project_covers/research-cover.png
   images: [
-    '/assets/images/project_covers/research-cover.png'
   ]
 
-- id: 3
-  title: Forecasting S&P500 Market Direction using Technical Indicators and ML Algorithms
+
+- id: 2
+  title: ttttForecasting S&P500 Market Direction using Technical Indicators and ML Algorithms
   url: https://github.com/silverrainb
   github_url: https://github.com/silverrainb
   description: This research applies and analyses the effectiveness of Random Forest, Gradient Boosting Machine (XGBoost implementation), Multi-Layer Perceptron, and Recurrent Neural Network Long Short-Term Memory in the context of statistical trading. In this research, we summarize the differences of these models from a technical point of view and compare their performance using metrics for classification accuracy. Each model is trained on returns of the S&P 500 index price from 1983 to 2019 with multiple lagged periods. All training processes use nested cross validation and random coarse to fine hyperparameter tuning. The day over day market direction is predicted based on the feature-engineered variables and momentum-based technical indicators.

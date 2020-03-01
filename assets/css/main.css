@@ -539,10 +539,16 @@ i {
   margin-top: 40px; }
 
 .resume-wrapper button {
-  margin-top: 50px; }
+  margin-top: 50px;
+  margin-bottom: 0px; }
 
 body {
-  background-color: #FFFFFF;
+  background: #1c92d2;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #f2fcfe, #1c92d2);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #f2fcfe, #1c92d2);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   min-height: 100%;
   min-width: 300px; }
 
@@ -659,7 +665,7 @@ nav ul li {
   transition: color 0.5s linear; }
 
 .footer_description_link:hover {
-  color: #fcf5c7; }
+  color: #F0FFFF; }
 
 .footer_link_text {
   font-family: "Raleway", sans-serif;
@@ -676,7 +682,7 @@ nav ul li {
 
 #email_modal {
   background-color: #292929;
-  color: #fcf5c7; }
+  color: #F0FFFF; }
 
 .project_list .modal,
 .project_list .modal-footer {
@@ -685,7 +691,7 @@ nav ul li {
   padding: 1%;
   padding-top: 20px; }
 .project_list .modal {
-  color: #fcf5c7; }
+  color: #F0FFFF; }
 .project_list .buttons .button_wrapper {
   box-sizing: border-box;
   display: inline-block;
@@ -761,15 +767,15 @@ button {
   -webkit-transition: 0.2s ease-in; }
 
 .buttons button {
-  color: #fcf5c7;
-  border: 1px #fcf5c7 solid !important; }
+  color: #F0FFFF;
+  border: 1px #F0FFFF solid !important; }
 
 button:focus {
   background-color: transparent; }
 
 button.fill:hover {
   background-color: transparent;
-  color: #ffffff; }
+  color: #F0FFFF; }
 
 button.fill:before {
   content: "";
@@ -786,20 +792,20 @@ button.fill:before {
   color: #292929; }
 
 .buttons button.fill:before {
-  background: #fffff; }
+  background: #F0FFFF; }
 
 button.fill:hover:before {
   top: -5px; }
 
 .description {
-  color: #fcf5c7;
+  color: #F0FFFF;
   letter-spacing: +1px;
   font-family: "Raleway", sans-serif;
   font-weight: 200;
   font-size: 1.1rem; }
 
 .cover {
-  background-color: #F1F2F6;
+  background-color: #F0FFFF;
   width: 40%;
   height: 100%;
   margin: 0;
@@ -807,7 +813,7 @@ button.fill:hover:before {
 
 .skills {
   margin-bottom: 40px;
-  color: #fcf5c7; }
+  color: #F0FFFF; }
 
 .project {
   width: 90%;
@@ -817,12 +823,22 @@ button.fill:hover:before {
   box-shadow: 0 0 1000px 10px black inset; }
 
 .skill_icon {
-  color: #fcf5c7;
+  color: #F0FFFF;
   font-size: 1.5rem; }
 
 .about_skill_icon {
   color: #292929;
   font-size: 1.5rem; }
+
+.about-summary {
+  display: block;
+  /*padding-left: 5px;*/
+  padding-top: 30px;
+  padding-left: 3rem;
+  color: #292929;
+  font-size: 1.8rem;
+  letter-spacing: +0.5px;
+  font-family: "Roboto"; }
 
 .box {
   height: 50vh; }
@@ -833,7 +849,7 @@ button.fill:hover:before {
   height: 0px;
   width: 0px;
   position: absolute;
-  background-color: #fcf5c7; }
+  background-color: #F0FFFF; }
 
 .about-border {
   bottom: 0px;
@@ -856,16 +872,6 @@ button.fill:hover:before {
   margin-right: 15px;
   -webkit-filter: sepia(0.3);
   filter: sepia(0.3); }
-
-.about-summary {
-  display: block;
-  /*padding-left: 5px;*/
-  padding-top: 30px;
-  color: #292929;
-  font-weight: 200px;
-  font-size: 1.8rem;
-  letter-spacing: +0.5px;
-  font-family: "Roboto"}
 
 .about_paragraph {
   font-size: 1.8em;

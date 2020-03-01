@@ -11,12 +11,12 @@ $color6: #292929;
 
 $text-color: #eff2ef;
 
-$modal-text: #fcf5c7;
+$modal-text: #F0FFFF;
 
 $dark-grey: #292929;
-$background-color: #fcf5c7;
+$background-color: #F0FFFF;
 
-$cover-color: #f9f0ae;
+$cover-color: #F0FFFF;
 
 @import "glitch", "homepage", "style";
 
@@ -41,11 +41,13 @@ $cover-color: #f9f0ae;
 .resume-wrapper {
   button {
     margin-top: 50px;
+    margin-bottom: 0px;
   }
 }
 body {
-  background-color: $background-color;
-  min-height: 100%;
+  background: #1c92d2;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #f2fcfe, #1c92d2);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #f2fcfe, #1c92d2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */  min-height: 100%;
   min-width: 300px;
 }
 
@@ -392,6 +394,17 @@ button.fill:hover:before {
   color: $dark-grey;
   font-size: 1.5rem;
 }
+
+.about-summary {
+  display: block;
+  /*padding-left: 5px;*/
+  padding-top: 30px;
+  padding-left: 3rem;
+  color: #292929;
+  font-size: 1.8rem;
+  letter-spacing: +0.5px;
+  font-family: "Roboto"}
+
 .box {
   height: 50vh;
 }

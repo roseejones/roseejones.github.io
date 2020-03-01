@@ -3,29 +3,18 @@
   <component name="ChangeListManager">
     <list default="true" id="d4a9987d-6b40-42d5-9006-b7b2eb13bba5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gemfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/_config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_data/projects.yml" beforeDir="false" afterPath="$PROJECT_DIR$/_data/projects.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_data/sections.yml" beforeDir="false" afterPath="$PROJECT_DIR$/_data/sections.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_data/skills.yml" beforeDir="false" afterPath="$PROJECT_DIR$/_data/skills.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_includes/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/_includes/footer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_includes/head.html" beforeDir="false" afterPath="$PROJECT_DIR$/_includes/head.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_layouts/default.html" beforeDir="false" afterPath="$PROJECT_DIR$/_layouts/default.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/assets/images/project_covers/research-cover.png" beforeDir="false" afterPath="$PROJECT_DIR$/_site/assets/images/project_covers/research-cover.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/assets/js/functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/_site/assets/js/functions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/assets/js/initialize.js" beforeDir="false" afterPath="$PROJECT_DIR$/_site/assets/js/initialize.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_site/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/_site/assets/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_site/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/_site/assets/css/main.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_site/assets/css/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/_site/assets/css/main.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/feed.xml" beforeDir="false" afterPath="$PROJECT_DIR$/_site/feed.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/projects.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/projects.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/projects/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/projects/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/resume.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/resume.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/project_covers/research-cover.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/project_covers/research-cover.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/functions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/initialize.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/initialize.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/main.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/css/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/main.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +60,7 @@
       <updated>1569893692027</updated>
       <workItem from="1569893693335" duration="10917000" />
       <workItem from="1580439013040" duration="996000" />
-      <workItem from="1582999539388" duration="7625000" />
+      <workItem from="1582999539388" duration="12468000" />
     </task>
     <servers />
   </component>
@@ -79,14 +68,19 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="1851" y="59" width="1520" height="827" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1583012777965">
+      <screen x="1680" y="-41" width="1920" height="1057" />
+    </state>
+    <state x="1851" y="59" width="1520" height="827" key="com.intellij.history.integration.ui.views.FileHistoryDialog/3600.-41.1680.1027/1680.-41.1920.1057/0.23.1680.1027@1680.-41.1920.1057" timestamp="1583012777965" />
     <state x="2559" y="-41" width="1021" height="778" key="dock-window-1" timestamp="1583008618869">
       <screen x="1680" y="-41" width="1920" height="1057" />
     </state>
     <state x="2559" y="-41" width="1021" height="778" key="dock-window-1/3600.-41.1680.1027/1680.-41.1920.1057/0.23.1680.1027@3600.-41.1680.1027" timestamp="1583008618869" />
-    <state x="2365" y="197" width="782" height="550" key="find.popup" timestamp="1583009023479">
+    <state x="2365" y="197" width="782" height="550" key="find.popup" timestamp="1583022197568">
       <screen x="1680" y="-41" width="1920" height="1057" />
     </state>
-    <state x="2365" y="197" width="782" height="550" key="find.popup/3600.-41.1680.1027/1680.-41.1920.1057/0.23.1680.1027@1680.-41.1920.1057" timestamp="1583009023479" />
+    <state x="2365" y="197" width="782" height="550" key="find.popup/3600.-41.1680.1027/1680.-41.1920.1057/0.23.1680.1027@1680.-41.1920.1057" timestamp="1583022197568" />
+    <state x="4199" y="190" width="782" height="550" key="find.popup/3600.-41.1680.1027/1680.-41.1920.1057/0.23.1680.1027@3600.-41.1680.1027" timestamp="1583011219729" />
     <state x="2421" y="123" width="670" height="676" key="search.everywhere.popup" timestamp="1583001980819">
       <screen x="1680" y="-41" width="1920" height="1057" />
     </state>
