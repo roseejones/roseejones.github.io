@@ -16,6 +16,20 @@
   ]
 
 - id: 1
+  title: Bitcoin Price Prediction
+  url: https://github.com/silverrainb/bitcoin-price-pred/blob/master/gold-and-bitcoin.ipynb
+  github_url: https://github.com/silverrainb/bitcoin-price-pred
+  description: This predictive modeling for Bitcoin Price uses Gold and S&P 500 data implementing LSTM, Gradient Boosting Regression, and Random Forest. The technology used includes Scikit-learn, Keras, Tensorflow, Pandas, Numpy, Beautifulsoup, Requests, and Statsmodels.
+
+  technologies: [
+    python-plain
+  ]
+  cover: /assets/images/project_covers/gold-bitcoin.png
+  images: [
+    '/assets/images/project_covers/gold-bitcoin.png'
+  ]
+
+- id: 2
   title: Cryptocurrency Trading Demo
   url: https://chart-studio.plot.ly/~silverrainb/8
   github_url: https://github.com/silverrainb/data602-assignment3
@@ -34,7 +48,7 @@
     '/assets/images/project_images/crypto/crypto-trading-4.png'
   ]
 
-- id: 2
+- id: 3
   title: Forecasting S&P500 Market Direction using Technical Indicators and ML Algorithms
   url: https://1drv.ms/b/s!AqHw2mMiFb9Tk_MVDRb6pfiaDagElg
   github_url: https://1drv.ms/b/s!AqHw2mMiFb9Tk_MVDRb6pfiaDagElg
@@ -47,7 +61,7 @@
     '/assets/images/project_covers/research-cover.png'
   ]
 
-- id: 3
+- id: 4
   title: Career Relocation Estimator
   url: https://silverrainb.shinyapps.io/DS_job_relocation_estimator/
   github_url: https://github.com/silverrainb/knowledge-and-visual-analytics/blob/master/final/app_1215
@@ -61,7 +75,7 @@
     '/assets/images/project_covers/shinyr-cover.png'
   ]
 
-- id: 4
+- id: 5
   title: Recommender System - Instacart Market Basket
   url: https://docs.google.com/presentation/d/1L5z-Qh6Vm6tWDemo1SQmHfFOD-QKREQm63htFZcvx-Q/edit#slide=id.g35f391192_00
   github_url: https://github.com/silverrainb/dat643-final
@@ -73,20 +87,6 @@
   cover: /assets/images/project_covers/instacart-cover.jpg
   images: [
     '/assets/images/project_covers/instacart-cover.jpg'
-  ]
-
-- id: 5
-  title: Bitcoin Price Prediction
-  url: https://github.com/silverrainb/bitcoin-price-pred/blob/master/gold-and-bitcoin.ipynb
-  github_url: https://github.com/silverrainb/bitcoin-price-pred
-  description: This predictive modeling for Bitcoin Price uses Gold and S&P 500 data implementing LSTM, Gradient Boosting Regression, and Random Forest. The technology used includes Scikit-learn, Keras, Tensorflow, Pandas, Numpy, Beautifulsoup, Requests, and Statsmodels.
-
-  technologies: [
-    python-plain
-  ]
-  cover: /assets/images/project_covers/gold-bitcoin.png
-  images: [
-    '/assets/images/project_covers/gold-bitcoin.png'
   ]
 
 - id: 6
