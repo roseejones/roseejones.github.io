@@ -1,7 +1,7 @@
 - id: 0
   title: Beat The Market
-  url: https://github.com/silverrainb/beatthemarket/tree/reviewOne
-  github_url: https://github.com/silverrainb/beatthemarket/tree/reviewOne
+  url: https://beatthemarket.herokuapp.com/
+  github_url: https://github.com/silverrainb/beatthemarket
   description: Beat the market is an application that constructs an optimal equity portfolio. By adding their records, users can view their P&L and Investment recommendation which uses a machine-learning algorithm that provides predictive insights supporting smart investment decisions. The available functions are Bookkeeping stock holdings, Monitoring P&L, Portfolio allocation recommendation, Market news.
   technologies: [
     python-plain,
