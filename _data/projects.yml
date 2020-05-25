@@ -24,9 +24,9 @@
   technologies: [
     python-plain
   ]
-  cover: /assets/images/project_covers/gold-bitcoin.png
+  cover: /assets/images/project_covers/bitcoin-price.jpg
   images: [
-    '/assets/images/project_covers/gold-bitcoin.png'
+    '/assets/images/project_covers/bitcoin-price.jpg'
   ]
 
 - id: 2
@@ -62,17 +62,16 @@
   ]
 
 - id: 4
-  title: Career Relocation Estimator
-  url: https://silverrainb.shinyapps.io/DS_job_relocation_estimator/
-  github_url: https://github.com/silverrainb/knowledge-and-visual-analytics/blob/master/final/app_1215
-  description: This shinyR visualization is built to provide a cost estimate for relocation. Using the Occupational Employment Statistics data for the Computer and Mathematical Occupations (Major Group), this application plots the top 50 Urban Areas sorted by population with detailed information such as Median annual wage, Mean annual wage, Population, Employment, Employment per 1000, Location Quotient and Cost of living index, inside a tooltip which is accessible through a click. The estimator calculates costs of relocation by calculating the standard of living comparing the present and prospect of location and provides an instant statement. The tooltip includes information in text and you can access the information by clicking the circles on the map. On the bottom of the Cost Index Explorer panel, you have an option to view the graph by Color or Size of drop-down variables.
+  title: Binary Logistic Regression Models - Auto Insurance
+  url: https://rpubs.com/silverrainb/logistic-classification
+  github_url: https://rpubs.com/silverrainb/logistic-classification
+  description: Explore, analyze, and model a data set containing approximately 8000 records representing a customer at an auto insurance company. Response variable TARGET_FLAG is 1|0, 1 meaning the person was in a car crash. The second response variable is TARGET_AMT, if the value is zero the person did not crash their car. The objective of this study is to build multiple linear regression and binary logistic regression models on the training data to predict the probability that a person will crash their car and also the amount of money it will cost if the person does crash their car.
   technologies: [
-    javascript-plain,
     r-plain
   ]
-  cover: /assets/images/project_covers/shinyr-cover.png
+  cover: /assets/images/project_covers/auto-insurance.png
   images: [
-    '/assets/images/project_covers/shinyr-cover.png'
+    '/assets/images/project_covers/auto-insurance.png'
   ]
 
 - id: 5
@@ -104,7 +103,7 @@
   ]
 
 - id: 7
-  title: Predictive Modeling Wine Sales
+  title: Predictive Modeling - Wine Sales
   url: https://rpubs.com/silverrainb/wine-sales
   github_url: https://rpubs.com/silverrainb/wine-sales
   description: The wine prediction project uses a count regression model to predict the number of cases of wine that will be sold given certain properties of the wine. The dataset includes approximately 12,000 commercially available wines. The variables are mostly related to the chemical properties of the wine being sold. The response variable is the number of sample cases of wine that were purchased by wine distribution companies after sampling a wine. These cases would be used to provide tasting samples to restaurants and wine stores around the United States. The more sample cases purchased, the more likely is a wine to be sold at a high-end restaurant. A large wine manufacturer is studying the data to predict the number of wine cases ordered based upon the wine characteristics. If the wine manufacturer can predict the number of cases, then that manufacturer will be able to adjust their wine offering to maximize sales.
@@ -116,5 +115,17 @@
   images: [
     '/assets/images/project_covers/wine-sales.jpg'
   ]
-  #- Add Twitter Sentiment Analysis
-  #- R Data Modelling - crime, insurance, heart disease
+
+- id: 8
+  title: Career Relocation Estimator
+  url: https://silverrainb.shinyapps.io/DS_job_relocation_estimator/
+  github_url: https://github.com/silverrainb/knowledge-and-visual-analytics/blob/master/final/app_1215
+  description: This shinyR visualization is built to provide a cost estimate for relocation. Using the Occupational Employment Statistics data for the Computer and Mathematical Occupations (Major Group), this application plots the top 50 Urban Areas sorted by population with detailed information such as Median annual wage, Mean annual wage, Population, Employment, Employment per 1000, Location Quotient and Cost of living index, inside a tooltip which is accessible through a click. The estimator calculates costs of relocation by calculating the standard of living comparing the present and prospect of location and provides an instant statement. The tooltip includes information in text and you can access the information by clicking the circles on the map. On the bottom of the Cost Index Explorer panel, you have an option to view the graph by Color or Size of drop-down variables.
+  technologies: [
+    javascript-plain,
+    r-plain
+  ]
+  cover: /assets/images/project_covers/shinyr-cover.png
+  images: [
+    '/assets/images/project_covers/shinyr-cover.png'
+  ]
