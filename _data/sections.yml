@@ -10,6 +10,12 @@ About:
   words: Data Scientist/Machine Learning Engineer
   class: m5 about
   border: about
+Agile:
+  url: /agile
+  heading: Agile Manifesto
+  words: Follow the principles
+  class: m8 agile
+  border: agile
 LinkedIn:
   url: https://www.linkedin.com/in/roseejones
   heading: LinkedIn
