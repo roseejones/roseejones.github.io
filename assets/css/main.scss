@@ -1,34 +1,10 @@
 ---
 ---
 
-// Modern Typography
-$font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-$font1: $font-primary; // Alias for compatibility
-$font2: $font-primary; // Alias for compatibility
-
-// Modern Dark Blue Palette
-$bg-start: #020617; // Slate 950
-$bg-end: #172554; // Blue 950
-$accent: #3b82f6; // Blue 500
-$accent-hover: #60a5fa; // Blue 400
-$text-primary: #f8fafc; // Slate 50
-$text-secondary: #cbd5e1; // Slate 300
-$card-bg: rgba(30, 58, 138, 0.4); // Blue 900 semi-transparent
-$card-border: rgba(59, 130, 246, 0.2); // Blue 500 subtle border
-
-// Legacy color compatibility
-$color1: $text-primary;
-$color2: #f46036;
-$color3: #2e294e;
-$color4: #8e5572;
-$color6: $bg-start;
-$text-color: $text-primary;
-$modal-text: $text-primary;
-$dark-grey: $bg-start;
-$background-color: $bg-start;
-$cover-color: $text-primary;
-
-@import "glitch", "homepage", "style";
+@use "variables" as *;
+@use "glitch";
+@use "homepage";
+@use "style";
 
 // Card utility class
 .modern-card {
@@ -295,12 +271,15 @@ nav ul li {
   }
 
   .project_icons {
-    margin-top: 20px;
-    font-size: 1.3em;
+    margin-top: 4px;
+    font-size: 1.15rem;
   }
 
   h4 {
     margin: 0px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    font-family: $font-primary;
   }
 
   p {
@@ -309,11 +288,12 @@ nav ul li {
 
   .info_type {
     font-style: italic;
-    color: darkgrey;
+    color: $text-secondary;
     font-family: $font1;
-    font-size: 1.5em;
+    font-size: 0.95rem;
     letter-spacing: +1px;
     text-transform: capitalize;
+    padding-top: 4px;
   }
 
   .modal {
@@ -414,11 +394,12 @@ button.fill:hover:before {
 }
 
 .description {
-  color: $modal-text;
-  letter-spacing: +1px;
-  font-family: $font2;
-  font-weight: 200;
-  font-size: 1.1rem;
+  color: $text-secondary;
+  letter-spacing: 0.3px;
+  font-family: $font-primary;
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.7;
 }
 
 .cover {
@@ -599,7 +580,7 @@ nav a.button-collapse i {
   }
 
   .description {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .project_list {
@@ -613,7 +594,7 @@ nav a.button-collapse i {
   .info_type {
     font-weight: 400 !important;
     letter-spacing: normal !important;
-    font-size: 0.9rem !important;
+    font-size: 0.8rem !important;
     font-family: $font1 !important;
   }
 
