@@ -3,6 +3,10 @@
 .brand-logo {
   margin-left: 5px;
   margin-top: 5px;
+
+  img {
+    filter: invert(1) brightness(2);
+  }
 }
 
 .barba-old-container {

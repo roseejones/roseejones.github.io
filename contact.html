@@ -1,44 +1,45 @@
 ---
 layout: not_homepage
 ---
-<div class="container">
-  <h2 class="heading center">Have questions, comments, feedback? Feel free to reach out!</h2>
-  <p class="text-monospace center"><i>Use the form below or simply mailto:</i>
-    <a href=mailto:datascientist@opayq.com"?subject="roseejones.github.io">mlengineer@abine.org</a>
-  </p>
 
+<div class="container about_section">
+    <h2 class="heading center" style="margin-bottom: 0.5rem;">Have questions, comments, feedback?</h2>
+    <p class="center" style="color: #cbd5e1; font-size: 1.1rem; margin-bottom: 2rem;">
+        Feel free to reach out using the form below or email
+        <a class="about_me_links" href="mailto:datascientist@opayq.com?subject=roseejones.github.io">mlengineer@abine.org</a>
+    </p>
 
-    <form id="fs-frm" name="simple-contact-form" accept-charset="utf-8" action="https://formspree.io/datascientist@opayq.com" method="post">
+    <div class="modern-card">
+        <form id="fs-frm" name="simple-contact-form" accept-charset="utf-8"
+            action="https://formspree.io/datascientist@opayq.com" method="post">
 
-      <div class="row">
+            <div class="row">
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">account_circle</i>
+                    <label for="icon_prefix">Name</label>
+                    <input id="icon_prefix" type="text" name="name" class="validate email_input" required="">
+                </div>
 
-        <div class="input-field col m6 s12">
-          <i class="material-icons prefix">account_circle</i>
-          <label for="icon_prefix">Name</label>
-          <input id="icon_prefix" type="text" name="name" class="validate email_input" required="">
-        </div>
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">email</i>
+                    <label for="icon_prefix2" data-error="Make sure you've entered a valid email">Email</label>
+                    <input id="icon_prefix2" name="_replyto" type="email" class="validate email_input" required="">
+                </div>
+            </div>
 
-        <div class="input-field col m6 s12">
-          <i class="material-icons prefix">email</i>
-          <label for="icon_prefix2" data-error="Make sure you've entered a valid email">Email</label>
-          <input id="icon_prefix2" name="_replyto" type="email" class="validate email_input" required="">
-        </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">mode_edit</i>
+                    <textarea id="textarea1" aria-required="true" name="message"
+                        class="materialize-textarea email_input validate" required=""></textarea>
+                    <label for="textarea1" data-error="Make sure you've entered a message">Message</label>
+                </div>
+            </div>
 
-      </div>
+            <div class="row">
+                <button class="fill col s8 offset-s2 m4 offset-m4" type="submit" name="action">Send</button>
+            </div>
 
-      <div class="row">
-
-        <div class="input-field col s12">
-          <i class="material-icons prefix">mode_edit</i>
-          <textarea id="textarea1" aria-required="true" name="message" class="materialize-textarea email_input validate" required=""></textarea>
-          <label for="textarea1" data-error="Make sure you've entered a message">Message</label>
-        </div>
-
-      </div>
-
-    <div class="row">
-    <button class="fill col s8 offset-s2 m4 offset-m4" type="submit" name="action">Send</button>
+        </form>
     </div>
-
-  </form>
 </div>

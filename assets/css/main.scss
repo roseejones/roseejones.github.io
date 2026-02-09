@@ -500,7 +500,7 @@ button.fill:hover:before {
 }
 
 .about_paragraph {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   letter-spacing: 0.3px;
   font-weight: 400;
   line-height: 1.8;
@@ -509,45 +509,71 @@ button.fill:hover:before {
   p {
     margin-bottom: 1.5rem;
   }
+
+  .bio-tagline {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: $accent;
+    letter-spacing: 0.5px;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid $card-border;
+  }
 }
 
 /* label color */
 .input-field label {
-  color: $dark-grey !important;
+  color: $text-secondary !important;
 }
 
 /* label focus color */
 .input-field input:focus+label {
-  color: $dark-grey !important;
+  color: $accent !important;
 }
 
 /* label underline focus color */
 .input-field input:focus {
-  border-bottom: 1px solid $dark-grey !important;
-  box-shadow: 0 1px 0 0 $dark-grey !important;
+  border-bottom: 1px solid $accent !important;
+  box-shadow: 0 1px 0 0 $accent !important;
+}
+
+/* default underline color */
+.input-field input {
+  border-bottom: 1px solid rgba(203, 213, 225, 0.3) !important;
+  color: $text-primary !important;
+}
+
+.input-field textarea {
+  border-bottom: 1px solid rgba(203, 213, 225, 0.3) !important;
+  color: $text-primary !important;
 }
 
 /* valid color */
 .input-field input.valid {
-  border-bottom: 1px solid darkgreen !important;
-  box-shadow: 0 1px 0 0 darkgreen !important;
+  border-bottom: 1px solid #22c55e !important;
+  box-shadow: 0 1px 0 0 #22c55e !important;
 }
 
 /* invalid color */
 .input-field input.invalid {
-  border-bottom: 1px solid red !important;
-  box-shadow: 0 1px 0 0 red !important;
+  border-bottom: 1px solid #ef4444 !important;
+  box-shadow: 0 1px 0 0 #ef4444 !important;
+}
+
+/* icon prefix color */
+.input-field .prefix {
+  color: $text-secondary !important;
 }
 
 /* icon prefix focus color */
 .input-field .prefix.active {
-  color: $dark-grey !important;
+  color: $accent !important;
 }
 
 textarea:focus {
   outline: none !important;
-  border-bottom: 1px solid $dark-grey !important;
-  box-shadow: 0 1px 0 0 $dark-grey !important;
+  border-bottom: 1px solid $accent !important;
+  box-shadow: 0 1px 0 0 $accent !important;
 }
 
 nav,
@@ -601,6 +627,31 @@ nav a.button-collapse i {
   .about_section {
     .skill_group {
       width: 50%;
+    }
+  }
+}
+
+.agile-references {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid $card-border;
+    font-size: 1.05rem;
+    position: relative;
+    padding-left: 1.5rem;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: $accent;
     }
   }
 }

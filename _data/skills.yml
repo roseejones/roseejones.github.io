@@ -1,106 +1,154 @@
+- name: AI Agents
+  skills:
+    - class: fas fa-sync-alt
+      skill_name: Agentic Workflows
+    - class: fas fa-fire
+      skill_name: Arize AI (Phoenix)
+    - class: fas fa-robot
+      skill_name: Autonomous Agents
+    - class: fas fa-comment-dots
+      skill_name: Claude
+    - class: fas fa-mouse-pointer
+      skill_name: Cursor
+    - class: fas fa-code
+      skill_name: DSPy
+    - class: fas fa-clipboard-check
+      skill_name: Evaluation
+    - class: fas fa-shield-alt
+      skill_name: Guardrails
+    - class: fas fa-project-diagram
+      skill_name: LangGraph
+    - class: fas fa-binoculars
+      skill_name: LangSmith
+    - class: fas fa-search
+      skill_name: LlamaIndex
+    - class: fas fa-comments
+      skill_name: LLM Orchestration
+    - class: fas fa-project-diagram
+      skill_name: Multi-Agent Systems
+    - class: fas fa-magic
+      skill_name: Prompt Engineering
+    - class: fas fa-memory
+      skill_name: RAG Pipelines
+    - class: fas fa-atom
+      skill_name: Smol Agent
+    - class: fas fa-tools
+      skill_name: Tool Use / Function Calling
+
+
 - name: Languages and Frameworks
   skills:
-    - class: python-plain
-      skill_name: Python
-    - class: flask-plain
-      skill_name: Flask
-    - class: javascript-plain
-      skill_name: JavaScript
-    - class: node-plain
-      skill_name: Node
-    - class: explain-plain
-      skill_name: Express
-    - class: d3-plain
-      skill_name: D3
-    - class: html-plain
-      skill_name: HTML
-    - class: css3-original
-      skill_name: CSS
     - class: bootstrap-plain
       skill_name: Bootstrap
-    - class: r-plain
+    - class: c-plain
+      skill_name: C
+    - class: cplusplus-plain
+      skill_name: C++
+    - class: csharp-plain
+      skill_name: C#
+    - class: css3-plain
+      skill_name: CSS
+    - class: d3js-plain
+      skill_name: D3
+    - class: express-original
+      skill_name: Express
+    - class: flask-original
+      skill_name: Flask
+    - class: html5-plain
+      skill_name: HTML
+    - class: java-plain
+      skill_name: Java
+    - class: javascript-plain
+      skill_name: JavaScript
+    - class: nodejs-plain
+      skill_name: Node
+    - class: python-plain
+      skill_name: Python
+    - class: fab fa-r-project
       skill_name: R
-    - class: sql-plain
+    - class: azuresqldatabase-plain
       skill_name: SQL
+    - class: swift-plain
+      skill_name: Swift
 
 
 - name: Machine Learning
   skills:
-    - class:
+    - class: fas fa-project-diagram
       skill_name: Classification
-    - class:
-      skill_name: Regression
-    - class:
+    - class: fas fa-object-group
       skill_name: Clustering
-    - class:
-      skill_name: Feature Engineering
-    - class:
-      skill_name: Time series
-    - class:
-      skill_name: Predictive modeling
-    - class:
-      skill_name: NLP
-    - class:
-      skill_name: Recommender System
-    - class:
+    - class: fas fa-layer-group
       skill_name: Ensemble Methods
+    - class: fas fa-cogs
+      skill_name: Feature Engineering
+    - class: fas fa-language
+      skill_name: NLP
+    - class: fas fa-brain
+      skill_name: Predictive Modeling
+    - class: fas fa-thumbs-up
+      skill_name: Recommender System
+    - class: fas fa-chart-line
+      skill_name: Regression
+    - class: fas fa-chart-area
+      skill_name: Time Series
 
 
-- name: Big Data Frameworks
+- name: Data and Databases
   skills:
-    - class: spark-plain
-      skill_name: Spark
+    - class: elasticsearch-plain
+      skill_name: Elasticsearch
     - class: hadoop-plain
       skill_name: Hadoop
-    - class: hive-plain
+    - class: fas fa-server
       skill_name: Hive
-    - class: mapreduce-plain
-      skill_name: Mapreduce
-
-
-- name: Databases
-  skills:
-    - class: postgresql-plain
-      skill_name: PostgreSQL
-    - class: mysql-plain
-      skill_name: MySQL
+    - class: fas fa-sitemap
+      skill_name: MapReduce
     - class: mongodb-plain
       skill_name: MongoDB
-    - class: nosql-plain
-      skill_name: NoSQL
-    - class: sqlalchemy-plain
-      skill_name: SQLAlchemy
+    - class: mysql-plain
+      skill_name: MySQL
     - class: neo4j-plain
       skill_name: Neo4J
+    - class: fas fa-database
+      skill_name: NoSQL
+    - class: fas fa-search-plus
+      skill_name: OpenSearch
+    - class: postgresql-plain
+      skill_name: PostgreSQL
+    - class: apachespark-original
+      skill_name: Spark
+    - class: sqlalchemy-plain
+      skill_name: SQLAlchemy
 
 
 - name: Resources
   skills:
+    - class: amazonwebservices-plain-wordmark
+      skill_name: AWS
+    - class: docker-plain
+      skill_name: Docker
+    - class: googlecloud-plain
+      skill_name: GCP
     - class: git-plain
       skill_name: Git
-    - class: github-plain
+    - class: github-original
       skill_name: GitHub
     - class: heroku-original
       skill_name: Heroku
-    - class: docker-plain
-      skill_name: Docker
-    - class: amazonwebservices-plain
-      skill_name: AWS
-    - class: google-plain
-      skill_name: GCP
 
 
 - name: General
   skills:
-    - class: pass
+    - class: fas fa-check-double
       skill_name: BDD
-    - class: pass
-      skill_name: TDD
-    - class: pass
+    - class: fas fa-exchange-alt
       skill_name: ETL
-    - class: pass
-      skill_name: RESTful WebServices
-    - class: pass
-      skill_name: Visualization
-    - class: pass
+    - class: fas fa-network-wired
       skill_name: Network Analysis
+    - class: fas fa-plug
+      skill_name: RESTful WebServices
+    - class: fas fa-vial
+      skill_name: TDD
+    - class: fas fa-chart-bar
+      skill_name: Visualization

@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet">
 <link rel="stylesheet"
-      href="https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css">
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/devicon.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="/assets/css/main.css" media="screen" title="no title">
 <!--Include Font Awesome-->
@@ -35,7 +35,7 @@
   <div class="nav-wrapper transparent s12">
     <a href="/" class="brand-logo"><img src="/assets/images/logo.png" alt="website logo" /></a>
     <a href="" data-activates="mobile-demo" class="button-collapse large">
-      <i class="material-icons black-text sandwich">menu</i>
+      <i class="material-icons white-text sandwich">menu</i>
     </a>
     <ul id="nav-mobile" class="right hide-on-med-and-down">
       
@@ -67,47 +67,48 @@
 </nav>
 
 
-    <div class="container">
-  <h2 class="heading center">Have questions, comments, feedback? Feel free to reach out!</h2>
-  <p class="text-monospace center"><i>Use the form below or simply mailto:</i>
-    <a href=mailto:datascientist@opayq.com"?subject="roseejones.github.io">mlengineer@abine.org</a>
-  </p>
+    <div class="container about_section">
+    <h2 class="heading center" style="margin-bottom: 0.5rem;">Have questions, comments, feedback?</h2>
+    <p class="center" style="color: #cbd5e1; font-size: 1.1rem; margin-bottom: 2rem;">
+        Feel free to reach out using the form below or email
+        <a class="about_me_links" href="mailto:datascientist@opayq.com?subject=roseejones.github.io">mlengineer@abine.org</a>
+    </p>
 
+    <div class="modern-card">
+        <form id="fs-frm" name="simple-contact-form" accept-charset="utf-8"
+            action="https://formspree.io/datascientist@opayq.com" method="post">
 
-    <form id="fs-frm" name="simple-contact-form" accept-charset="utf-8" action="https://formspree.io/datascientist@opayq.com" method="post">
+            <div class="row">
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">account_circle</i>
+                    <label for="icon_prefix">Name</label>
+                    <input id="icon_prefix" type="text" name="name" class="validate email_input" required="">
+                </div>
 
-      <div class="row">
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">email</i>
+                    <label for="icon_prefix2" data-error="Make sure you've entered a valid email">Email</label>
+                    <input id="icon_prefix2" name="_replyto" type="email" class="validate email_input" required="">
+                </div>
+            </div>
 
-        <div class="input-field col m6 s12">
-          <i class="material-icons prefix">account_circle</i>
-          <label for="icon_prefix">Name</label>
-          <input id="icon_prefix" type="text" name="name" class="validate email_input" required="">
-        </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">mode_edit</i>
+                    <textarea id="textarea1" aria-required="true" name="message"
+                        class="materialize-textarea email_input validate" required=""></textarea>
+                    <label for="textarea1" data-error="Make sure you've entered a message">Message</label>
+                </div>
+            </div>
 
-        <div class="input-field col m6 s12">
-          <i class="material-icons prefix">email</i>
-          <label for="icon_prefix2" data-error="Make sure you've entered a valid email">Email</label>
-          <input id="icon_prefix2" name="_replyto" type="email" class="validate email_input" required="">
-        </div>
+            <div class="row">
+                <button class="fill col s8 offset-s2 m4 offset-m4" type="submit" name="action">Send</button>
+            </div>
 
-      </div>
-
-      <div class="row">
-
-        <div class="input-field col s12">
-          <i class="material-icons prefix">mode_edit</i>
-          <textarea id="textarea1" aria-required="true" name="message" class="materialize-textarea email_input validate" required=""></textarea>
-          <label for="textarea1" data-error="Make sure you've entered a message">Message</label>
-        </div>
-
-      </div>
-
-    <div class="row">
-    <button class="fill col s8 offset-s2 m4 offset-m4" type="submit" name="action">Send</button>
+        </form>
     </div>
-
-  </form>
 </div>
+
 
   </div>
 </main>
