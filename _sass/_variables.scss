@@ -1,0 +1,26 @@
+// Modern Typography
+$font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+$font1: $font-primary; // Alias for compatibility
+$font2: $font-primary; // Alias for compatibility
+
+// Modern Dark Blue Palette
+$bg-start: #020617; // Slate 950
+$bg-end: #172554; // Blue 950
+$accent: #3b82f6; // Blue 500
+$accent-hover: #60a5fa; // Blue 400
+$text-primary: #f8fafc; // Slate 50
+$text-secondary: #cbd5e1; // Slate 300
+$card-bg: rgba(30, 58, 138, 0.4); // Blue 900 semi-transparent
+$card-border: rgba(59, 130, 246, 0.2); // Blue 500 subtle border
+
+// Legacy color compatibility
+$color1: $text-primary;
+$color2: #f46036;
+$color3: #2e294e;
+$color4: #8e5572;
+$color6: $bg-start;
+$text-color: $text-primary;
+$modal-text: $text-primary;
+$dark-grey: $bg-start;
+$background-color: $bg-start;
+$cover-color: $text-primary;

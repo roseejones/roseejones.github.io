@@ -4,9 +4,10 @@
       <div class="col s8 offset-s2">
         <h3 class="heading">{{project.title}}</h3>
         <!-- Modal Trigger -->
-        <button class="fill col s12 modal-trigger" href="#{{project.id}}">learn more</button>
+        <button class="fill col s12 modal-trigger" href="#project-modal-{{project.id}}">learn more</button>
       </div>
     </div>
     <!-- Modal Structure -->
     {% include project_modal.html %}
+  </div>
 </div>
