@@ -1,4 +1,4 @@
-<div id="{{project.id}}" class="modal modal-fixed-footer">
+<div id="project-modal-{{project.id}}" class="modal modal-fixed-footer">
   <div class="modal-content">
     <div class="carousel carousel-slider center" data-indicators="true">
       {% for image in project.images %}
@@ -28,20 +28,19 @@
         </div>
         <div class="col s9 m10">
           {% for tech in project.technologies %}
-            <i class="devicon-{{tech}} project_icons"></i>
+          <i class="devicon-{{tech}} project_icons"></i>
           {% endfor %}
         </div>
       </div>
     </div>
   </div>
   <div class="modal-footer center-align">
-      <div class="buttons">
-        <a class="button_wrapper" target="_blank" href="{{project.url}}"><button class="fill">Live</button></a>
-        <a class="button_wrapper" target="_blank" href="{{project.github_url}}"><button class="fill">Github</button></a>
-        <a href="" class="button_wrapper">
-          <button id="{{project.id}}" class="next fill">Next</button>
-        </a>
-      </div>
+    <div class="buttons">
+      <a class="button_wrapper" target="_blank" href="{{project.url}}"><button class="fill">Live</button></a>
+      <a class="button_wrapper" target="_blank" href="{{project.github_url}}"><button class="fill">Github</button></a>
+      <a href="" class="button_wrapper">
+        <button id="next-btn-{{project.id}}" class="next fill">Next</button>
+      </a>
+    </div>
   </div>
-</div>
 </div>

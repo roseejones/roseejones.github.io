@@ -1,22 +1,45 @@
-$font1: "Josefin Slab", serif;
-$font2: "Raleway", sans-serif;
-$color1: #f2f7f2;
+---
+---
+
+// Modern Typography
+$font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+$font1: $font-primary; // Alias for compatibility
+$font2: $font-primary; // Alias for compatibility
+
+// Modern Dark Blue Palette
+$bg-start: #020617; // Slate 950
+$bg-end: #172554; // Blue 950
+$accent: #3b82f6; // Blue 500
+$accent-hover: #60a5fa; // Blue 400
+$text-primary: #f8fafc; // Slate 50
+$text-secondary: #cbd5e1; // Slate 300
+$card-bg: rgba(30, 58, 138, 0.4); // Blue 900 semi-transparent
+$card-border: rgba(59, 130, 246, 0.2); // Blue 500 subtle border
+
+// Legacy color compatibility
+$color1: $text-primary;
 $color2: #f46036;
 $color3: #2e294e;
 $color4: #8e5572;
-
-$color6: #292929;
-
-$text-color: #eff2ef;
-
-$modal-text: #F0FFFF;
-
-$dark-grey: #292929;
-$background-color: #F0FFFF;
-
-$cover-color: #F0FFFF;
+$color6: $bg-start;
+$text-color: $text-primary;
+$modal-text: $text-primary;
+$dark-grey: $bg-start;
+$background-color: $bg-start;
+$cover-color: $text-primary;
 
 @import "glitch", "homepage", "style";
+
+// Card utility class
+.modern-card {
+  background: $card-bg;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $card-border;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
 
 .about_section {
   .skills_wrapper {
@@ -24,16 +47,28 @@ $cover-color: #F0FFFF;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+    gap: 1.5rem;
   }
 
   .skill_group {
     width: 30%;
+    background: $card-bg;
+    border: 1px solid $card-border;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      border-color: $accent;
+    }
   }
 }
 
 .my_footer {
-  background-color: $dark-grey;
+  background-color: $bg-start;
   margin-top: 40px;
+  border-top: 1px solid $card-border;
 }
 
 .resume-wrapper {
@@ -44,24 +79,28 @@ $cover-color: #F0FFFF;
 }
 
 body {
-  background: #1c92d2;
-  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to bottom, #f2fcfe, #1c92d2);
-  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to bottom, #f2fcfe, #1c92d2);
-  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  min-height: 100%;
+  background: $bg-start;
+  background: linear-gradient(135deg, $bg-start 0%, $bg-end 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
   min-width: 300px;
+  color: $text-primary;
+  font-family: $font-primary;
 }
 
 nav {
   margin-top: 40px;
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 
 nav ul li a {
-  font-weight: 600;
-  color: black;
+  font-weight: 500;
+  color: $text-primary;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $accent-hover;
+  }
 }
 
 .projects_container {
@@ -71,21 +110,19 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-  transition: none !important;
   background-color: transparent;
 }
 
 nav ul li {
-  transition: none !important;
   background-color: transparent !important;
 }
 
 .nav-underline {
   margin: 0 25px 0 25px;
   width: 0%;
-  height: 3px;
-  background-color: black;
-  transition: width 0.3s;
+  height: 2px;
+  background: linear-gradient(90deg, $accent, $accent-hover);
+  transition: width 0.3s ease;
 }
 
 .nav-underlined,
@@ -94,10 +131,15 @@ nav ul li {
 }
 
 .heading {
-  color: $dark-grey;
-  font-weight: 200;
+  color: $text-primary;
+  font-weight: 600;
   font-size: 2.3rem;
-  font-family: $font1;
+  font-family: $font-primary;
+}
+
+.project .heading {
+  color: $text-primary !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .homepage-section {
@@ -136,10 +178,10 @@ nav ul li {
 }
 
 .skill_names {
-  font-size: 1.5rem;
-  color: $dark-grey;
-  font-style: $font2;
-  font-weight: 200;
+  font-size: 1.2rem;
+  color: $text-secondary;
+  font-family: $font-primary;
+  font-weight: 400;
   margin-left: 10px;
 }
 
@@ -201,13 +243,15 @@ nav ul li {
 }
 
 .about_me_links {
-  color: black;
-  font-weight: 200;
-  font-style: italic;
+  color: $accent;
+  font-weight: 400;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .about_me_links:hover {
-  font-weight: 300;
+  color: $accent-hover;
+  text-decoration: underline;
 }
 
 #email_modal {
@@ -315,8 +359,8 @@ button {
   width: 100%;
   font-size: 15px;
   letter-spacing: 0.8px;
-  color: $dark-grey;
-  border: 1px $dark-grey solid !important;
+  color: $accent;
+  border: 1px $accent solid !important;
   border-radius: 3px;
   outline: 0;
   overflow: hidden;
@@ -341,13 +385,13 @@ button:focus {
 
 button.fill:hover {
   background-color: transparent;
-  color: $cover-color;
+  color: $bg-start;
 }
 
 button.fill:before {
   content: "";
   position: absolute;
-  background: $dark-grey;
+  background: $accent;
   bottom: 0;
   left: 0;
   right: 0;
@@ -378,16 +422,17 @@ button.fill:hover:before {
 }
 
 .cover {
-  background-color: $cover-color;
-  width: 40%;
+  background-color: rgba(2, 6, 23, 0.95);
+  border-right: 1px solid $card-border;
+  // width: 40%; // Allow grid classes (col m5 s12) to control width
   height: 100%;
   margin: 0;
-  padding: 0;
+  padding: 2rem;
 }
 
 .skills {
-  margin-bottom: 40px;
-  color: $modal-text;
+  margin-bottom: 20px;
+  color: $text-secondary;
 }
 
 .project {
@@ -404,19 +449,33 @@ button.fill:hover:before {
 }
 
 .about_skill_icon {
-  color: $dark-grey;
-  font-size: 1.5rem;
+  color: $accent;
+  font-size: 1.2rem;
 }
 
 .about-summary {
   display: block;
-  /*padding-left: 5px;*/
   padding-top: 30px;
-  padding-left: 3rem;
-  color: #292929;
-  font-size: 1.8rem;
-  letter-spacing: +0.5px;
-  font-family: "Roboto"
+  padding-left: 2rem;
+  color: $text-secondary;
+  font-size: 1.3rem;
+  letter-spacing: 0.3px;
+  font-family: $font-primary;
+  line-height: 1.8;
+
+  li {
+    margin-bottom: 0.75rem;
+    list-style: none;
+    position: relative;
+    padding-left: 1.5rem;
+
+    &:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: $accent;
+    }
+  }
 }
 
 .box {
@@ -460,9 +519,15 @@ button.fill:hover:before {
 }
 
 .about_paragraph {
-  font-size: 1.8em;
-  letter-spacing: +0.5px;
-  font-weight: 200;
+  font-size: 1.15rem;
+  letter-spacing: 0.3px;
+  font-weight: 400;
+  line-height: 1.8;
+  color: $text-secondary;
+
+  p {
+    margin-bottom: 1.5rem;
+  }
 }
 
 /* label color */

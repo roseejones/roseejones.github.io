@@ -28,8 +28,8 @@ twitter_username: ""
 google_analytics_id: ''
 select_options: clear-filters HTML5 CSS3 SCSS javaScript jQuery materialize charts.js React jekyll Ruby-on-Rails Sinatra front-end back-end finished current
 sass:
-  sass_dir: assets/css/main.css
-  style: :nested
+  sass_dir: _sass
+  style: compressed
 gems:
   - jekyll-feed
 exclude:
