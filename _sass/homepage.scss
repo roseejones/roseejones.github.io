@@ -27,7 +27,7 @@
     // background-color: #F2F7F2;
     background-image: url("/assets/images/me.jpg");
     background-size: cover;
-    box-shadow: inset 0 0 0 1000px rgba($color6, 0.9);
+    box-shadow: inset 0 0 0 1000px rgba($color6, 0.55);
     transition: box-shadow 0.5s linear;
   }
 
@@ -40,16 +40,13 @@
 
   .projects {
     // background-color: #F46036;
-    box-shadow: inset 0 0 0 1000px rgba($color6, 0.9);
+    box-shadow: inset 0 0 0 1000px rgba($color6, 0.55);
     transition: box-shadow 0.5s linear;
     background-image: url("/assets/images/projects.jpg");
     background-size: cover;
   }
   .projects:hover {
-    // background-color: rgba(244,96,54,0.9);
-    box-shadow: inset 0 0 0 1000px rgba($color6, 0.6);
-    // border: 2px solid white;
-    // border-radius: 5px;
+    box-shadow: inset 0 0 0 1000px rgba($color6, 0.35);
   }
 
   .contact a {
@@ -62,28 +59,24 @@
   .algorithms {
     // background-color: #2E294E;
 
-    box-shadow: inset 0 0 0 1000px rgba($color6, 0.9);
+    box-shadow: inset 0 0 0 1000px rgba($color6, 0.55);
     transition: box-shadow 0.5s linear;
     background-image: url("/assets/images/resume.jpg");
     background-size: cover;
   }
   .algorithms:hover {
-    background-color: #443c72;
-    box-shadow: inset 0 0 0 1000px rgba($color6, 0.6);
-    // border: 2px solid white;
-    // border-radius: 5px;
+    box-shadow: inset 0 0 0 1000px rgba($color6, 0.35);
   }
 
   .contact {
     // background-color: rgb(142,85,114);
     background-image: url("/assets/images/contact.jpg");
-    box-shadow: inset 0 0 0 1000px rgba($color6, 0.9);
+    box-shadow: inset 0 0 0 1000px rgba($color6, 0.55);
     transition: box-shadow 0.5s linear;
     background-size: cover;
   }
   .contact:hover {
-    // background-color: #F2F7F2;
-    box-shadow: inset 0 0 0 1000px rgba($color6, 0.6);
+    box-shadow: inset 0 0 0 1000px rgba($color6, 0.35);
   }
 
   .profile_picture {
