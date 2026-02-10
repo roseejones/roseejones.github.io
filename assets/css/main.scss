@@ -605,6 +605,31 @@ nav a.button-collapse i {
     font-size: 2.5rem;
   }
 
+  // Fix logo size on mobile so it doesn't overwhelm the page
+  .brand-logo {
+    img {
+      max-height: 80px;
+      width: auto;
+    }
+  }
+
+  // Give nav enough bottom margin to clear the centered logo
+  nav {
+    margin-top: 10px;
+    margin-bottom: 100px;
+  }
+
+  // Reduce heading size for mobile screens
+  .heading {
+    font-size: 1.6rem;
+    line-height: 1.3;
+  }
+
+  // Tighten up the contact form card on small screens
+  .modern-card {
+    padding: 1.25rem;
+  }
+
   .description {
     font-size: 0.85rem;
   }
