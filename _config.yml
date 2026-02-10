@@ -30,6 +30,9 @@ select_options: clear-filters HTML5 CSS3 SCSS javaScript jQuery materialize char
 sass:
   sass_dir: _sass
   style: compressed
+  quiet_deps: true
+  silence_deprecations:
+    - import
 gems:
   - jekyll-feed
 exclude:
