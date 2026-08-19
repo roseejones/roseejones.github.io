@@ -1,0 +1,697 @@
+// Interior pages: glitch-tech skin. Scoped under main.interior so the
+// homepage keeps its own look (the body persists across barba transitions).
+
+.interior {
+
+  // Scanline overlay, interiors only
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg,
+        rgba(255, 255, 255, 0.015) 0 1px,
+        transparent 1px 3px);
+  }
+
+  // ---------------------------------------------------------------- nav
+
+  nav {
+    margin-top: 40px;
+    margin-bottom: 60px;
+  }
+
+  nav,
+  nav .nav-wrapper i,
+  nav a.button-collapse,
+  nav a.button-collapse i {
+    font-size: 3rem;
+  }
+
+  nav .sandwich {
+    color: $text;
+  }
+
+  .brand-logo {
+    margin-left: 5px;
+    margin-top: 5px;
+    font-size: 0;
+    // Shadow lives on the anchor: the img filter would invert its colors
+    box-shadow: 3px 3px 0 $split-a, -3px -3px 0 $split-b;
+
+    img {
+      filter: invert(1) brightness(2);
+      max-height: 90px;
+      width: auto;
+    }
+  }
+
+  nav ul li {
+    background-color: transparent !important;
+  }
+
+  nav ul li a {
+    font-family: $mono;
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $text-2;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $blue;
+      background-color: transparent;
+    }
+  }
+
+  .nav-underline {
+    margin: 0 25px 0 25px;
+    width: 0%;
+    height: 2px;
+    background: $blue;
+    transition: width 0.3s ease;
+  }
+
+  .nav-underlined,
+  .nav-hover-underlined {
+    width: 30%;
+  }
+
+  // --------------------------------------------------------- typography
+
+  .kicker {
+    font-family: $mono;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $text-3;
+    margin-bottom: 1rem;
+
+    .path {
+      color: $blue;
+      font-weight: 600;
+    }
+  }
+
+  .page-title {
+    font-family: $sans;
+    font-weight: 800;
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: $text;
+    margin: 0 0 1.4rem;
+    text-shadow: 2px 0 $split-a, -2px 0 $split-b;
+  }
+
+  .page-head {
+    margin-bottom: 3rem;
+
+    .standfirst {
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: $text-2;
+      max-width: 44rem;
+      margin: 0;
+    }
+  }
+
+  .section-label {
+    font-family: $mono;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $text;
+    margin: 0 0 1rem;
+
+    &::before {
+      content: "// ";
+      color: $violet;
+    }
+  }
+
+  .sec {
+    border-top: 1px solid $line;
+    margin-top: 2.4rem;
+    padding-top: 1.6rem;
+  }
+
+  .narrow {
+    max-width: 46rem;
+  }
+
+  p,
+  li {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .pull-quote {
+    font-family: $mono;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: $text;
+    border-left: 2px solid $violet;
+    padding: 0.2rem 0 0.2rem 1.3rem;
+    margin: 1.8rem 0;
+
+    .cursor {
+      color: $blue;
+    }
+  }
+
+  .heading {
+    color: $text;
+    font-weight: 700;
+    font-size: 2.3rem;
+    font-family: $sans;
+    letter-spacing: -0.01em;
+  }
+
+  .about_paragraph {
+    font-size: 1rem;
+    letter-spacing: 0.2px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: $text-2;
+
+    p {
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .about_me_links {
+    color: $blue;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $text;
+      text-decoration: underline;
+    }
+  }
+
+  .description {
+    color: $text-2;
+    letter-spacing: 0.3px;
+    font-family: $sans;
+    font-weight: 400;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  // ------------------------------------------------------------ buttons
+
+  button {
+    position: relative;
+    font-family: $mono;
+    display: block;
+    height: 45px;
+    line-height: 43px;
+    width: 100%;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $text;
+    border: 1px solid $line !important;
+    border-radius: 0;
+    outline: 0;
+    background: none;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  button:focus {
+    background-color: transparent;
+  }
+
+  button.fill:hover {
+    background-color: transparent;
+    color: $blue;
+    border-color: $blue !important;
+  }
+
+  // ------------------------------------------------------ tiles / panels
+
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.4rem;
+  }
+
+  .tile {
+    display: block;
+    background: $panel;
+    border: 1px solid $line;
+    padding: 1.7rem;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+
+    &:hover {
+      border-color: $blue;
+    }
+  }
+
+  .tile-no {
+    font-family: $mono;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: $violet;
+  }
+
+  .tile-tag {
+    font-family: $mono;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $text-3;
+  }
+
+  .tile-title {
+    font-family: $sans;
+    font-weight: 700;
+    font-size: 1.45rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: $text;
+    margin: 0.8rem 0 0.7rem;
+  }
+
+  .tile-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: $text-2;
+    margin: 0;
+  }
+
+  .tile-link {
+    display: inline-block;
+    margin-top: 1.2rem;
+    font-family: $mono;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $blue;
+  }
+
+  .tile-img {
+    display: block;
+    width: calc(100% + 3.4rem);
+    margin: -1.7rem -1.7rem 1.2rem;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-bottom: 1px solid $line;
+  }
+
+  .tile-button {
+    margin-top: 1.2rem;
+  }
+
+  .panel {
+    background: $panel;
+    border: 1px solid $line;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .deck-frame {
+    width: 100%;
+    height: 560px;
+    border: 1px solid $line;
+    background: #ffffff;
+  }
+
+  .video-frame {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border: 1px solid $line;
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  }
+
+  // --------------------------------------------------------- about page
+
+  .skill-row {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: 1.2rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid $line;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .skill-cat {
+    font-family: $mono;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $text-3;
+    margin: 0.2rem 0 0;
+  }
+
+  .skill-list {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: $text-2;
+    margin: 0;
+  }
+
+  // --------------------------------------------------------- references
+
+  .agile-references {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 0.75rem 0 0.75rem 1.5rem;
+      border-bottom: 1px solid $line;
+      font-size: 1rem;
+      position: relative;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:before {
+        content: ">";
+        font-family: $mono;
+        position: absolute;
+        left: 0;
+        color: $violet;
+      }
+    }
+  }
+
+  // ------------------------------------------------------------- forms
+
+  .input-field label {
+    font-family: $mono;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    color: $text-3 !important;
+  }
+
+  .input-field input:focus+label {
+    color: $blue !important;
+  }
+
+  .input-field input:focus {
+    border-bottom: 1px solid $blue !important;
+    box-shadow: 0 1px 0 0 $blue !important;
+  }
+
+  .input-field input {
+    border-bottom: 1px solid $line !important;
+    color: $text !important;
+  }
+
+  .input-field textarea {
+    border-bottom: 1px solid $line !important;
+    color: $text !important;
+  }
+
+  .input-field input.valid {
+    border-bottom: 1px solid $blue !important;
+    box-shadow: 0 1px 0 0 $blue !important;
+  }
+
+  .input-field input.invalid {
+    border-bottom: 1px solid $error !important;
+    box-shadow: 0 1px 0 0 $error !important;
+  }
+
+  .input-field .prefix {
+    color: $text-3 !important;
+  }
+
+  .input-field .prefix.active {
+    color: $blue !important;
+  }
+
+  textarea:focus {
+    outline: none !important;
+    border-bottom: 1px solid $blue !important;
+    box-shadow: 0 1px 0 0 $blue !important;
+  }
+
+  // ---------------------------------------------------- projects / modal
+
+  .projects_container {
+    padding: 20px 10px 0 10px;
+    width: 100%;
+    margin: auto;
+  }
+
+  .projects-bottom {
+    margin-top: 50px;
+  }
+
+  .resume-wrapper {
+    button {
+      margin-top: 50px;
+      margin-bottom: 0px;
+    }
+  }
+
+  .project_list {
+
+    .modal,
+    .modal-footer {
+      background-color: $panel;
+    }
+
+    .modal {
+      color: $text;
+      border: 1px solid $line;
+      border-radius: 0;
+    }
+
+    .project_info {
+      padding: 1%;
+      padding-top: 20px;
+    }
+
+    .buttons {
+      .button_wrapper {
+        box-sizing: border-box;
+        display: inline-block;
+        width: 30%;
+        margin: 1%;
+      }
+    }
+
+    .modal-footer {
+      text-align: center !important;
+      height: auto;
+      height: 75px;
+      border-top: 1px solid $line;
+
+      .row {
+        margin-bottom: 0;
+      }
+    }
+
+    .project_icons {
+      margin-top: 4px;
+      font-size: 1.15rem;
+      color: $text-2;
+    }
+
+    h4 {
+      margin: 0px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      font-family: $sans;
+      color: $text;
+    }
+
+    p {
+      margin: 0 !important;
+    }
+
+    .info_type {
+      font-family: $mono;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: $text-3;
+      padding-top: 8px;
+    }
+
+    .modal {
+      height: 90vh !important;
+      margin-top: 5vh;
+      min-height: 650px;
+      max-height: 90vh;
+
+      .modal-content {
+        padding: 0 !important;
+        margin: 0;
+      }
+    }
+  }
+
+  .carousel {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    max-height: 550px;
+  }
+
+  .valign-wrapper {
+    height: 100%;
+  }
+
+  // --------------------------------------------------------- responsive
+
+  @media only screen and (max-width: 993px) {
+
+    .nav-underlined,
+    .nav-underline {
+      margin-left: 40px;
+    }
+
+    .nav-underlined,
+    .nav-hover-underlined {
+      width: 15%;
+    }
+  }
+
+  @media only screen and (max-width: 601px) {
+
+    nav,
+    nav .nav-wrapper i,
+    nav a.button-collapse,
+    nav a.button-collapse i {
+      font-size: 2.5rem;
+    }
+
+    .brand-logo {
+      img {
+        max-height: 80px;
+        width: auto;
+      }
+    }
+
+    nav {
+      margin-top: 10px;
+      margin-bottom: 100px;
+    }
+
+    .heading {
+      font-size: 1.6rem;
+      line-height: 1.3;
+    }
+
+    .page-title {
+      text-shadow: none;
+    }
+
+    .panel {
+      padding: 1.25rem;
+    }
+
+    .description {
+      font-size: 0.85rem;
+    }
+
+    .skill-row {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+
+    .project_list {
+      .modal {
+        margin-top: 2vh !important;
+        min-height: 550px !important;
+        height: 75vh !important;
+      }
+    }
+
+    .info_type {
+      font-size: 0.68rem !important;
+    }
+  }
+}
+
+// Elements rendered outside main.interior (interior pages only)
+
+.side-nav {
+  background-color: $panel;
+
+  a {
+    font-family: $mono;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $text;
+    margin: 0 10px 0 10px;
+  }
+}
+
+.my_footer {
+  background-color: $bg;
+  margin-top: 60px;
+  border-top: 1px solid $line;
+  color: $text-2;
+}
+
+.footer_titles {
+  font-family: $mono;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $text;
+}
+
+.footer_icons {
+  font-size: 24px !important;
+  color: $text-3;
+}
+
+.footer_description_link {
+  color: $text-2;
+  font-weight: 400;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $blue;
+  }
+}
+
+.footer_link_text {
+  font-family: $sans;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.my_footer a {
+  color: $text-2;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $blue;
+  }
+}

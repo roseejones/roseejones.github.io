@@ -1,0 +1,100 @@
+// Shared shell: body defaults, barba transition containers, homepage support.
+
+body {
+  background: $bg;
+  min-height: 100vh;
+  min-width: 300px;
+  color: $text-2;
+  font-family: $sans;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+.my_container {
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// barba.js transition containers (used by transitions.js)
+.barba-old-container {
+  position: absolute;
+  z-index: 5;
+  visibility: visible !important;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  background-color: transparent;
+  overflow-y: hidden !important;
+}
+
+.barba-new-container {
+  position: absolute;
+  overflow: hidden !important;
+  z-index: 0;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+}
+
+.barba-new-container-back {
+  position: absolute;
+  z-index: 5;
+  visibility: visible !important;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  background-color: transparent;
+  overflow-y: hidden !important;
+}
+
+// Homepage (cover) support: keep these rules verbatim so the landing page is untouched
+#homepage {
+  background: $home-bg;
+  min-height: 100vh;
+}
+
+.homepage-section {
+  display: block;
+  height: 50vh;
+  min-height: 300px;
+  color: $text-color;
+  position: relative;
+}
+
+.box {
+  height: 50vh;
+}
+
+.my-borders {
+  margin: 0;
+  padding: 0;
+  height: 0px;
+  width: 0px;
+  position: absolute;
+  background-color: $background-color;
+}
+
+.about-border {
+  bottom: 0px;
+  right: 0;
+}
+
+.algorithms-border {
+  top: 0;
+  right: 0;
+}
+
+.contact-border {
+  top: 0;
+  left: -1px;
+}
+
+.projects-border {
+  bottom: 0;
+  left: 0;
+}

@@ -1,26 +1,25 @@
-// Modern Typography
-$font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-$font1: $font-primary; // Alias for compatibility
-$font2: $font-primary; // Alias for compatibility
+// Glitch-tech palette (interior pages)
+$bg: #0a0a0d; // page ground
+$panel: #101015; // tile / panel surface
+$text: #e8e8ec; // primary text
+$text-2: #a3a3ad; // body text
+$text-3: #64646e; // muted labels
+$line: #232329; // hairline borders
+$blue: #5d8bff; // electric blue: links, active nav, tile links
+$violet: #8f6bff; // violet-blue: numbers, glitch shadow pair, label prefixes
+$error: #e05d5d; // form invalid state
 
-// Modern Dark Blue Palette
-$bg-start: #020617; // Slate 950
-$bg-end: #172554; // Blue 950
-$accent: #3b82f6; // Blue 500
-$accent-hover: #60a5fa; // Blue 400
-$text-primary: #f8fafc; // Slate 50
-$text-secondary: #cbd5e1; // Slate 300
-$card-bg: rgba(30, 58, 138, 0.4); // Blue 900 semi-transparent
-$card-border: rgba(59, 130, 246, 0.2); // Blue 500 subtle border
+$sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+$mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-// Legacy color compatibility
-$color1: $text-primary;
-$color2: #f46036;
-$color3: #2e294e;
-$color4: #8e5572;
-$color6: $bg-start;
-$text-color: $text-primary;
-$modal-text: $text-primary;
-$dark-grey: $bg-start;
-$background-color: $bg-start;
-$cover-color: $text-primary;
+// RGB-split shadow pair for headlines and the logo
+$split-a: rgba(143, 107, 255, 0.4);
+$split-b: rgba(93, 139, 255, 0.35);
+
+// Homepage (cover) support: values unchanged from the original design
+$home-bg: #020617;
+$color6: $home-bg;
+$background-color: $home-bg;
+$text-color: #f8fafc;
+$font1: $sans;
+$font2: $sans;
