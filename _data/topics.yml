@@ -2,5 +2,5 @@
   description: "Scrum, planning poker, and agile principles: presentation slides, an intro video, and curated references."
   url: /agile
 - title: Agent Evaluation
-  description: "A 10-minute walkthrough for engineers new to agent evaluation: metrics, eval-driven development, and closing the loop in production."
+  description: "A walkthrough for engineers new to agent evaluation: metrics, eval-driven development, and closing the loop in production."
   url: /evaluation
