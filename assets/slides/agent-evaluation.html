@@ -67,7 +67,7 @@
     font-size: clamp(1.05rem, 2.2vw, 1.35rem);
     color: var(--ink-2);
     line-height: 1.6;
-    max-width: 40rem;
+    max-width: 42rem;
     margin-top: 1.4rem;
   }
   em { font-style: italic; }
@@ -100,7 +100,7 @@
     font-style: italic;
     line-height: 1.5;
     color: var(--ink);
-    max-width: 44rem;
+    max-width: 46rem;
   }
   .pull strong { font-style: normal; font-weight: 600; }
   .pull .lead { color: var(--red); font-style: normal; font-weight: 600; }
@@ -137,6 +137,9 @@
     color: var(--ink-3);
     margin-top: .15rem;
   }
+  table.runs td:nth-child(n+2), table.runs th:nth-child(n+2) { text-align: right; padding-right: 0; padding-left: 1.4rem; font-variant-numeric: tabular-nums; }
+  table.runs .bad { color: var(--red); font-weight: 600; }
+  table.runs .ok { color: var(--ink); }
 
   /* figures */
   .fig { margin: .4rem 0 1rem; }
@@ -152,7 +155,7 @@
   .split .flow { flex: 1.15; }
   .split .fig { flex: 1; max-width: 380px; margin: 0; }
 
-  /* specimen card (dataset example) */
+  /* specimen card */
   .specimen { border: 1px solid var(--ink); }
   .specimen .srow { display: flex; border-bottom: 1px solid var(--rule); }
   .specimen .srow:last-child { border-bottom: none; }
@@ -173,6 +176,34 @@
     padding: .7rem .9rem;
   }
   .specimen .sv q { font-style: italic; color: var(--ink); }
+  .specimen .sv .bad { color: var(--red); font-weight: 600; }
+
+  /* speaker notes drawer */
+  .notes { display: none; }
+  body.notes-on .slide.active .notes {
+    display: block;
+    position: fixed; left: 0; right: 0; bottom: 44px;
+    background: var(--paper);
+    border-top: 1px solid var(--ink);
+    padding: .9rem 8vw 1rem;
+    font-family: var(--sans);
+    font-size: .86rem;
+    color: var(--ink-2);
+    line-height: 1.55;
+    max-height: 34vh;
+    overflow-y: auto;
+    z-index: 5;
+  }
+  .notes::before {
+    content: "Speaker notes";
+    display: block;
+    font-size: .62rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: .4rem;
+  }
 
   /* chrome */
   .hud {
@@ -181,7 +212,9 @@
     padding: .9rem 1.6rem;
     font-family: var(--sans);
     font-size: .8rem; color: var(--ink-3);
+    background: var(--paper);
     user-select: none;
+    z-index: 6;
   }
   .hud button {
     background: none; border: none;
@@ -190,8 +223,10 @@
     cursor: pointer; padding: .4rem .2rem;
   }
   .hud button:hover { color: var(--red); }
+  .hud .mid { display: flex; align-items: baseline; gap: 1.4rem; }
   .hud .count { letter-spacing: .15em; }
-  .progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--red); width: 0; transition: width .3s ease; }
+  body.notes-on #notesBtn { color: var(--red); }
+  .progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--red); width: 0; transition: width .3s ease; z-index: 6; }
 
   @media (max-width: 700px) {
     .slide { padding: 4vh 7vw 12vh; justify-content: flex-start; overflow-y: auto; }
@@ -215,8 +250,9 @@
   <section class="slide">
     <div class="label">Rose Jones · An engineering walkthrough</div>
     <h1>Agent<br>Evaluation</h1>
-    <p class="sub">Ten minutes for engineers who have never evaluated an agent before. The goal is a fundamental mental model, not a tool tutorial.</p>
+    <p class="sub">For engineers who have never evaluated an agent before: a fundamental mental model, not a tool tutorial. Ten minutes at a brisk pace, fifteen with discussion.</p>
     <p class="pull">If you can't define success, you can't measure it. If you can't measure it, you can't improve it.</p>
+    <aside class="notes">Frame the session: this is a mental-model talk, not a tooling tutorial. Read the one-liner aloud and promise to return to it at the end. Pace check: ten minutes if you hold questions, fifteen with discussion.</aside>
   </section>
 
   <!-- 2 · Why evals -->
@@ -243,6 +279,7 @@
         </ul>
       </div>
     </div>
+    <aside class="notes">Ask who has tweaked a prompt and shipped on vibes; wait for the laugh. The left column describes prompt-and-pray development. The point to land: evals turn iteration from anecdotes into measurements. "Fix one, break three" returns twice later, so plant it now.</aside>
   </section>
 
   <!-- 3 · Where we came from -->
@@ -288,33 +325,14 @@
       </div>
     </div>
     <p class="pull">The luxury of this era was a <strong>mathematically defined ground truth</strong>. Hold that thought: it is exactly what we lose next.</p>
+    <aside class="notes">A refresher for shared vocabulary; do not linger on the metric acronyms. The only sentence that matters is the pull: classic ML had mathematically defined ground truth. The rest of the talk is about rebuilding that luxury by hand.</aside>
   </section>
 
-  <!-- 4 · LLMs change the game -->
+  <!-- 4 · What changed (merged) -->
   <section class="slide">
     <div class="label"><span class="no">03</span> · What changed</div>
-    <h2>LLMs: a model we didn't build</h2>
-    <div class="cols">
-      <div class="col">
-        <h3>Data, as context</h3>
-        <p>We guide with data instead of training on it. Retrieval pulls our documents into the model's reasoning at answer time.</p>
-      </div>
-      <div class="col">
-        <h3>System prompts</h3>
-        <p>The agent's constitution: role, tone, rules. Hard to optimize by hand, since one tweak fixes a case and breaks another.</p>
-      </div>
-      <div class="col">
-        <h3>Model parameters</h3>
-        <p>Temperature, top-p, max tokens. Deterministic and factual at one end; creative and diverse at the other.</p>
-      </div>
-    </div>
-    <p class="pull">And "good" became <strong>subjective</strong>. Exact-match metrics fail on free-form text, so we add similarity scores, LLM-as-a-judge, and human review.</p>
-  </section>
-
-  <!-- 5 · Agents are more -->
-  <section class="slide">
-    <div class="label"><span class="no">04</span> · One more step</div>
-    <h2>Agents are more than a single LLM call</h2>
+    <h2>A model we didn't build, wrapped in an agent</h2>
+    <p class="sub" style="margin-top:0; margin-bottom:1rem;">We no longer train the model; our levers are context, prompts, and parameters. And "good" became subjective, graded by similarity scores, judges, and humans. Then agents raised the stakes further:</p>
     <div class="fig"><svg viewBox="0 0 640 130" role="img" aria-label="Agent loop: user converses with an agent that calls tools and retrieves knowledge">
       <defs>
         <marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
@@ -352,11 +370,12 @@
       <div class="col"><h3>They retrieve</h3><p>Wrong context in, wrong answer out, whatever the model.</p></div>
     </div>
     <p class="pull">So evaluation must mirror the full lifecycle: not <em>was this sentence good?</em> but <em>did the agent do the right thing, the right way, end to end?</em></p>
+    <aside class="notes">Two shifts at once. First, we did not train the model, so our levers moved outside it: retrieved context, system prompts, parameters. Exact-match metrics die here and grading becomes subjective. Second, agents wrap that model in tools, retrieval, and multi-turn state, so single-turn text checks are not enough. We grade behavior end to end.</aside>
   </section>
 
-  <!-- 6 · EDD loop -->
+  <!-- 5 · EDD loop -->
   <section class="slide">
-    <div class="label"><span class="no">05</span> · The core practice</div>
+    <div class="label"><span class="no">04</span> · The core practice</div>
     <h2>Eval-driven development</h2>
     <div class="split">
       <div class="flow">
@@ -404,11 +423,12 @@
       </svg></div>
     </div>
     <p class="pull"><span class="lead">Steps 1 and 2 are the whole game.</span> Without defined success and concrete examples, every iteration after them is just noise.</p>
+    <aside class="notes">Walk the circle clockwise. Stress steps 1 and 2: without defined success and concrete examples, the rest of the loop burns energy without progress. Name the practice: eval-driven development, where evaluation drives iteration rather than trailing it.</aside>
   </section>
 
-  <!-- 7 · Core dataset, deep -->
+  <!-- 6 · Core dataset, deep -->
   <section class="slide">
-    <div class="label"><span class="no">06</span> · Ground truth, rebuilt</div>
+    <div class="label"><span class="no">05</span> · Ground truth, rebuilt</div>
     <h2>The core dataset</h2>
     <div class="cols">
       <div class="col">
@@ -432,11 +452,12 @@
         <p class="fig-caption">A support-agent case. Note the expected outcome describes behavior, not exact wording.</p>
       </div>
     </div>
+    <aside class="notes">Walk the specimen top to bottom. Point out that the expected outcome describes behavior, not exact wording; free-form text never matches strings. The rubric is where expert judgment gets written down, and two slides from now a judge will apply it mechanically. This refund case returns on almost every slide from here.</aside>
   </section>
 
-  <!-- 8 · Regression dataset, deep -->
+  <!-- 7 · Regression dataset, deep -->
   <section class="slide">
-    <div class="label"><span class="no">06</span>b · Ground truth, rebuilt</div>
+    <div class="label"><span class="no">05</span>b · Ground truth, rebuilt</div>
     <h2>The regression dataset</h2>
     <p class="sub" style="margin-top: 0; margin-bottom: 1.2rem;">Every fixed failure becomes a permanent test case, run on every change like a test suite. Here is one case being born:</p>
     <div class="flow">
@@ -446,11 +467,12 @@
       <div class="frow"><span class="fno">4</span><span class="ft">Guard</span><span class="fd">The case joins the regression set. Any future prompt or model change that reintroduces the promise fails loudly.</span></div>
     </div>
     <p class="pull">Remember "fix one case, break three others"? <strong>This is the set that catches the other three.</strong></p>
+    <aside class="notes">This is the set engineers already believe in: it is a test suite. Tell the incident with a little drama; everyone has watched a screenshot circulate. Remember case number 12; it comes back on the numbers slide. The last line calls back to slide 01.</aside>
   </section>
 
-  <!-- 9 · Metrics per agent type -->
+  <!-- 8 · Metrics per agent type -->
   <section class="slide">
-    <div class="label"><span class="no">07</span> · Choosing metrics</div>
+    <div class="label"><span class="no">06</span> · Choosing metrics</div>
     <h2>Match the metric to the agent</h2>
     <table>
       <tr><th>Agent type</th><th>What you measure</th></tr>
@@ -460,11 +482,12 @@
       <tr><td>Custom</td><td>LLM-as-a-judge with weighted criteria: helpfulness, reasoning, tone</td></tr>
     </table>
     <p class="pull">Evaluation is not one-size-fits-all. Frameworks such as DeepEval and LangSmith ship these as ready-made scorers; choose yours before you build.</p>
+    <aside class="notes">Do not read every cell. The takeaway is structural: metric choice follows agent architecture, and the frameworks ship these as ready-made scorers. Reassure the audience that the fuzzy names on this slide become concrete on the next one.</aside>
   </section>
 
-  <!-- 9b · Metrics, concretely -->
+  <!-- 9 · Metrics, concretely -->
   <section class="slide">
-    <div class="label"><span class="no">07</span>b · Choosing metrics</div>
+    <div class="label"><span class="no">06</span>b · Choosing metrics</div>
     <h2>The same refund case, under each lens</h2>
     <table class="lens">
       <tr><th>Metric</th><th>The question it asks</th><th>What failing looks like</th></tr>
@@ -478,11 +501,56 @@
       <tr><td>Role adherence<span class="cat">multi-turn</span></td><td>Does it stay the agent you defined?</td><td><em>The refund assistant starts offering tax advice.</em></td></tr>
     </table>
     <p class="pull">A metric is just a question you ask of the same trace. If the name sounds fuzzy, <strong>say the failure out loud</strong>.</p>
+    <aside class="notes">Walk two or three rows, not all eight; let the audience read the rest. The italic failure column does the teaching. Flag the faithfulness row: that "48 hours" reply is exactly what the judge grades on the next slide. Leave them the trick in the pull line.</aside>
   </section>
 
-  <!-- 10 · Online / post-production -->
+  <!-- 10 · LLM as a judge -->
   <section class="slide">
-    <div class="label"><span class="no">08</span> · After you ship</div>
+    <div class="label"><span class="no">07</span> · The judge</div>
+    <h2>LLM-as-a-judge, demystified</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>What it is</h3>
+        <ul>
+          <li>A model handed your rubric and asked to grade another model's output</li>
+          <li>Exists because subjective criteria don't scale to humans reading every case</li>
+          <li>Returns scores <em>with reasons</em>, so failures stay debuggable</li>
+          <li>The judge is a model too: it has biases, and it needs spot-checks against human labels before you trust it</li>
+        </ul>
+      </div>
+      <div class="col" style="flex: 1.35">
+        <h3>The rubric, applied</h3>
+        <div class="specimen">
+          <div class="srow"><div class="sk">Judge prompt</div><div class="sv">You are grading a refund-support reply. Policy: refunds take 5 to 10 business days; return received Jul 2. Score the reply: grounded in policy (0&ndash;2), order facts (0&ndash;2), tone (0&ndash;1), offers next step (0&ndash;1). Give a one-line reason per score.</div></div>
+          <div class="srow"><div class="sk">Reply under test</div><div class="sv"><q>Your return arrived July 2, so your refund is on the way! It usually lands within 48 hours.</q></div></div>
+          <div class="srow"><div class="sk">Judge output</div><div class="sv">grounded <span class="bad">0/2</span> ("48 hours" contradicts policy) · facts 2/2 · tone 1/1 · next step <span class="bad">0/1</span> (none offered) &rarr; <span class="bad">3 of 6, fail</span></div></div>
+        </div>
+        <p class="fig-caption">The rubric from the core-dataset slide, executed by a model instead of a human.</p>
+      </div>
+    </div>
+    <p class="pull">One question per criterion, scores with reasons, and <strong>a human audit of the judge itself</strong>. That's the whole trick.</p>
+    <aside class="notes">Demystify: a judge is just a model given your rubric and asked for scores with reasons. Walk the card: prompt, reply, output. The reply is the faithfulness failure from the previous slide, now caught and explained mechanically. Land the caveat hard: the judge has biases of its own (verbosity, position, self-preference), so sample its verdicts against human labels before trusting it at scale.</aside>
+  </section>
+
+  <!-- 11 · Reading the numbers -->
+  <section class="slide">
+    <div class="label"><span class="no">08</span> · Reading the numbers</div>
+    <h2>What a run actually looks like</h2>
+    <table class="runs">
+      <tr><th>Suite</th><th>Prompt v3</th><th>Prompt v4</th></tr>
+      <tr><td>Core set · 50 cases</td><td class="ok">39 / 50 &nbsp;(78%)</td><td class="ok">42 / 50 &nbsp;(84%)</td></tr>
+      <tr><td>Regression set · 12 cases</td><td class="ok">12 / 12</td><td class="bad">11 / 12</td></tr>
+      <tr><td>Case #12 · "instant refund"</td><td class="ok">pass</td><td class="bad">fail</td></tr>
+      <tr><td>Verdict</td><td class="ok">shipped</td><td class="bad">held</td></tr>
+    </table>
+    <p class="fig-caption">Pass rates are over three runs per case. Agents are nondeterministic: the same eval run twice gives different numbers, so score repeated runs, never a single pass.</p>
+    <p class="pull">v4 wins the average and still can't ship: it re-broke case #12. <strong>Aggregates hide regressions; the regression set catches them.</strong></p>
+    <aside class="notes">The punchline of the talk. v4 improves the aggregate and still cannot ship because it re-broke the instant-refund case from slide 05b. Aggregates hide regressions; that is the entire argument for keeping a separate regression set. Then the caption: agents are nondeterministic, so every number here is a pass rate over three runs. Engineers hit flaky evals in week one; warn them now.</aside>
+  </section>
+
+  <!-- 12 · Online / post-production -->
+  <section class="slide">
+    <div class="label"><span class="no">09</span> · After you ship</div>
     <h2>Online evaluation: production signals</h2>
     <div class="cols">
       <div class="col">
@@ -508,11 +576,12 @@
         </ul>
       </div>
     </div>
+    <aside class="notes">Offline evals predict; production measures. Resolution, escalation, latency, cost. Stress that user feedback is the loudest signal: it decides what "good" means next quarter, and it feeds the datasets on the next slide.</aside>
   </section>
 
-  <!-- 11 · Close the loop -->
+  <!-- 13 · Close the loop -->
   <section class="slide">
-    <div class="label"><span class="no">09</span> · The bridge</div>
+    <div class="label"><span class="no">10</span> · The bridge</div>
     <h2>Close the loop</h2>
     <div class="fig"><svg viewBox="0 0 660 215" role="img" aria-label="Evaluation pipeline bridging development and production">
       <defs>
@@ -552,26 +621,31 @@
     </svg></div>
     <p class="fig-caption">Failures become regression cases; strong real examples enrich the core set. Both feed the next development cycle.</p>
     <p class="pull">When something breaks, first ask: <strong>did our evals miss it?</strong> Fix the eval, then the prompt.</p>
+    <aside class="notes">The two worlds share one pipeline. Traces and failures flow back, the datasets grow richer, and development restarts with better ground truth. When production breaks, the first question is whether the evals missed it. Fix the eval, then the prompt.</aside>
   </section>
 
-  <!-- 12 · Takeaways -->
+  <!-- 14 · Takeaways -->
   <section class="slide">
-    <div class="label"><span class="no">10</span> · Takeaways</div>
+    <div class="label"><span class="no">11</span> · Takeaways</div>
     <h2>If you remember four things</h2>
     <div class="flow">
       <div class="frow"><span class="fno">1</span><span class="ft">Define success first</span><span class="fd">Actionable, measurable goals before any building. Vague goals produce unmeasurable agents.</span></div>
       <div class="frow"><span class="fno">2</span><span class="ft">Build the datasets</span><span class="fd">A core set for ground truth, a regression set for past failures. Start small, keep them honest.</span></div>
-      <div class="frow"><span class="fno">3</span><span class="ft">Metrics follow the agent</span><span class="fd">RAG, tools, and multi-turn each need their own scorers, plus judges and rubrics for the subjective parts.</span></div>
+      <div class="frow"><span class="fno">3</span><span class="ft">Metrics follow the agent</span><span class="fd">RAG, tools, and multi-turn each need their own scorers, plus audited judges for the subjective parts.</span></div>
       <div class="frow"><span class="fno">4</span><span class="ft">Evaluation never ends</span><span class="fd">A continuous loop between model behavior, user experience, and system performance.</span></div>
     </div>
     <p class="pull">The goal, in one line: agents that are <strong>reliable, measurable, and improving over time</strong>.</p>
+    <aside class="notes">Return to the opening one-liner; the circle closes. If they remember only the four items, the talk worked. Point to the deck URL for self-serve reading, and invite one question about their own agent's core dataset: everyone has an opinion by now.</aside>
   </section>
 
 </div>
 
 <div class="hud">
   <button id="prev" aria-label="Previous slide">← Prev</button>
-  <span class="count" id="count"></span>
+  <span class="mid">
+    <span class="count" id="count"></span>
+    <button id="notesBtn" aria-label="Toggle speaker notes" title="Toggle speaker notes (N)">Notes</button>
+  </span>
   <button id="next" aria-label="Next slide">Next →</button>
 </div>
 
@@ -590,12 +664,16 @@
 
   document.getElementById('next').addEventListener('click', function () { show(i + 1); });
   document.getElementById('prev').addEventListener('click', function () { show(i - 1); });
+  document.getElementById('notesBtn').addEventListener('click', function () {
+    document.body.classList.toggle('notes-on');
+  });
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(i + 1); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
     if (e.key === 'Home') show(0);
     if (e.key === 'End') show(slides.length - 1);
+    if (e.key === 'n' || e.key === 'N') document.body.classList.toggle('notes-on');
   });
 
   var x0 = null;
