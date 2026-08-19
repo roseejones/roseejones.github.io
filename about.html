@@ -2,26 +2,19 @@
 layout: not_homepage
 ---
 
-<div class="container about_section">
-    <!-- Summary Card -->
-    <div class="modern-card">
-        <div class="about-summary">
-            <li>Strong business acumen with a demonstrated ability to prepare requirements with stakeholders to deliver
-                engineering products that wow the clients, within the principles of agile methodology.</li>
-            <li>Driven self-starter with strong critical thinking and architectural skills and passionate about AI and
-                continuous learning.</li>
-            <li>Team First: Cultivated highly productive teams with strong mutual trust and pride in their
-                accomplishments.</li>
-        </div>
-    </div>
+<div class="container about_section narrow">
+    <header class="page-head">
+        <p class="kicker"><span class="path">~/about</span> $ cat bio.md</p>
+        <h1 class="page-title">The detour is the method.</h1>
+        <p class="standfirst">
+            From business development to engineering leader: turning good data into actionable insights, insights into
+            clear requirements, and requirements into products that ship.
+        </p>
+    </header>
 
-    <!-- Bio Card -->
-    <div class="modern-card">
+    <section class="sec">
+        <h2 class="section-label">The path into engineering</h2>
         <div class="about_paragraph">
-            <p class="bio-tagline">
-                Good data &rarr; Actionable insights &rarr; Clear requirements &rarr; Excellent engineering &rarr; Real
-                impact
-            </p>
             <p>
                 I didn't take the traditional path into engineering. I started in business development and marketing,
                 learning how to listen, shape strategy, and connect ideas to outcomes. That foundation eventually led
@@ -33,66 +26,74 @@ layout: not_homepage
                 It wasn't a master plan - but it gave me a systems view of problems: how language, data,
                 software, and business intent intersect to create products that actually work in the real world.
             </p>
+        </div>
+    </section>
+
+    <section class="sec">
+        <h2 class="section-label">How I build</h2>
+        <div class="about_paragraph">
             <p>
-                As an engineering lead, my focus is straightforward: ship products that matter. I work closely with
+                As an engineering leader, my focus is straightforward: ship products that matter. I work closely with
                 stakeholders to turn ambiguity into clear requirements, translate complex data into decisions, and
-                guide teams toward scalable, well-architected solutions - often powered by AI. I sit naturally
+                guide teams toward scalable, well-architected solutions. I sit naturally
                 at the intersection of engineering, data science, and business strategy, not because it's trendy,
                 but because it's effective.
             </p>
+        </div>
+    </section>
+
+    <section class="sec">
+        <h2 class="section-label">The new standard</h2>
+        <div class="about_paragraph">
             <p>
-                We're now firmly in the GenAI era - and the standard for engineering has changed. One curious,
-                resourceful engineer can now deliver what once required an entire team. Iteration loops are finally
-                fast. Agile is no longer a theory - it's the default. Engineers are no longer just implementers;
-                everyone is an architect and a product builder.
+                AI has reset the standard for engineering. One curious, resourceful engineer can now deliver what
+                once required an entire team. Iteration loops are finally fast. Agile is no longer a theory - it's
+                the default. Engineers are no longer just implementers; each one is an architect and a product
+                builder.
             </p>
             <p>
                 That shift comes with new challenges. AI can generate code faster than humans can reasonably review,
                 making traditional TDD daunting if approached naively. The answer isn't to slow down - it's to
-                be systematic. Place tests where they matter. Encode requirements and acceptance criteria directly
+                be systematic.
+                Place tests where they matter to keep AI on track. Encode requirements and acceptance criteria directly
                 into evaluation, validation, and automation pipelines. That's where I excel.
             </p>
             <p>
-                I'm particularly strong at automating these workflows so teams move fast without sacrificing
-                correctness. When teams struggle with velocity, it's rarely an execution problem - it's a
-                specification problem. If the vision exists, engineering leaders are responsible for architecting it
-                clearly. With AI, clarity is leverage.
+                I'm particularly strong at automating these workflows and laying the operational foundations that
+                let teams move fast without sacrificing correctness. Over the years I've found that when teams
+                struggle with velocity, it's rarely a lack of resources; AI took that constraint off the table.
+                It's an operational failure: how the team is run. That makes management matter more than ever in
+                the age of AI. If the vision exists, engineering leaders are responsible for architecting a roadmap
+                with a clear path forward and running the execution that delivers it.
             </p>
+            <blockquote class="pull-quote">with AI, clarity is leverage<span class="cursor">_</span></blockquote>
             <p>
                 I'm deeply curious, always experimenting, and grounded in first-principles thinking. Above all, I
                 believe great products come from strong teams - built on trust, ownership, and pride in what
                 we ship. It's not about perfection; it's about momentum and impact.
             </p>
+        </div>
+    </section>
+
+    <section class="sec">
+        <h2 class="section-label">Elsewhere</h2>
+        <div class="about_paragraph">
             <p>
-                Feel free to browse my old <a class="about_me_links" href="/projects" target="_blank">projects</a>
-                section to check out what I've built in the past,
-                <a class="about_me_links" href="/contact" target="_blank">send me an email</a>, or connect with me
+                Feel free to browse some of my past <a class="about_me_links" href="/projects">projects</a>,<br>
+                <a class="about_me_links" href="/contact">send me an email</a>, or connect with me
                 on <a class="about_me_links" href="https://www.linkedin.com/in/roseejones/"
                     target="_blank">LinkedIn</a>.
             </p>
         </div>
-    </div>
+    </section>
 
-    <!-- Skills Section -->
-    <h3 class="heading skills_heading center-align">Skills</h3>
-    <div class="skills_wrapper">
+    <section class="sec">
+        <h2 class="section-label">Skills</h2>
         {% for category in site.data.skills %}
-        <div class="skill_group">
-            <h4 class="heading" style="font-size: 1.4rem; margin-bottom: 1rem;">{{ category.name }}</h4>
-            <div class="skills">
-                {% for skill in category.skills %}
-                {% assign icon_class = skill.class %}
-                {% if icon_class == nil or icon_class == empty %}
-                <i class="about_skill_icon fab fa-code"></i>
-                {% elsif icon_class contains 'fa-' %}
-                <i class="about_skill_icon {{ icon_class }}"></i>
-                {% else %}
-                <i class="about_skill_icon devicon-{{ icon_class }}"></i>
-                {% endif %}
-                <span class="skill_names">{{ skill.skill_name }}</span><br />
-                {% endfor %}
-            </div>
+        <div class="skill-row">
+            <h3 class="skill-cat">{{ category.name }}</h3>
+            <p class="skill-list">{% for skill in category.skills %}{{ skill.skill_name }}{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
         </div>
         {% endfor %}
-    </div>
+    </section>
 </div>

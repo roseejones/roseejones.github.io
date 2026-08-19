@@ -1,13 +1,10 @@
-<div class="project row" style="background-image: url({{project.cover}}); background-size: cover;">
-  <div class="cover {% cycle 'left', 'right'%} col m5 s12">
-    <div class="valign-wrapper">
-      <div class="col s8 offset-s2">
-        <h3 class="heading">{{project.title}}</h3>
-        <!-- Modal Trigger -->
-        <button class="fill col s12 modal-trigger" href="#project-modal-{{project.id}}">learn more</button>
-      </div>
-    </div>
-    <!-- Modal Structure -->
-    {% include project_modal.html %}
-  </div>
+<div class="tile project-tile">
+  <img class="tile-img" src="{{ project.cover }}" alt="{{ project.title }} cover">
+  <span class="tile-no">0{{ include.index }}</span> <span class="tile-tag">/ project</span>
+  <h2 class="tile-title">{{ project.title }}</h2>
+  <p class="tile-desc">{{ project.description | truncate: 140 }}</p>
+  <!-- Modal Trigger -->
+  <button class="fill modal-trigger tile-button" href="#project-modal-{{ project.id }}">learn more -&gt;</button>
+  <!-- Modal Structure -->
+  {% include project_modal.html %}
 </div>

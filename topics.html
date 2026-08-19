@@ -2,15 +2,19 @@
 layout: not_homepage
 ---
 
-<div class="container about_section">
-    <h1 class="heading center" style="margin-bottom: 2rem;">Topics</h1>
+<div class="container">
+    <header class="page-head">
+        <p class="kicker"><span class="path">~/topics</span> $ ls</p>
+        <h1 class="page-title">Deep dives into areas I work in</h1>
+    </header>
 
-    <div class="topics_wrapper">
+    <div class="tile-grid">
         {% for topic in site.data.topics %}
-        <a class="topic_card" href="{{ topic.url }}">
-            <h4 class="heading">{{ topic.title }}</h4>
-            <p class="about_paragraph">{{ topic.description }}</p>
-            <span class="topic_link">View slides &amp; resources &rarr;</span>
+        <a class="tile" href="{{ topic.url }}">
+            <span class="tile-no">0{{ forloop.index }}</span> <span class="tile-tag">/ topic</span>
+            <h2 class="tile-title">{{ topic.title }}</h2>
+            <p class="tile-desc">{{ topic.description }}</p>
+            <span class="tile-link">view slides + resources -&gt;</span>
         </a>
         {% endfor %}
     </div>
