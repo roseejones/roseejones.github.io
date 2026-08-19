@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Evaluation Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #ffffff;
+    --ink: #1c1c1c;
+    --ink-2: #4a4a4a;
+    --ink-3: #8a8a8a;
+    --rule: #dcdcd6;
+    --red: #a02c1e;
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    overflow: hidden;
+  }
+  .deck { height: 100%; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4vh 8vw 10vh;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .slide.active { display: flex; animation: fadein .3s ease; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+  .label {
+    font-family: var(--sans);
+    font-size: clamp(.68rem, 1.2vw, .78rem);
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 1.2rem;
+  }
+  .label .no { color: var(--red); }
+
+  h1 {
+    font-size: clamp(2.6rem, 7vw, 4.6rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+  h2 {
+    font-size: clamp(1.6rem, 3.8vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.8rem;
+    max-width: 46rem;
+  }
+  .sub {
+    font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+    color: var(--ink-2);
+    line-height: 1.6;
+    max-width: 42rem;
+    margin-top: 1.4rem;
+  }
+  em { font-style: italic; }
+
+  .cols { display: flex; gap: 0; border-top: 1px solid var(--rule); }
+  .col { flex: 1; padding: 1.2rem 2rem 0 0; min-width: 0; }
+  .col + .col { border-left: 1px solid var(--rule); padding-left: 2rem; }
+  .col h3 {
+    font-family: var(--sans);
+    font-size: clamp(.7rem, 1.3vw, .8rem);
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: .8rem;
+  }
+  .col p, .col li {
+    font-size: clamp(.92rem, 1.7vw, 1.08rem);
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+  .col ul { list-style: none; }
+  .col li { margin-bottom: .5rem; padding-left: 1rem; text-indent: -1rem; }
+  .col li::before { content: "·\2002"; color: var(--red); }
+  .col .metrics { font-family: var(--sans); font-size: clamp(.76rem, 1.4vw, .88rem); color: var(--ink); margin-top: .7rem; }
+
+  .pull {
+    margin-top: 1.8rem;
+    font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 46rem;
+  }
+  .pull strong { font-style: normal; font-weight: 600; }
+  .pull .lead { color: var(--red); font-style: normal; font-weight: 600; }
+
+  .flow { border-top: 1px solid var(--rule); }
+  .flow .frow { display: flex; align-items: baseline; gap: 1.3rem; padding: .8rem 0; border-bottom: 1px solid var(--rule); }
+  .flow .fno {
+    font-family: var(--serif); font-style: italic;
+    font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+    color: var(--red); min-width: 1.3rem; text-align: right;
+  }
+  .flow .ft { font-weight: 600; font-size: clamp(.95rem, 1.8vw, 1.12rem); min-width: 9.5rem; }
+  .flow .fd { color: var(--ink-2); font-size: clamp(.88rem, 1.7vw, 1.02rem); line-height: 1.45; }
+
+  table { width: 100%; border-collapse: collapse; border-top: 1px solid var(--ink); }
+  th, td { text-align: left; padding: clamp(.55rem, 1.4vw, .9rem) 1.4rem clamp(.55rem, 1.4vw, .9rem) 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
+  th {
+    font-family: var(--sans); font-size: clamp(.68rem, 1.2vw, .78rem);
+    font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3);
+  }
+  td:first-child { font-weight: 600; white-space: nowrap; font-size: clamp(.92rem, 1.8vw, 1.1rem); }
+  td { color: var(--ink-2); font-size: clamp(.88rem, 1.7vw, 1.05rem); line-height: 1.5; }
+  table.lens th, table.lens td { padding-top: clamp(.4rem, 1vw, .6rem); padding-bottom: clamp(.4rem, 1vw, .6rem); }
+  table.lens td { font-size: clamp(.8rem, 1.5vw, .95rem); }
+  table.lens td:first-child { font-size: clamp(.82rem, 1.6vw, .98rem); }
+  table.lens em { color: var(--ink); }
+  .cat {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: clamp(.58rem, 1vw, .64rem);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-top: .15rem;
+  }
+  table.runs td:nth-child(n+2), table.runs th:nth-child(n+2) { text-align: right; padding-right: 0; padding-left: 1.4rem; font-variant-numeric: tabular-nums; }
+  table.runs .bad { color: var(--red); font-weight: 600; }
+  table.runs .ok { color: var(--ink); }
+
+  /* figures */
+  .fig { margin: .4rem 0 1rem; }
+  .fig svg { display: block; width: 100%; height: auto; }
+  .fig-caption {
+    font-family: var(--sans);
+    font-size: clamp(.68rem, 1.2vw, .76rem);
+    color: var(--ink-3);
+    margin-top: .5rem;
+    letter-spacing: .02em;
+  }
+  .split { display: flex; gap: 2.5rem; align-items: center; }
+  .split .flow { flex: 1.15; }
+  .split .fig { flex: 1; max-width: 380px; margin: 0; }
+
+  /* specimen card */
+  .specimen { border: 1px solid var(--ink); }
+  .specimen .srow { display: flex; border-bottom: 1px solid var(--rule); }
+  .specimen .srow:last-child { border-bottom: none; }
+  .specimen .sk {
+    flex: 0 0 7.5rem;
+    font-family: var(--sans);
+    font-size: clamp(.62rem, 1.1vw, .7rem);
+    font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--red);
+    padding: .7rem .9rem;
+    border-right: 1px solid var(--rule);
+  }
+  .specimen .sv {
+    flex: 1;
+    font-size: clamp(.85rem, 1.6vw, .98rem);
+    color: var(--ink-2);
+    line-height: 1.5;
+    padding: .7rem .9rem;
+  }
+  .specimen .sv q { font-style: italic; color: var(--ink); }
+  .specimen .sv .bad { color: var(--red); font-weight: 600; }
+
+  /* speaker notes drawer */
+  .notes { display: none; }
+  body.notes-on .slide.active .notes {
+    display: block;
+    position: fixed; left: 0; right: 0; bottom: 44px;
+    background: var(--paper);
+    border-top: 1px solid var(--ink);
+    padding: .9rem 8vw 1rem;
+    font-family: var(--sans);
+    font-size: .86rem;
+    color: var(--ink-2);
+    line-height: 1.55;
+    max-height: 34vh;
+    overflow-y: auto;
+    z-index: 5;
+  }
+  .notes::before {
+    content: "Speaker notes";
+    display: block;
+    font-size: .62rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: .4rem;
+  }
+
+  /* chrome */
+  .hud {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .9rem 1.6rem;
+    font-family: var(--sans);
+    font-size: .8rem; color: var(--ink-3);
+    background: var(--paper);
+    user-select: none;
+    z-index: 6;
+  }
+  .hud button {
+    background: none; border: none;
+    color: var(--ink-2);
+    font: inherit; letter-spacing: .08em; text-transform: uppercase;
+    cursor: pointer; padding: .4rem .2rem;
+  }
+  .hud button:hover { color: var(--red); }
+  .hud .mid { display: flex; align-items: baseline; gap: 1.4rem; }
+  .hud .count { letter-spacing: .15em; }
+  body.notes-on #notesBtn { color: var(--red); }
+  .progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--red); width: 0; transition: width .3s ease; z-index: 6; }
+
+  @media (max-width: 700px) {
+    .slide { padding: 4vh 7vw 12vh; justify-content: flex-start; overflow-y: auto; }
+    .cols, .split { flex-direction: column; }
+    .col { padding-right: 0; }
+    .col + .col { border-left: none; border-top: 1px solid var(--rule); padding-left: 0; margin-top: 1.1rem; padding-top: 1.1rem; }
+    .split .fig { max-width: 100%; }
+    .flow .frow { flex-wrap: wrap; gap: .3rem .9rem; }
+    .flow .ft { min-width: 0; }
+    .flow .fd { flex-basis: 100%; padding-left: 2.2rem; }
+    td:first-child { white-space: normal; }
+    .specimen .sk { flex-basis: 5.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+  <!-- 1 · Title -->
+  <section class="slide">
+    <div class="label">Rose Jones · An engineering walkthrough</div>
+    <h1>Agent<br>Evaluation</h1>
+    <p class="sub">For engineers who have never evaluated an agent before: a fundamental mental model, not a tool tutorial.</p>
+    <p class="pull">If you can't define success, you can't measure it. If you can't measure it, you can't improve it.</p>
+    <aside class="notes">Frame the session: this is a mental-model talk, not a tooling tutorial. Read the one-liner aloud and promise to return to it at the end.</aside>
+  </section>
+
+  <!-- 2 · Why evals -->
+  <section class="slide">
+    <div class="label"><span class="no">01</span> · Why bother</div>
+    <h2>Development without evaluation is guessing</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>Without evals</h3>
+        <ul>
+          <li>"It seems better" after every prompt tweak</li>
+          <li>Fix one case, silently break three others</li>
+          <li>No way to compare models, prompts, or architectures</li>
+          <li>Demos work; production surprises you</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>With evals</h3>
+        <ul>
+          <li>Every change scored against the same yardstick</li>
+          <li>Regressions caught before users see them</li>
+          <li>An objective basis for choosing model, prompt, design</li>
+          <li>Evaluation drives iteration, not the other way around</li>
+        </ul>
+      </div>
+    </div>
+    <aside class="notes">Ask who has tweaked a prompt and shipped on vibes; wait for the laugh. The left column describes prompt-and-pray development. The point to land: evals turn iteration from anecdotes into measurements. "Fix one, break three" returns twice later, so plant it now.</aside>
+  </section>
+
+  <!-- 3 · Where we came from -->
+  <section class="slide">
+    <div class="label"><span class="no">02</span> · Where we came from</div>
+    <h2>Classic ML: clean ground truth, clean metrics</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>Regression · predict a number</h3>
+        <div class="fig"><svg viewBox="0 0 220 150" role="img" aria-label="Scatter plot with a fitted curve">
+          <path d="M25,10 L25,130 L210,130" fill="none" stroke="#1c1c1c" stroke-width="1.2"/>
+          <g fill="#4a4a4a">
+            <circle cx="40" cy="112" r="2.6"/><circle cx="55" cy="105" r="2.6"/><circle cx="68" cy="95" r="2.6"/>
+            <circle cx="80" cy="101" r="2.6"/><circle cx="95" cy="82" r="2.6"/><circle cx="110" cy="78" r="2.6"/>
+            <circle cx="125" cy="86" r="2.6"/><circle cx="140" cy="62" r="2.6"/><circle cx="155" cy="58" r="2.6"/>
+            <circle cx="170" cy="65" r="2.6"/><circle cx="185" cy="45" r="2.6"/>
+          </g>
+          <path d="M30,118 C 90,106 130,76 205,40" fill="none" stroke="#a02c1e" stroke-width="1.6"/>
+          <text x="208" y="143" font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a" text-anchor="end">sqft</text>
+          <text x="18" y="14" font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a" text-anchor="start">price</text>
+        </svg></div>
+        <p>House price from square footage, bedrooms, location. Fit a curve; measure the distance from reality.</p>
+        <p class="metrics">MAE&ensp;·&ensp;MSE&ensp;·&ensp;RMSE&ensp;·&ensp;R²</p>
+      </div>
+      <div class="col">
+        <h3>Classification · pick a category</h3>
+        <div class="fig"><svg viewBox="0 0 220 150" role="img" aria-label="Two clusters separated by a decision boundary">
+          <path d="M25,10 L25,130 L210,130" fill="none" stroke="#1c1c1c" stroke-width="1.2"/>
+          <g fill="#4a4a4a">
+            <circle cx="55" cy="45" r="2.8"/><circle cx="70" cy="36" r="2.8"/><circle cx="62" cy="60" r="2.8"/>
+            <circle cx="86" cy="50" r="2.8"/><circle cx="75" cy="68" r="2.8"/><circle cx="96" cy="38" r="2.8"/>
+          </g>
+          <g fill="none" stroke="#4a4a4a" stroke-width="1.2">
+            <circle cx="130" cy="95" r="2.8"/><circle cx="145" cy="106" r="2.8"/><circle cx="160" cy="88" r="2.8"/>
+            <circle cx="150" cy="116" r="2.8"/><circle cx="170" cy="100" r="2.8"/><circle cx="181" cy="112" r="2.8"/>
+          </g>
+          <path d="M55,126 L200,26" fill="none" stroke="#a02c1e" stroke-width="1.4" stroke-dasharray="5 4"/>
+          <text x="48" y="26" font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a">spam</text>
+          <text x="160" y="135" font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a">not spam</text>
+        </svg></div>
+        <p>Spam or not-spam, from keywords, sender, formatting. Every prediction is simply right or wrong.</p>
+        <p class="metrics">Accuracy&ensp;·&ensp;Precision&ensp;·&ensp;Recall&ensp;·&ensp;F1&ensp;·&ensp;AUC-ROC</p>
+      </div>
+    </div>
+    <p class="pull">The luxury of this era was a <strong>mathematically defined ground truth</strong>. Hold that thought: it is exactly what we lose next.</p>
+    <aside class="notes">A refresher for shared vocabulary; do not linger on the metric acronyms. The only sentence that matters is the pull: classic ML had mathematically defined ground truth. The rest of the talk is about rebuilding that luxury by hand.</aside>
+  </section>
+
+  <!-- 4 · What changed (merged) -->
+  <section class="slide">
+    <div class="label"><span class="no">03</span> · What changed</div>
+    <h2>A model we didn't build, wrapped in an agent</h2>
+    <p class="sub" style="margin-top:0; margin-bottom:1rem;">We no longer train the model; our levers are context, prompts, and parameters. And "good" became subjective, graded by similarity scores, judges, and humans. Then agents raised the stakes further:</p>
+    <div class="fig"><svg viewBox="0 0 640 130" role="img" aria-label="Agent loop: user converses with an agent that calls tools and retrieves knowledge">
+      <defs>
+        <marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#a02c1e"/>
+        </marker>
+      </defs>
+      <g fill="none" stroke="#1c1c1c" stroke-width="1.2">
+        <rect x="30" y="45" width="100" height="40" rx="2"/>
+        <rect x="255" y="45" width="120" height="40" rx="2"/>
+        <rect x="500" y="8" width="112" height="36" rx="2"/>
+        <rect x="500" y="86" width="112" height="36" rx="2"/>
+      </g>
+      <g font-family="Inter,sans-serif" font-size="12" fill="#1c1c1c" text-anchor="middle">
+        <text x="80" y="69">User</text>
+        <text x="315" y="69">Agent</text>
+        <text x="556" y="30">Tools</text>
+        <text x="556" y="108">Knowledge</text>
+      </g>
+      <g fill="none" stroke="#4a4a4a" stroke-width="1.1">
+        <path d="M130,58 L253,58" marker-end="url(#ah5)"/>
+        <path d="M255,72 L132,72" marker-end="url(#ah5)"/>
+        <path d="M375,55 L497,32" marker-end="url(#ah5)"/>
+        <path d="M375,75 L497,98" marker-end="url(#ah5)"/>
+      </g>
+      <g font-family="Inter,sans-serif" font-size="9.5" fill="#8a8a8a" text-anchor="middle">
+        <text x="192" y="50">asks, over many turns</text>
+        <text x="192" y="86">answers, acts</text>
+        <text x="436" y="34">calls, with arguments</text>
+        <text x="436" y="99">retrieves context</text>
+      </g>
+    </svg></div>
+    <div class="cols">
+      <div class="col"><h3>They act</h3><p>Any tool call can fail even when the words sound right.</p></div>
+      <div class="col"><h3>They converse</h3><p>Context must survive the session; each turn should advance the task.</p></div>
+      <div class="col"><h3>They retrieve</h3><p>Wrong context in, wrong answer out, whatever the model.</p></div>
+    </div>
+    <p class="pull">So evaluation must mirror the full lifecycle: not <em>was this sentence good?</em> but <em>did the agent do the right thing, the right way, end to end?</em></p>
+    <aside class="notes">Two shifts at once. First, we did not train the model, so our levers moved outside it: retrieved context, system prompts, parameters. Exact-match metrics die here and grading becomes subjective. Second, agents wrap that model in tools, retrieval, and multi-turn state, so single-turn text checks are not enough. We grade behavior end to end.</aside>
+  </section>
+
+  <!-- 5 · EDD loop -->
+  <section class="slide">
+    <div class="label"><span class="no">04</span> · The core practice</div>
+    <h2>Eval-driven development</h2>
+    <div class="split">
+      <div class="flow">
+        <div class="frow"><span class="fno">1</span><span class="ft">Goals &amp; metrics</span><span class="fd">Define what "good" looks like.</span></div>
+        <div class="frow"><span class="fno">2</span><span class="ft">Core dataset</span><span class="fd">Real examples, expected outcomes.</span></div>
+        <div class="frow"><span class="fno">3</span><span class="ft">Evaluate</span><span class="fd">Score against the dataset.</span></div>
+        <div class="frow"><span class="fno">4</span><span class="ft">Analyze</span><span class="fd">What failed, and why?</span></div>
+        <div class="frow"><span class="fno">5</span><span class="ft">Optimize</span><span class="fd">Adjust, then repeat the cycle.</span></div>
+      </div>
+      <div class="fig"><svg viewBox="0 0 390 300" role="img" aria-label="Five-step development cycle">
+        <defs>
+          <marker id="ah6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#a02c1e"/>
+          </marker>
+        </defs>
+        <g fill="none" stroke="#8a8a8a" stroke-width="1.1">
+          <path d="M211.5,56.4 A 95,95 0 0 1 278.9,105.4" marker-end="url(#ah6)"/>
+          <path d="M289.1,136.8 A 95,95 0 0 1 263.3,216" marker-end="url(#ah6)"/>
+          <path d="M236.6,235.4 A 95,95 0 0 1 153.4,235.4" marker-end="url(#ah6)"/>
+          <path d="M126.7,216 A 95,95 0 0 1 100.9,136.8" marker-end="url(#ah6)"/>
+          <path d="M111.1,105.4 A 95,95 0 0 1 178.5,56.4" marker-end="url(#ah6)"/>
+        </g>
+        <g fill="#ffffff" stroke="#1c1c1c" stroke-width="1.2">
+          <circle cx="195" cy="55" r="13"/>
+          <circle cx="285.4" cy="120.6" r="13"/>
+          <circle cx="250.8" cy="226.9" r="13"/>
+          <circle cx="139.2" cy="226.9" r="13"/>
+          <circle cx="104.6" cy="120.6" r="13"/>
+        </g>
+        <g font-family="Newsreader,Georgia,serif" font-style="italic" font-size="14" fill="#a02c1e" text-anchor="middle">
+          <text x="195" y="60">1</text>
+          <text x="285.4" y="125.6">2</text>
+          <text x="250.8" y="231.9">3</text>
+          <text x="139.2" y="231.9">4</text>
+          <text x="104.6" y="125.6">5</text>
+        </g>
+        <g font-family="Inter,sans-serif" font-size="11" fill="#1c1c1c">
+          <text x="195" y="28" text-anchor="middle">Goals &amp; metrics</text>
+          <text x="304" y="124" text-anchor="start">Core dataset</text>
+          <text x="250.8" y="256" text-anchor="middle">Evaluate</text>
+          <text x="139.2" y="256" text-anchor="middle">Analyze</text>
+          <text x="86" y="124" text-anchor="end">Optimize</text>
+        </g>
+        <text x="195" y="152" font-family="Newsreader,Georgia,serif" font-style="italic" font-size="13" fill="#8a8a8a" text-anchor="middle">repeat</text>
+      </svg></div>
+    </div>
+    <p class="pull"><span class="lead">Steps 1 and 2 are the whole game.</span> Without defined success and concrete examples, every iteration after them is just noise.</p>
+    <aside class="notes">Walk the circle clockwise. Stress steps 1 and 2: without defined success and concrete examples, the rest of the loop burns energy without progress. Name the practice: eval-driven development, where evaluation drives iteration rather than trailing it.</aside>
+  </section>
+
+  <!-- 6 · Core dataset, deep -->
+  <section class="slide">
+    <div class="label"><span class="no">05</span> · Ground truth, rebuilt</div>
+    <h2>The core dataset</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>What it is</h3>
+        <ul>
+          <li>Input, context, and expected outcome, per example</li>
+          <li>Drawn from real situations: past conversations, tickets, frequent questions</li>
+          <li>Covers the frustrating and slow paths, not just the happy ones</li>
+          <li>Paired with a rubric: a scoring guide that encodes expert judgment</li>
+          <li>Small and honest beats large and synthetic; start with dozens</li>
+        </ul>
+      </div>
+      <div class="col" style="flex: 1.25">
+        <h3>One example, in full</h3>
+        <div class="specimen">
+          <div class="srow"><div class="sk">Input</div><div class="sv"><q>Where's my refund for order #8123?</q></div></div>
+          <div class="srow"><div class="sk">Context</div><div class="sv">Order record (return received Jul 2) · refund policy (5 to 10 business days)</div></div>
+          <div class="srow"><div class="sk">Expected</div><div class="sv">Confirms the return was received; states the 5-to-10-day window; makes no promise outside policy</div></div>
+          <div class="srow"><div class="sk">Rubric</div><div class="sv">Grounded in policy (0 to 2) · order facts correct (0 to 2) · tone (0 to 1) · offers next step (0 to 1)</div></div>
+        </div>
+        <p class="fig-caption">A support-agent case. Note the expected outcome describes behavior, not exact wording.</p>
+      </div>
+    </div>
+    <aside class="notes">Walk the specimen top to bottom. Point out that the expected outcome describes behavior, not exact wording; free-form text never matches strings. The rubric is where expert judgment gets written down, and two slides from now a judge will apply it mechanically. This refund case returns on almost every slide from here.</aside>
+  </section>
+
+  <!-- 7 · Regression dataset, deep -->
+  <section class="slide">
+    <div class="label"><span class="no">05</span>b · Ground truth, rebuilt</div>
+    <h2>The regression dataset</h2>
+    <p class="sub" style="margin-top: 0; margin-bottom: 1.2rem;">Every fixed failure becomes a permanent test case, run on every change like a test suite. Here is one case being born:</p>
+    <div class="flow">
+      <div class="frow"><span class="fno">1</span><span class="ft">Incident</span><span class="fd">Jul 3: the agent promises an <em>instant</em> refund. Policy says 5 to 10 days. A user screenshot circulates.</span></div>
+      <div class="frow"><span class="fno">2</span><span class="ft">Trace</span><span class="fd">Pull the full interaction: the input, what was retrieved, which tools ran, the exact output.</span></div>
+      <div class="frow"><span class="fno">3</span><span class="ft">Distill</span><span class="fd">Freeze it as a test case. Same input and context; expected: quote the policy window, never promise "instant".</span></div>
+      <div class="frow"><span class="fno">4</span><span class="ft">Guard</span><span class="fd">The case joins the regression set. Any future prompt or model change that reintroduces the promise fails loudly.</span></div>
+    </div>
+    <p class="pull">Remember "fix one case, break three others"? <strong>This is the set that catches the other three.</strong></p>
+    <aside class="notes">This is the set engineers already believe in: it is a test suite. Tell the incident with a little drama; everyone has watched a screenshot circulate. Remember case number 12; it comes back on the numbers slide. The last line calls back to slide 01.</aside>
+  </section>
+
+  <!-- 8 · Metrics per agent type -->
+  <section class="slide">
+    <div class="label"><span class="no">06</span> · Choosing metrics</div>
+    <h2>Match the metric to the agent</h2>
+    <table>
+      <tr><th>Agent type</th><th>What you measure</th></tr>
+      <tr><td>RAG</td><td>Answer relevancy · faithfulness · contextual precision &amp; recall · citation quality</td></tr>
+      <tr><td>Tool-using</td><td>Task completion · tool correctness · argument correctness</td></tr>
+      <tr><td>Multi-turn</td><td>Turn relevancy &amp; efficiency · role adherence · knowledge retention · conversation completeness</td></tr>
+      <tr><td>Custom</td><td>LLM-as-a-judge with weighted criteria: helpfulness, reasoning, tone</td></tr>
+    </table>
+    <p class="pull">Evaluation is not one-size-fits-all. Frameworks such as DeepEval and LangSmith ship these as ready-made scorers; choose yours before you build.</p>
+    <aside class="notes">Do not read every cell. The takeaway is structural: metric choice follows agent architecture, and the frameworks ship these as ready-made scorers. Reassure the audience that the fuzzy names on this slide become concrete on the next one.</aside>
+  </section>
+
+  <!-- 9 · Metrics, concretely -->
+  <section class="slide">
+    <div class="label"><span class="no">06</span>b · Choosing metrics</div>
+    <h2>The same refund case, under each lens</h2>
+    <table class="lens">
+      <tr><th>Metric</th><th>The question it asks</th><th>What failing looks like</th></tr>
+      <tr><td>Answer relevancy<span class="cat">rag</span></td><td>Did the reply address what was asked?</td><td><em>Asked "where's my refund?", got a tutorial on starting a return.</em></td></tr>
+      <tr><td>Faithfulness<span class="cat">rag</span></td><td>Does the answer stick to the retrieved context?</td><td><em>Policy says 5 to 10 days; the agent invents "usually within 48 hours".</em></td></tr>
+      <tr><td>Contextual recall<span class="cat">rag</span></td><td>Did retrieval fetch everything the answer needs?</td><td><em>Policy retrieved, order record missed: can't confirm the return arrived.</em></td></tr>
+      <tr><td>Contextual precision<span class="cat">rag</span></td><td>Is the relevant material ranked on top?</td><td><em>Eight shipping-label docs first; the refund policy buried at rank 7.</em></td></tr>
+      <tr><td>Tool &amp; argument correctness<span class="cat">tools</span></td><td>Right tool, right inputs?</td><td><em>Calls lookup_order with #8132 instead of #8123.</em></td></tr>
+      <tr><td>Knowledge retention<span class="cat">multi-turn</span></td><td>Does it remember what it was told?</td><td><em>Order number given in turn 1, asked for again in turn 4.</em></td></tr>
+      <tr><td>Turn relevancy<span class="cat">multi-turn</span></td><td>Does each turn move the task forward?</td><td><em>Mid-case, the agent pivots to promoting the loyalty program.</em></td></tr>
+      <tr><td>Role adherence<span class="cat">multi-turn</span></td><td>Does it stay the agent you defined?</td><td><em>The refund assistant starts offering tax advice.</em></td></tr>
+    </table>
+    <p class="pull">A metric is just a question you ask of the same trace. If the name sounds fuzzy, <strong>say the failure out loud</strong>.</p>
+    <aside class="notes">Walk two or three rows, not all eight; let the audience read the rest. The italic failure column does the teaching. Flag the faithfulness row: that "48 hours" reply is exactly what the judge grades on the next slide. Leave them the trick in the pull line.</aside>
+  </section>
+
+  <!-- 10 · LLM as a judge -->
+  <section class="slide">
+    <div class="label"><span class="no">07</span> · The judge</div>
+    <h2>LLM-as-a-judge, demystified</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>What it is</h3>
+        <ul>
+          <li>A model handed your rubric and asked to grade another model's output</li>
+          <li>Exists because subjective criteria don't scale to humans reading every case</li>
+          <li>Returns scores <em>with reasons</em>, so failures stay debuggable</li>
+          <li>The judge is a model too: it has biases, and it needs spot-checks against human labels before you trust it</li>
+        </ul>
+      </div>
+      <div class="col" style="flex: 1.35">
+        <h3>The rubric, applied</h3>
+        <div class="specimen">
+          <div class="srow"><div class="sk">Judge prompt</div><div class="sv">You are grading a refund-support reply. Policy: refunds take 5 to 10 business days; return received Jul 2. Score the reply: grounded in policy (0 to 2), order facts (0 to 2), tone (0 to 1), offers next step (0 to 1). Give a one-line reason per score.</div></div>
+          <div class="srow"><div class="sk">Reply under test</div><div class="sv"><q>Your return arrived July 2, so your refund is on the way! It usually lands within 48 hours.</q></div></div>
+          <div class="srow"><div class="sk">Judge output</div><div class="sv">grounded <span class="bad">0/2</span> ("48 hours" contradicts policy) · facts 2/2 · tone 1/1 · next step <span class="bad">0/1</span> (none offered) &rarr; <span class="bad">3 of 6, fail</span></div></div>
+        </div>
+        <p class="fig-caption">The rubric from the core-dataset slide, executed by a model instead of a human.</p>
+      </div>
+    </div>
+    <p class="pull">One question per criterion, scores with reasons, and <strong>a human audit of the judge itself</strong>. That's the whole trick.</p>
+    <aside class="notes">Demystify: a judge is just a model given your rubric and asked for scores with reasons. Walk the card: prompt, reply, output. The reply is the faithfulness failure from the previous slide, now caught and explained mechanically. Land the caveat hard: the judge has biases of its own (verbosity, position, self-preference), so sample its verdicts against human labels before trusting it at scale.</aside>
+  </section>
+
+  <!-- 11 · Reading the numbers -->
+  <section class="slide">
+    <div class="label"><span class="no">08</span> · Reading the numbers</div>
+    <h2>What a run actually looks like</h2>
+    <table class="runs">
+      <tr><th>Suite</th><th>Prompt v3</th><th>Prompt v4</th></tr>
+      <tr><td>Core set · 50 cases</td><td class="ok">39 / 50 &nbsp;(78%)</td><td class="ok">42 / 50 &nbsp;(84%)</td></tr>
+      <tr><td>Regression set · 12 cases</td><td class="ok">12 / 12</td><td class="bad">11 / 12</td></tr>
+      <tr><td>Case #12 · "instant refund"</td><td class="ok">pass</td><td class="bad">fail</td></tr>
+      <tr><td>Verdict</td><td class="ok">shipped</td><td class="bad">held</td></tr>
+    </table>
+    <p class="fig-caption">Pass rates are over three runs per case. Agents are nondeterministic: the same eval run twice gives different numbers, so score repeated runs, never a single pass.</p>
+    <p class="pull">v4 wins the average and still can't ship: it re-broke case #12. <strong>Aggregates hide regressions; the regression set catches them.</strong></p>
+    <aside class="notes">The punchline of the talk. v4 improves the aggregate and still cannot ship because it re-broke the instant-refund case from slide 05b. Aggregates hide regressions; that is the entire argument for keeping a separate regression set. Then the caption: agents are nondeterministic, so every number here is a pass rate over three runs. Engineers hit flaky evals in week one; warn them now.</aside>
+  </section>
+
+  <!-- 12 · Online / post-production -->
+  <section class="slide">
+    <div class="label"><span class="no">09</span> · After you ship</div>
+    <h2>Online evaluation: production signals</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>Did it work?</h3>
+        <ul>
+          <li>Resolution rate, thumbs up or down</li>
+          <li>Escalation rate: did they ask for a human?</li>
+          <li>Turns to resolution</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>Was it worth it?</h3>
+        <ul>
+          <li>Token usage, and so cost per resolution</li>
+          <li>Latency and time-to-first-token; no one likes a slow agent</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>What do users say?</h3>
+        <ul>
+          <li>Qualitative feedback: likes, dislikes, expectations</li>
+          <li>User feedback is critical; it defines what "good" means next</li>
+        </ul>
+      </div>
+    </div>
+    <aside class="notes">Offline evals predict; production measures. Resolution, escalation, latency, cost. Stress that user feedback is the loudest signal: it decides what "good" means next quarter, and it feeds the datasets on the next slide.</aside>
+  </section>
+
+  <!-- 13 · Close the loop -->
+  <section class="slide">
+    <div class="label"><span class="no">10</span> · The bridge</div>
+    <h2>Close the loop</h2>
+    <div class="fig"><svg viewBox="0 0 660 215" role="img" aria-label="Evaluation pipeline bridging development and production">
+      <defs>
+        <marker id="ah11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#a02c1e"/>
+        </marker>
+      </defs>
+      <g fill="none" stroke="#1c1c1c" stroke-width="1.2">
+        <rect x="20" y="45" width="150" height="60" rx="2"/>
+        <rect x="255" y="30" width="150" height="90" rx="2"/>
+        <rect x="490" y="45" width="150" height="60" rx="2"/>
+      </g>
+      <g font-family="Inter,sans-serif" font-size="12" fill="#1c1c1c" text-anchor="middle">
+        <text x="95" y="70">Development</text>
+        <text x="330" y="52">Eval pipeline</text>
+        <text x="565" y="70">Production</text>
+      </g>
+      <g font-family="Inter,sans-serif" font-size="9.5" fill="#8a8a8a" text-anchor="middle">
+        <text x="95" y="88">build · iterate</text>
+        <text x="330" y="76">core dataset</text>
+        <text x="330" y="92">regression dataset</text>
+        <text x="330" y="108">scorers · rubrics</text>
+        <text x="565" y="88">monitor · trace</text>
+      </g>
+      <g fill="none" stroke="#4a4a4a" stroke-width="1.1">
+        <path d="M170,68 L252,68" marker-end="url(#ah11)"/>
+        <path d="M255,86 L173,86" marker-end="url(#ah11)"/>
+        <path d="M405,75 L487,75" marker-end="url(#ah11)"/>
+        <path d="M565,105 C 565,180 330,185 330,124" marker-end="url(#ah11)"/>
+      </g>
+      <g font-family="Inter,sans-serif" font-size="9.5" fill="#8a8a8a" text-anchor="middle">
+        <text x="212" y="60">evaluate</text>
+        <text x="212" y="99">results</text>
+        <text x="446" y="68">ship</text>
+        <text x="450" y="172">traces · failures · human feedback</text>
+      </g>
+    </svg></div>
+    <p class="fig-caption">Failures become regression cases; strong real examples enrich the core set. Both feed the next development cycle.</p>
+    <p class="pull">When something breaks, first ask: <strong>did our evals miss it?</strong> Fix the eval, then the prompt.</p>
+    <aside class="notes">The two worlds share one pipeline. Traces and failures flow back, the datasets grow richer, and development restarts with better ground truth. When production breaks, the first question is whether the evals missed it. Fix the eval, then the prompt.</aside>
+  </section>
+
+  <!-- 14 · Takeaways -->
+  <section class="slide">
+    <div class="label"><span class="no">11</span> · Takeaways</div>
+    <h2>If you remember four things</h2>
+    <div class="flow">
+      <div class="frow"><span class="fno">1</span><span class="ft">Define success first</span><span class="fd">Actionable, measurable goals before any building. Vague goals produce unmeasurable agents.</span></div>
+      <div class="frow"><span class="fno">2</span><span class="ft">Build the datasets</span><span class="fd">A core set for ground truth, a regression set for past failures. Start small, keep them honest.</span></div>
+      <div class="frow"><span class="fno">3</span><span class="ft">Metrics follow the agent</span><span class="fd">RAG, tools, and multi-turn each need their own scorers, plus audited judges for the subjective parts.</span></div>
+      <div class="frow"><span class="fno">4</span><span class="ft">Evaluation never ends</span><span class="fd">A continuous loop between model behavior, user experience, and system performance.</span></div>
+    </div>
+    <p class="pull">The goal, in one line: agents that are <strong>reliable, measurable, and improving over time</strong>.</p>
+    <aside class="notes">Return to the opening one-liner; the circle closes. If they remember only the four items, the talk worked. Point to the deck URL for self-serve reading, and invite one question about their own agent's core dataset: everyone has an opinion by now.</aside>
+  </section>
+
+</div>
+
+<div class="hud">
+  <button id="prev" aria-label="Previous slide">← Prev</button>
+  <span class="mid">
+    <span class="count" id="count"></span>
+    <button id="notesBtn" aria-label="Toggle speaker notes" title="Toggle speaker notes (N)">Notes</button>
+  </span>
+  <button id="next" aria-label="Next slide">Next →</button>
+</div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = Math.min(Math.max((parseInt(location.hash.slice(1), 10) || 1) - 1, 0), slides.length - 1);
+
+  function show(n) {
+    i = Math.min(Math.max(n, 0), slides.length - 1);
+    slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  document.getElementById('next').addEventListener('click', function () { show(i + 1); });
+  document.getElementById('prev').addEventListener('click', function () { show(i - 1); });
+  document.getElementById('notesBtn').addEventListener('click', function () {
+    document.body.classList.toggle('notes-on');
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(i + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+    if (e.key === 'n' || e.key === 'N') document.body.classList.toggle('notes-on');
+  });
+
+  var x0 = null;
+  document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 60) show(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  }, { passive: true });
+
+  show(i);
+})();
+</script>
+</body>
+</html>

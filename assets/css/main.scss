@@ -656,6 +656,45 @@ nav a.button-collapse i {
   }
 }
 
+.topics_wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.topic_card {
+  display: block;
+  width: calc(50% - 0.75rem);
+
+  @media only screen and (max-width: 601px) {
+    width: 100%;
+  }
+  background: $card-bg;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $card-border;
+  border-radius: 16px;
+  padding: 2rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: $accent;
+  }
+
+  .heading {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .topic_link {
+    display: block;
+    margin-top: 1rem;
+    color: $accent;
+  }
+}
+
 .agile-references {
   list-style: none;
   padding: 0;

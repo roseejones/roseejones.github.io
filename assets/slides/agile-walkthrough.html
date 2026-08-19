@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agile and Scrum Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #ffffff;
+    --ink: #1c1c1c;
+    --ink-2: #4a4a4a;
+    --ink-3: #8a8a8a;
+    --rule: #dcdcd6;
+    --red: #a02c1e;
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    overflow: hidden;
+  }
+  .deck { height: 100%; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4vh 8vw 10vh;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .slide.active { display: flex; animation: fadein .3s ease; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+  .label {
+    font-family: var(--sans);
+    font-size: clamp(.68rem, 1.2vw, .78rem);
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 1.2rem;
+  }
+  .label .no { color: var(--red); }
+
+  h1 {
+    font-size: clamp(2.6rem, 7vw, 4.6rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+  h2 {
+    font-size: clamp(1.6rem, 3.8vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.8rem;
+    max-width: 46rem;
+  }
+  .sub {
+    font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+    color: var(--ink-2);
+    line-height: 1.6;
+    max-width: 42rem;
+    margin-top: 1.4rem;
+  }
+  em { font-style: italic; }
+
+  .cols { display: flex; gap: 0; border-top: 1px solid var(--rule); }
+  .col { flex: 1; padding: 1.2rem 2rem 0 0; min-width: 0; }
+  .col + .col { border-left: 1px solid var(--rule); padding-left: 2rem; }
+  .col h3 {
+    font-family: var(--sans);
+    font-size: clamp(.7rem, 1.3vw, .8rem);
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: .8rem;
+  }
+  .col p, .col li {
+    font-size: clamp(.92rem, 1.7vw, 1.08rem);
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+  .col ul { list-style: none; }
+  .col li { margin-bottom: .5rem; padding-left: 1rem; text-indent: -1rem; }
+  .col li::before { content: "·\2002"; color: var(--red); }
+
+  .pull {
+    margin-top: 1.8rem;
+    font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 46rem;
+  }
+  .pull strong { font-style: normal; font-weight: 600; }
+  .pull .lead { color: var(--red); font-style: normal; font-weight: 600; }
+
+  .flow { border-top: 1px solid var(--rule); }
+  .flow .frow { display: flex; align-items: baseline; gap: 1.3rem; padding: .8rem 0; border-bottom: 1px solid var(--rule); }
+  .flow .fno {
+    font-family: var(--serif); font-style: italic;
+    font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+    color: var(--red); min-width: 1.3rem; text-align: right;
+  }
+  .flow .ft { font-weight: 600; font-size: clamp(.95rem, 1.8vw, 1.12rem); min-width: 9.5rem; }
+  .flow .fd { color: var(--ink-2); font-size: clamp(.88rem, 1.7vw, 1.02rem); line-height: 1.45; }
+
+  /* figures */
+  .fig { margin: .4rem 0 1rem; }
+  .fig svg { display: block; width: 100%; height: auto; }
+  .fig-caption {
+    font-family: var(--sans);
+    font-size: clamp(.68rem, 1.2vw, .76rem);
+    color: var(--ink-3);
+    margin-top: .5rem;
+    letter-spacing: .02em;
+  }
+  .split { display: flex; gap: 2.5rem; align-items: center; }
+  .split .flow, .split .cols-stack { flex: 1.15; }
+  .split .fig { flex: 1; max-width: 400px; margin: 0; }
+
+  /* specimen card */
+  .specimen { border: 1px solid var(--ink); }
+  .specimen .srow { display: flex; border-bottom: 1px solid var(--rule); }
+  .specimen .srow:last-child { border-bottom: none; }
+  .specimen .sk {
+    flex: 0 0 7.5rem;
+    font-family: var(--sans);
+    font-size: clamp(.62rem, 1.1vw, .7rem);
+    font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--red);
+    padding: .7rem .9rem;
+    border-right: 1px solid var(--rule);
+  }
+  .specimen .sv {
+    flex: 1;
+    font-size: clamp(.85rem, 1.6vw, .98rem);
+    color: var(--ink-2);
+    line-height: 1.5;
+    padding: .7rem .9rem;
+  }
+  .specimen .sv q { font-style: italic; color: var(--ink); }
+
+  /* speaker notes drawer */
+  .notes { display: none; }
+  body.notes-on .slide.active .notes {
+    display: block;
+    position: fixed; left: 0; right: 0; bottom: 44px;
+    background: var(--paper);
+    border-top: 1px solid var(--ink);
+    padding: .9rem 8vw 1rem;
+    font-family: var(--sans);
+    font-size: .86rem;
+    color: var(--ink-2);
+    line-height: 1.55;
+    max-height: 34vh;
+    overflow-y: auto;
+    z-index: 5;
+  }
+  .notes::before {
+    content: "Speaker notes";
+    display: block;
+    font-size: .62rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: .4rem;
+  }
+
+  /* chrome */
+  .hud {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .9rem 1.6rem;
+    font-family: var(--sans);
+    font-size: .8rem; color: var(--ink-3);
+    background: var(--paper);
+    user-select: none;
+    z-index: 6;
+  }
+  .hud button {
+    background: none; border: none;
+    color: var(--ink-2);
+    font: inherit; letter-spacing: .08em; text-transform: uppercase;
+    cursor: pointer; padding: .4rem .2rem;
+  }
+  .hud button:hover { color: var(--red); }
+  .hud .mid { display: flex; align-items: baseline; gap: 1.4rem; }
+  .hud .count { letter-spacing: .15em; }
+  body.notes-on #notesBtn { color: var(--red); }
+  .progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--red); width: 0; transition: width .3s ease; z-index: 6; }
+
+  @media (max-width: 700px) {
+    .slide { padding: 4vh 7vw 12vh; justify-content: flex-start; overflow-y: auto; }
+    .cols, .split { flex-direction: column; }
+    .col { padding-right: 0; }
+    .col + .col { border-left: none; border-top: 1px solid var(--rule); padding-left: 0; margin-top: 1.1rem; padding-top: 1.1rem; }
+    .split .fig { max-width: 100%; }
+    .flow .frow { flex-wrap: wrap; gap: .3rem .9rem; }
+    .flow .ft { min-width: 0; }
+    .flow .fd { flex-basis: 100%; padding-left: 2.2rem; }
+    .specimen .sk { flex-basis: 5.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+  <!-- 1 · Title -->
+  <section class="slide">
+    <div class="label">Rose Jones · An engineering walkthrough</div>
+    <h1>Agile Software<br>Development</h1>
+    <p class="sub">Scrum for engineers who have mostly experienced it as meetings. Two decades of accumulated practice, reduced to the parts that make it actually work.</p>
+    <p class="pull">Scrum is a discipline, not a ritual. The ceremonies are the easy part; <strong>the contracts are the work</strong>.</p>
+    <aside class="notes">Frame it upfront: most engineers have sat in standups without ever being told the operating model underneath. This talk is that model. The thesis sentence carries the whole deck: ceremonies without contracts are theater. One running example throughout: a ticket called "CSV export for the reports page".</aside>
+  </section>
+
+  <!-- 2 · Why discipline -->
+  <section class="slide">
+    <div class="label"><span class="no">01</span> · Why bother</div>
+    <h2>The same ceremonies, two different teams</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>Ritual scrum</h3>
+        <ul>
+          <li>Standup is status theater for the manager</li>
+          <li>Estimates drift mid-sprint until they always "fit"</li>
+          <li>Stories carry over silently, sprint after sprint</li>
+          <li>Stakeholders ask "when will it be done?" daily, because the board answers nothing</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>Disciplined scrum</h3>
+        <ul>
+          <li>Standup surfaces blockers the team fixes that day</li>
+          <li>Estimates freeze at commitment; misses become lessons</li>
+          <li>Carryover triggers a retrospective question, not a shrug</li>
+          <li>Velocity gives a forecast; the board answers "when" so people stop asking</li>
+        </ul>
+      </div>
+    </div>
+    <p class="pull">Predictability is the product of discipline. Everything in this deck exists to make one number trustworthy: <strong>how much this team ships per sprint</strong>.</p>
+    <aside class="notes">Ask who has lived the left column; every hand goes up. The point: both teams run identical ceremonies, so the ceremonies are not the difference. Discipline is. Land the pull line: the entire apparatus exists to make the team's throughput number trustworthy, because trustworthy throughput is what buys predictability and stakeholder trust.</aside>
+  </section>
+
+  <!-- 3 · The sprint loop -->
+  <section class="slide">
+    <div class="label"><span class="no">02</span> · The shape of it</div>
+    <h2>The sprint loop</h2>
+    <div class="split">
+      <div class="flow">
+        <div class="frow"><span class="fno">1</span><span class="ft">Planning</span><span class="fd">The team signs up for a committed amount of work.</span></div>
+        <div class="frow"><span class="fno">2</span><span class="ft">Stand-up</span><span class="fd">Daily. Surface blockers, not status.</span></div>
+        <div class="frow"><span class="fno">3</span><span class="ft">Refinement</span><span class="fd">Estimate and clarify what enters the next sprint.</span></div>
+        <div class="frow"><span class="fno">4</span><span class="ft">Demo</span><span class="fd">Show working software to stakeholders.</span></div>
+        <div class="frow"><span class="fno">5</span><span class="ft">Retrospective</span><span class="fd">Inspect the process; pick one thing to change.</span></div>
+      </div>
+      <div class="fig"><svg viewBox="0 0 390 300" role="img" aria-label="Five scrum ceremonies arranged in a repeating cycle">
+        <defs>
+          <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#a02c1e"/>
+          </marker>
+        </defs>
+        <g fill="none" stroke="#8a8a8a" stroke-width="1.1">
+          <path d="M211.5,56.4 A 95,95 0 0 1 278.9,105.4" marker-end="url(#ahc)"/>
+          <path d="M289.1,136.8 A 95,95 0 0 1 263.3,216" marker-end="url(#ahc)"/>
+          <path d="M236.6,235.4 A 95,95 0 0 1 153.4,235.4" marker-end="url(#ahc)"/>
+          <path d="M126.7,216 A 95,95 0 0 1 100.9,136.8" marker-end="url(#ahc)"/>
+          <path d="M111.1,105.4 A 95,95 0 0 1 178.5,56.4" marker-end="url(#ahc)"/>
+        </g>
+        <g fill="#ffffff" stroke="#1c1c1c" stroke-width="1.2">
+          <circle cx="195" cy="55" r="13"/>
+          <circle cx="285.4" cy="120.6" r="13"/>
+          <circle cx="250.8" cy="226.9" r="13"/>
+          <circle cx="139.2" cy="226.9" r="13"/>
+          <circle cx="104.6" cy="120.6" r="13"/>
+        </g>
+        <g font-family="Newsreader,Georgia,serif" font-style="italic" font-size="14" fill="#a02c1e" text-anchor="middle">
+          <text x="195" y="60">1</text>
+          <text x="285.4" y="125.6">2</text>
+          <text x="250.8" y="231.9">3</text>
+          <text x="139.2" y="231.9">4</text>
+          <text x="104.6" y="125.6">5</text>
+        </g>
+        <g font-family="Inter,sans-serif" font-size="11" fill="#1c1c1c">
+          <text x="195" y="28" text-anchor="middle">Planning</text>
+          <text x="303" y="124" text-anchor="start">Stand-up, daily</text>
+          <text x="250.8" y="256" text-anchor="middle">Refinement</text>
+          <text x="139.2" y="256" text-anchor="middle">Demo</text>
+          <text x="87" y="124" text-anchor="end">Retrospective</text>
+        </g>
+        <text x="195" y="152" font-family="Newsreader,Georgia,serif" font-style="italic" font-size="13" fill="#8a8a8a" text-anchor="middle">the sprint</text>
+      </svg></div>
+    </div>
+    <p class="pull">Every ceremony feeds the next. Skip one and the loop leaks: <strong>no refinement, bad estimates; no retro, repeated mistakes</strong>.</p>
+    <aside class="notes">Walk the circle once, clockwise. Emphasize that the ceremonies are connected, not a menu: refinement feeds planning with honest estimates, the retro feeds the next sprint with one concrete change. Teams that skip refinement wonder why planning takes three hours; teams that skip retros repeat their carryovers.</aside>
+  </section>
+
+  <!-- 4 · The working agreement -->
+  <section class="slide">
+    <div class="label"><span class="no">03</span> · The contracts</div>
+    <h2>The working agreement: five promises</h2>
+    <div class="flow">
+      <div class="frow"><span class="fno">1</span><span class="ft">Speak up</span><span class="fd">Anyone can amend the contract during refinement. After that, it holds.</span></div>
+      <div class="frow"><span class="fno">2</span><span class="ft">Action item</span><span class="fd">A story is immediately actionable: acceptance criteria written, dependencies clarified, requirements sufficient.</span></div>
+      <div class="frow"><span class="fno">3</span><span class="ft">Sprint commitment</span><span class="fd">We, as a team, sign up for the committed amount of work. Not individuals: the team.</span></div>
+      <div class="frow"><span class="fno">4</span><span class="ft">Completion</span><span class="fd">A ticket is complete when it meets its acceptance criteria, the Definition of Done. Not before.</span></div>
+      <div class="frow"><span class="fno">5</span><span class="ft">Delivery</span><span class="fd">At sprint end we answer honestly: how much of our commitment did we complete?</span></div>
+    </div>
+    <p class="pull">Write it down and make it visible. An unwritten agreement is just <strong>a collection of assumptions that disagree</strong>.</p>
+    <aside class="notes">This is the deck's central artifact: scrum as a set of explicit promises the team makes to itself. Stress promise 1: the contract is amendable, but only in refinement; mid-sprint renegotiation is how estimates rot. Promise 3 is cultural: the team commits, so a blocked teammate is everyone's problem.</aside>
+  </section>
+
+  <!-- 5 · Two currencies -->
+  <section class="slide">
+    <div class="label"><span class="no">04</span> · Estimation</div>
+    <h2>Two currencies: story points and earned value</h2>
+    <div class="split">
+      <div class="cols-stack">
+        <div class="cols" style="border-top: none;">
+          <div class="col" style="padding-top: 0;">
+            <h3>Story points · engineers price the cost</h3>
+            <p>Resource consumption: how much of the sprint must be reserved? Time plus uncertainty: risks, dependencies, unknowns, thin requirements.</p>
+            <p style="margin-top:.5rem"><em>CSV export: 5 points. The parsing is easy; the unknown load on the reporting database is not.</em></p>
+          </div>
+        </div>
+        <div class="cols">
+          <div class="col">
+            <h3>Earned value · stakeholders price the worth</h3>
+            <p>Product and business answer one question: <em>how much would I pay for this work?</em> Value is their call, never the engineers' guess. Pricing worth also incentivizes finishing: value is earned at done, not at almost.</p>
+            <p style="margin-top:.5rem"><em>CSV export: EV 8. Three enterprise clients asked for it this quarter.</em></p>
+          </div>
+        </div>
+      </div>
+      <div class="fig"><svg viewBox="0 0 400 300" role="img" aria-label="Quadrant chart of earned value against story points">
+        <g fill="none" stroke="#1c1c1c" stroke-width="1.2">
+          <path d="M50,20 L50,260 L380,260"/>
+        </g>
+        <g fill="none" stroke="#dcdcd6" stroke-width="1">
+          <path d="M215,20 L215,260"/>
+          <path d="M50,140 L380,140"/>
+        </g>
+        <g font-family="Inter,sans-serif" font-size="11" fill="#1c1c1c" text-anchor="middle">
+          <text x="132" y="78" fill="#a02c1e" font-weight="600">Easy win</text>
+          <text x="132" y="94" fill="#8a8a8a" font-size="9.5">do these first</text>
+          <text x="297" y="78">Big bet</text>
+          <text x="297" y="94" fill="#8a8a8a" font-size="9.5">schedule deliberately</text>
+          <text x="132" y="198">Backlog filler</text>
+          <text x="132" y="214" fill="#8a8a8a" font-size="9.5">when convenient</text>
+          <text x="297" y="198" fill="#a02c1e">Poor use of resources</text>
+          <text x="297" y="214" fill="#8a8a8a" font-size="9.5">question these</text>
+        </g>
+        <circle cx="150" cy="60" r="4" fill="#a02c1e"/>
+        <text x="160" y="52" font-family="Inter,sans-serif" font-size="9.5" fill="#4a4a4a">CSV export · EV 8, 5 pts</text>
+        <text x="46" y="14" font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a" text-anchor="start">earned value</text>
+        <text x="382" y="274" font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a" text-anchor="end">story points</text>
+      </svg></div>
+    </div>
+    <p class="pull"><span class="lead">Priority is the ratio.</span> High value at low cost goes first; high cost at low value gets questioned, however interesting it looks.</p>
+    <aside class="notes">The deck's most original idea, so give it time. Two independent currencies: engineers price cost in points, stakeholders price worth in earned value, and neither may set the other's number. Priority falls out of the ratio, which depoliticizes the backlog: the quadrant does the arguing. Walk the CSV example: EV 8 for 5 points lands in easy-win territory.</aside>
+  </section>
+
+  <!-- 6 · The spike -->
+  <section class="slide">
+    <div class="label"><span class="no">04</span>b · Estimation</div>
+    <h2>Can't estimate it? Spike it</h2>
+    <p class="sub" style="margin-top: 0; margin-bottom: 1.2rem;">A spike is a time-boxed investigation with its own acceptance criteria. It buys the information an estimate needs. The CSV ticket's unknown, spiked:</p>
+    <div class="flow">
+      <div class="frow"><span class="fno">1</span><span class="ft">Question</span><span class="fd">Can the reporting database serve a 10k-row export live, or do we need a replica?</span></div>
+      <div class="frow"><span class="fno">2</span><span class="ft">Time box</span><span class="fd">Two days, in hours or days, never "until we know". The clock is the scope.</span></div>
+      <div class="frow"><span class="fno">3</span><span class="ft">Artifact</span><span class="fd">Named upfront in the acceptance criteria: a sample query plus a one-page write-up. A demo, video, or sample code also counts.</span></div>
+      <div class="frow"><span class="fno">4</span><span class="ft">Out of time?</span><span class="fd">Report back anyway. If more investigation is needed, refine a follow-up spike; never let the clock quietly extend.</span></div>
+    </div>
+    <p class="pull">A spike that ends with <em>"we need more time"</em> and no artifact <strong>wasn't a spike; it was a delay with a nicer name</strong>.</p>
+    <aside class="notes">Spikes answer the uncertainty half of a story-point estimate. The two rules that keep them honest: the time box is absolute, and the artifact is named before the spike starts. Without those, spikes become open-ended research vacations. The out-of-time protocol matters: report findings, then decide as a team whether a follow-up spike earns its place.</aside>
+  </section>
+
+  <!-- 7 · Ready and Done -->
+  <section class="slide">
+    <div class="label"><span class="no">05</span> · The gates</div>
+    <h2>Definition of Ready, Definition of Done</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>Ready · may it enter the sprint?</h3>
+        <div class="specimen">
+          <div class="srow"><div class="sk">Requirements</div><div class="sv">Export the current report view as CSV; columns match the on-screen table</div></div>
+          <div class="srow"><div class="sk">Priority</div><div class="sv">EV 8 · 5 story points</div></div>
+          <div class="srow"><div class="sk">Acceptance</div><div class="sv">10k rows download in under 5 s; commas and unicode escaped</div></div>
+          <div class="srow"><div class="sk">Dependencies</div><div class="sv">Read replica confirmed by spike; no external teams</div></div>
+          <div class="srow"><div class="sk">Scope</div><div class="sv">Excel formatting explicitly out</div></div>
+        </div>
+      </div>
+      <div class="col">
+        <h3>Done · may it be closed?</h3>
+        <div class="specimen">
+          <div class="srow"><div class="sk">Code</div><div class="sv">Merged; review comments resolved; follow-up PRs merged too</div></div>
+          <div class="srow"><div class="sk">Docs</div><div class="sv">Documentation updated; knowledge shared with the team</div></div>
+          <div class="srow"><div class="sk">Production</div><div class="sv">Deployed and verified with a production run</div></div>
+          <div class="srow"><div class="sk">Questions</div><div class="sv">Every question listed in the ticket answered</div></div>
+          <div class="srow"><div class="sk">Follow-ups</div><div class="sv">New work becomes new stories, never silent scope creep</div></div>
+        </div>
+      </div>
+    </div>
+    <p class="pull"><span class="lead">Ready gates entry; Done gates exit.</span> Everything between the gates is the team's promise, and the estimate only means something if both gates hold.</p>
+    <aside class="notes">Show the same CSV ticket passing both gates. Ready protects the estimate: a story without acceptance criteria or with unclarified dependencies imports uncertainty into the sprint. Done protects velocity: closing tickets that aren't deployed inflates the number that everything else depends on. The follow-ups row is the anti-scope-creep valve.</aside>
+  </section>
+
+  <!-- 8 · Velocity -->
+  <section class="slide">
+    <div class="label"><span class="no">06</span> · The payoff</div>
+    <h2>Velocity: the number discipline buys you</h2>
+    <div class="split">
+      <div class="cols-stack">
+        <div class="cols" style="border-top:none;">
+          <div class="col" style="padding-top:0;">
+            <ul>
+              <li>Velocity is the historical average of points completed per sprint</li>
+              <li>Estimates freeze once a story enters the sprint; no re-pricing mid-flight</li>
+              <li>Stories close only through the Definition of Done</li>
+              <li>Garbage in, garbage out: undisciplined points make a meaningless average</li>
+              <li>Forecast: a 100-point epic at velocity 34 is three sprints, and you can say so out loud</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="fig"><svg viewBox="0 0 400 210" role="img" aria-label="Bar chart of points completed per sprint with the average marked">
+        <g fill="none" stroke="#1c1c1c" stroke-width="1.2">
+          <path d="M40,15 L40,175 L385,175"/>
+        </g>
+        <g fill="#dcdcd6" stroke="#8a8a8a" stroke-width="1">
+          <rect x="55" y="77" width="34" height="98"/>
+          <rect x="107" y="66.5" width="34" height="108.5"/>
+          <rect x="159" y="35" width="34" height="140"/>
+          <rect x="211" y="70" width="34" height="105"/>
+          <rect x="263" y="49" width="34" height="126"/>
+          <rect x="315" y="38.5" width="34" height="136.5"/>
+        </g>
+        <g font-family="Inter,sans-serif" font-size="9.5" fill="#4a4a4a" text-anchor="middle">
+          <text x="72" y="70">28</text><text x="124" y="59">31</text><text x="176" y="28">40</text>
+          <text x="228" y="63">30</text><text x="280" y="42">36</text><text x="332" y="31">39</text>
+        </g>
+        <g font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a" text-anchor="middle">
+          <text x="72" y="188">s1</text><text x="124" y="188">s2</text><text x="176" y="188">s3</text>
+          <text x="228" y="188">s4</text><text x="280" y="188">s5</text><text x="332" y="188">s6</text>
+        </g>
+        <path d="M40,56 L385,56" stroke="#a02c1e" stroke-width="1.4" stroke-dasharray="6 4" fill="none"/>
+        <text x="383" y="49" font-family="Inter,sans-serif" font-size="9.5" fill="#a02c1e" text-anchor="end" font-weight="600">average 34</text>
+      </svg></div>
+    </div>
+    <p class="pull">A story carried over three sprints is not a failure to punish; it is a question for the retro: <strong>"what can we learn from this one?"</strong></p>
+    <aside class="notes">Velocity is where every earlier discipline pays out. Frozen estimates, honest Done, and refinement quality are exactly what make this average forecastable; break any of them and the number lies. Do the forecast arithmetic aloud: 100-point epic, velocity 34, three sprints, said with a straight face to a stakeholder. Close with the carryover line: retro material, not blame material.</aside>
+  </section>
+
+  <!-- 9 · Automation & visibility -->
+  <section class="slide">
+    <div class="label"><span class="no">07</span> · Visibility</div>
+    <h2>Automate the answers</h2>
+    <div class="cols">
+      <div class="col">
+        <h3>One source of truth</h3>
+        <p>The board and its timeline, generated from tickets the team already maintains. No parallel decks in Miro, Lucid, or spreadsheets; no duplicated content drifting out of date.</p>
+      </div>
+      <div class="col">
+        <h3>Public by default</h3>
+        <p>Status is visible to anyone who wonders, including stakeholders. Timeline views roll sprints into a roadmap without a single status meeting.</p>
+      </div>
+      <div class="col">
+        <h3>Dev time back</h3>
+        <p>Every automated answer is a status-check question nobody asks an engineer. The team's attention stays on the sprint, not on reporting about it.</p>
+      </div>
+    </div>
+    <p class="pull">If the board is the truth, <strong>no one has to ask</strong>. If people keep asking, the board isn't the truth yet.</p>
+    <aside class="notes">The quiet enabler: all the discipline so far produces data, and automation turns that data into public answers. The test of success is negative space: status meetings that stop existing, questions that stop being asked. If stakeholders still ping engineers for status, treat it as a bug in the board, not in the stakeholders.</aside>
+  </section>
+
+  <!-- 10 · Takeaways -->
+  <section class="slide">
+    <div class="label"><span class="no">08</span> · Takeaways</div>
+    <h2>If you remember four things</h2>
+    <div class="flow">
+      <div class="frow"><span class="fno">1</span><span class="ft">Contracts, written</span><span class="fd">The working agreement is five explicit promises, amendable only in refinement.</span></div>
+      <div class="frow"><span class="fno">2</span><span class="ft">Two currencies</span><span class="fd">Engineers price cost in points; stakeholders price worth in earned value. Priority is the ratio.</span></div>
+      <div class="frow"><span class="fno">3</span><span class="ft">Guard the gates</span><span class="fd">Ready gates entry, Done gates exit. Spike the unknowns before they enter.</span></div>
+      <div class="frow"><span class="fno">4</span><span class="ft">Velocity is earned</span><span class="fd">Frozen estimates and honest closes make the average forecastable. Carryovers go to the retro.</span></div>
+    </div>
+    <p class="pull">The goal, in one line: a team whose <strong>word about "when" can be trusted</strong>.</p>
+    <aside class="notes">Close the circle: slide one promised that discipline, not ceremony, is the difference, and the four takeaways are that discipline named. End on the one-liner about trust; it is what all of this buys. Invite one question: which of the five promises does your team break most often? Everyone has an answer.</aside>
+  </section>
+
+</div>
+
+<div class="hud">
+  <button id="prev" aria-label="Previous slide">← Prev</button>
+  <span class="mid">
+    <span class="count" id="count"></span>
+    <button id="notesBtn" aria-label="Toggle speaker notes" title="Toggle speaker notes (N)">Notes</button>
+  </span>
+  <button id="next" aria-label="Next slide">Next →</button>
+</div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = Math.min(Math.max((parseInt(location.hash.slice(1), 10) || 1) - 1, 0), slides.length - 1);
+
+  function show(n) {
+    i = Math.min(Math.max(n, 0), slides.length - 1);
+    slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  document.getElementById('next').addEventListener('click', function () { show(i + 1); });
+  document.getElementById('prev').addEventListener('click', function () { show(i - 1); });
+  document.getElementById('notesBtn').addEventListener('click', function () {
+    document.body.classList.toggle('notes-on');
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(i + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+    if (e.key === 'n' || e.key === 'N') document.body.classList.toggle('notes-on');
+  });
+
+  var x0 = null;
+  document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 60) show(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  }, { passive: true });
+
+  show(i);
+})();
+</script>
+</body>
+</html>

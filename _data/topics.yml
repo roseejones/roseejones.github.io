@@ -1,0 +1,6 @@
+- title: Agile Software Development
+  description: "Scrum, planning poker, and agile principles: presentation slides, an intro video, and curated references."
+  url: /agile
+- title: Agent Evaluation
+  description: "A walkthrough for engineers new to agent evaluation: metrics, eval-driven development, and closing the loop in production."
+  url: /evaluation
