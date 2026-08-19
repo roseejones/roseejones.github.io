@@ -447,7 +447,7 @@
           <div class="srow"><div class="sk">Input</div><div class="sv"><q>Where's my refund for order #8123?</q></div></div>
           <div class="srow"><div class="sk">Context</div><div class="sv">Order record (return received Jul 2) · refund policy (5 to 10 business days)</div></div>
           <div class="srow"><div class="sk">Expected</div><div class="sv">Confirms the return was received; states the 5-to-10-day window; makes no promise outside policy</div></div>
-          <div class="srow"><div class="sk">Rubric</div><div class="sv">Grounded in policy (0&ndash;2) · order facts correct (0&ndash;2) · tone (0&ndash;1) · offers next step (0&ndash;1)</div></div>
+          <div class="srow"><div class="sk">Rubric</div><div class="sv">Grounded in policy (0 to 2) · order facts correct (0 to 2) · tone (0 to 1) · offers next step (0 to 1)</div></div>
         </div>
         <p class="fig-caption">A support-agent case. Note the expected outcome describes behavior, not exact wording.</p>
       </div>
@@ -521,7 +521,7 @@
       <div class="col" style="flex: 1.35">
         <h3>The rubric, applied</h3>
         <div class="specimen">
-          <div class="srow"><div class="sk">Judge prompt</div><div class="sv">You are grading a refund-support reply. Policy: refunds take 5 to 10 business days; return received Jul 2. Score the reply: grounded in policy (0&ndash;2), order facts (0&ndash;2), tone (0&ndash;1), offers next step (0&ndash;1). Give a one-line reason per score.</div></div>
+          <div class="srow"><div class="sk">Judge prompt</div><div class="sv">You are grading a refund-support reply. Policy: refunds take 5 to 10 business days; return received Jul 2. Score the reply: grounded in policy (0 to 2), order facts (0 to 2), tone (0 to 1), offers next step (0 to 1). Give a one-line reason per score.</div></div>
           <div class="srow"><div class="sk">Reply under test</div><div class="sv"><q>Your return arrived July 2, so your refund is on the way! It usually lands within 48 hours.</q></div></div>
           <div class="srow"><div class="sk">Judge output</div><div class="sv">grounded <span class="bad">0/2</span> ("48 hours" contradicts policy) · facts 2/2 · tone 1/1 · next step <span class="bad">0/1</span> (none offered) &rarr; <span class="bad">3 of 6, fail</span></div></div>
         </div>
