@@ -10,10 +10,10 @@ About:
   words: AI Architect, Product Builder with CS/DS Background
   class: m5 about
   border: about
-Agile:
-  url: /agile
-  heading: Agile Manifesto
-  words: Follow the principles
+Topics:
+  url: /topics
+  heading: Topics
+  words: Deep dives into areas I work in
   class: m8 agile
   border: agile
 LinkedIn:

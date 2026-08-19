@@ -1,0 +1,17 @@
+---
+layout: not_homepage
+---
+
+<div class="container about_section">
+    <h1 class="heading center" style="margin-bottom: 2rem;">Topics</h1>
+
+    <div class="topics_wrapper">
+        {% for topic in site.data.topics %}
+        <a class="topic_card" href="{{ topic.url }}">
+            <h4 class="heading">{{ topic.title }}</h4>
+            <p class="about_paragraph">{{ topic.description }}</p>
+            <span class="topic_link">View slides &amp; resources &rarr;</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
