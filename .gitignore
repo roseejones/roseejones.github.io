@@ -1,4 +1,5 @@
 _site/
+.claude/
 .idea
 .sass-cache
 .jekyll-metadata

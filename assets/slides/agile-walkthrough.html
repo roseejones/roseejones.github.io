@@ -133,7 +133,8 @@
   .specimen .srow { display: flex; border-bottom: 1px solid var(--rule); }
   .specimen .srow:last-child { border-bottom: none; }
   .specimen .sk {
-    flex: 0 0 7.5rem;
+    flex: 0 0 10rem;
+    min-width: 0; overflow-wrap: anywhere;
     font-family: var(--sans);
     font-size: clamp(.62rem, 1.1vw, .7rem);
     font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
@@ -209,7 +210,9 @@
     .flow .frow { flex-wrap: wrap; gap: .3rem .9rem; }
     .flow .ft { min-width: 0; }
     .flow .fd { flex-basis: 100%; padding-left: 2.2rem; }
-    .specimen .sk { flex-basis: 5.5rem; }
+    .specimen .srow { flex-direction: column; }
+    .specimen .sk { flex-basis: auto; border-right: none; padding-bottom: .15rem; }
+    .specimen .sv { padding-top: 0; }
   }
 </style>
 </head>

@@ -160,7 +160,8 @@
   .specimen .srow { display: flex; border-bottom: 1px solid var(--rule); }
   .specimen .srow:last-child { border-bottom: none; }
   .specimen .sk {
-    flex: 0 0 7.5rem;
+    flex: 0 0 10rem;
+    min-width: 0; overflow-wrap: anywhere;
     font-family: var(--sans);
     font-size: clamp(.62rem, 1.1vw, .7rem);
     font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
@@ -228,6 +229,27 @@
   body.notes-on #notesBtn { color: var(--red); }
   .progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--red); width: 0; transition: width .3s ease; z-index: 6; }
 
+  /* print / PDF export: one slide per landscape page */
+  @page { size: 279mm 157mm; margin: 0; }
+  @media print {
+    html, body { height: auto; overflow: visible; }
+    .deck { height: auto; }
+    .slide {
+      position: relative; inset: auto;
+      display: flex !important;
+      zoom: 0.75;
+      min-height: 133vh;
+      padding: 5vh 8vw;
+      break-after: page;
+      page-break-after: always;
+      animation: none;
+    }
+    .slide:last-child { break-after: auto; page-break-after: auto; }
+    .hud, .progress, .notes { display: none !important; }
+    table.lens th, table.lens td { padding-top: .32rem; padding-bottom: .32rem; }
+    .pull { margin-top: 1.1rem; }
+  }
+
   @media (max-width: 700px) {
     .slide { padding: 4vh 7vw 12vh; justify-content: flex-start; overflow-y: auto; }
     .cols, .split { flex-direction: column; }
@@ -238,7 +260,9 @@
     .flow .ft { min-width: 0; }
     .flow .fd { flex-basis: 100%; padding-left: 2.2rem; }
     td:first-child { white-space: normal; }
-    .specimen .sk { flex-basis: 5.5rem; }
+    .specimen .srow { flex-direction: column; }
+    .specimen .sk { flex-basis: auto; border-right: none; padding-bottom: .15rem; }
+    .specimen .sv { padding-top: 0; }
   }
 </style>
 </head>
