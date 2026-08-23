@@ -337,6 +337,18 @@
   @media (max-width: 480px) {
     .grid { grid-template-columns: 1fr; }
   }
+  /* short viewports (the 560px site embed): compact hero so the first cards are visible */
+  @media (max-height: 640px) and (min-width: 701px) {
+    #gridView { padding-top: 1.4rem; }
+    .grid-head { margin-bottom: 1.1rem; }
+    .grid-head .label { margin-bottom: .5rem; }
+    .grid-head h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); }
+    .grid-head .sub { font-size: .95rem; line-height: 1.45; margin-top: .5rem; max-width: 52rem; }
+    .grid-head .hint { margin-top: .5rem; }
+    .card { padding: .8rem 0 .9rem; }
+    .card .no { font-size: .95rem; margin-bottom: .2rem; }
+    .topic-head .sub { font-size: .95rem; line-height: 1.45; }
+  }
 </style>
 </head>
 <body>
