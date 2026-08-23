@@ -88,7 +88,13 @@ def main():
     ap.add_argument("output")
     ap.add_argument("--id", default="mermaid-fig", help="svg id; must be unique per page")
     ap.add_argument("--chrome", default=CHROME)
+    ap.add_argument("--rank-spacing", type=int, help="flowchart rankSpacing override (default 34)")
+    ap.add_argument("--node-spacing", type=int, help="flowchart nodeSpacing override (default 20)")
     args = ap.parse_args()
+    if args.rank_spacing:
+        CONFIG["flowchart"]["rankSpacing"] = args.rank_spacing
+    if args.node_spacing:
+        CONFIG["flowchart"]["nodeSpacing"] = args.node_spacing
 
     src = open(args.source, encoding="utf-8").read()
     with tempfile.TemporaryDirectory() as tmp:

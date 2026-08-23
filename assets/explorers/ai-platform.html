@@ -200,6 +200,8 @@
   .mermaid-fig svg .cluster-label { font-family: var(--sans); font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink); margin: 0; }
   .mermaid-fig svg .cluster-label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
   .mermaid-fig svg .edgeLabel .label { font-size: 11px; }
+  .mermaid-fig.narrow { overflow: visible; }
+  .mermaid-fig.narrow svg { min-width: 0; max-width: 720px; margin: 0 auto; }
   .mermaid-fig .fig-fallback { font-family: var(--sans); font-size: .8rem; color: var(--ink-3); }
 
   .specimen { border: 1px solid var(--ink); margin: .8rem 0 .5rem; max-width: 46rem; }
@@ -1107,6 +1109,13 @@
           <div class="fig mermaid-fig" id="seqmap" data-src="ai-platform-onboarding.svg" aria-busy="true"></div>
           <p class="fig-caption">The first AI call as a sequence: one engineer action per step, and everything between the portal and the provider handled by the platform. Rendered from <code>ai-platform-onboarding.mmd</code>.</p>
           <p class="pull"><span class="lead">Under an hour, no ticket, no human.</span> That is the number the whole platform is measured by: <strong>time to first AI call</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="flow" data-label="Activity flow">
+          <div class="prose"><p>The same hour as the decisions the engineer actually makes. Diamonds are the only places a human chooses; everything between them is the platform. The tier-1 branch is the whole point: <strong>for most use cases there is no review box on the path at all</strong>, and the two loops (eval gate, scorecard) replace review meetings with signals.</p></div>
+          <div class="fig mermaid-fig narrow" id="actmap" data-src="ai-platform-activity.svg" aria-busy="true"></div>
+          <p class="fig-caption">Activity flow for onboarding. Solid: exists today. Dashed: target state. Red outline: the first gateway call, the moment the time-to-first-AI-call clock stops. Rendered from <code>ai-platform-activity.mmd</code>.</p>
+          <p class="pull">Count the diamonds: <strong>four decisions, zero tickets</strong>. If a sixth box appears that says "wait for a person", that box is the next roadmap item.</p>
         </div>
 
         <div class="panel" data-tab="seat" data-label="Engineer vs platform">
