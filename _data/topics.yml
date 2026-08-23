@@ -4,3 +4,7 @@
 - title: Agent Evaluation
   description: "A walkthrough for engineers new to agent evaluation: metrics, eval-driven development, and closing the loop in production."
   url: /evaluation
+- title: Enterprise AI Platform
+  description: "An interactive explorer for the invisible platform: gateway, agents and tools, golden paths, governance, telemetry, and the roadmap, with target state and gaps per topic."
+  url: /platform
+  cta: explore by topic
