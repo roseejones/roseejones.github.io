@@ -747,7 +747,7 @@
             <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
             <tr><td>Prompt and response caching</td><td><span class="pill gap">gap</span></td><td>The identified roadmap item: caching plus a ready-to-spin-up database. Start with provider prompt cache and exact match.</td></tr>
             <tr><td>Model aliases and pinning</td><td><span class="pill gap">gap</span></td><td>Define the task tiers, map aliases, pin versions, enable shadow routing.</td></tr>
-            <tr><td>Fallback routing</td><td><span class="pill partial">partial</span></td><td>Failover exists in places; make it a gateway policy with provenance tagging on every response.</td></tr>
+            <tr><td>Fallback routing</td><td><span class="pill gap">gap</span></td><td>A gateway policy with provenance tagging on every response; the fallback model must pass the baseline gateway test first.</td></tr>
           </table>
           <p class="horizon"><span class="pill solid">Horizon · Now</span> 0 to 2 quarters, alongside cost attribution; all three are gateway configuration once the gateway owns the request path.</p>
         </div>
@@ -1140,24 +1140,24 @@
           <p class="fig-caption">The scaffolded repo. One small declaration file is the engineer's entire contact surface with the platform.</p>
         </div>
 
-        <div class="panel" data-tab="today" data-label="Today vs target">
-          <div class="prose"><p>The same hour against the current estate. Three platforms already deliver this feeling for deploys, model serving, and the model API; the rest of the hour is where tickets and wiki spelunking still live.</p></div>
+        <div class="panel" data-tab="steps" data-label="Step by step">
+          <div class="prose"><p>The same hour against the current estate, step by step. The middle column holds only what the platform provides today; where there is no platform path yet, it says so rather than guessing how teams cope.</p></div>
           <div class="table-scroll">
           <table class="lens">
-            <tr><th>Step</th><th>Today</th><th>Target</th><th>Status</th></tr>
-            <tr><td>Discover</td><td>Ask in the platform channel, read a wiki page, work out which API to use</td><td>Portal with golden paths and a model catalog of aliases, latency, cost, risk tier</td><td><span class="pill gap">gap</span></td></tr>
-            <tr><td>Account and secrets</td><td>Service account, secrets, and IAM already easy and lifecycle-managed</td><td>Issued by the scaffolder as a side effect; never requested</td><td><span class="pill solid">solid</span></td></tr>
-            <tr><td>Model access</td><td>One org-controlled API with guardrails and telemetry by default</td><td>Same, plus a virtual key with a budget and aliases instead of model names</td><td><span class="pill partial">partial</span></td></tr>
-            <tr><td>Start the repo</td><td>Copy a neighbor's service, pick a base image, wire logging and packaging by hand</td><td>One command: template, golden image, Artifactory, CI pre-wired</td><td><span class="pill gap">gap</span></td></tr>
-            <tr><td>Deploy</td><td>Kubernetes deploy from account creation to URL with minimal friction</td><td>Unchanged; this is the benchmark</td><td><span class="pill solid">solid</span></td></tr>
-            <tr><td>Serve a custom model</td><td>A Terraform configuration is all it takes</td><td>Unchanged, plus a registry entry and model card generated from the build</td><td><span class="pill solid">solid</span></td></tr>
-            <tr><td>Observe</td><td>SignalFx and logging wired automatically</td><td>Plus OTel GenAI spans: tokens, cost, <code>model.actual</code> per call</td><td><span class="pill partial">partial</span></td></tr>
-            <tr><td>Evaluate</td><td>Each team builds its own harness, or ships on vibes</td><td>Central harness, judges, CI gate; teams write cases only</td><td><span class="pill gap">gap</span></td></tr>
-            <tr><td>Build an agent</td><td>Hand-wired framework, own registry, own tool plumbing</td><td>Registry as deploy gate, managed runtime, MCP catalog subscribe</td><td><span class="pill gap">gap</span></td></tr>
-            <tr><td>Cache responses</td><td>Stand up your own Redis and cache logic</td><td>Provider and exact-match caching on by default; the database one click away</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><th>Step</th><th>Platform path today</th><th>Target</th><th>Status</th></tr>
+            <tr><td>Discover</td><td>No platform path yet</td><td>Portal with golden paths and a model catalog of aliases, latency, cost, and risk tier</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Account and secrets</td><td>Service account creation, secret management, and identity and access are already easy across the lifecycle</td><td>Issued by the scaffolder as a side effect; never requested</td><td><span class="pill solid">solid</span></td></tr>
+            <tr><td>Model access</td><td>One organization-controlled API with risk assessment and guardrails applied by default</td><td>Same, plus a virtual key with a budget and aliases instead of model names</td><td><span class="pill partial">partial</span></td></tr>
+            <tr><td>Start the repo</td><td>No standardized base image or packaging flow yet (both on the gap list)</td><td>One command: template, golden image with risk assessment pre-applied, Artifactory wired, CI pre-wired</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Deploy</td><td>Engine platform: Kubernetes-backed, from AWS account creation to a deployed service with minimal friction</td><td>Unchanged; this is the benchmark</td><td><span class="pill solid">solid</span></td></tr>
+            <tr><td>Serve a custom model</td><td>ML build platform: a Terraform configuration is all it takes; training stays free-form</td><td>Unchanged, plus a registry entry and model card generated from the build</td><td><span class="pill solid">solid</span></td></tr>
+            <tr><td>Observe</td><td>Telemetry and SignalFx set up automatically, no per-team logging setup</td><td>Plus OTel GenAI spans: tokens, cost, <code>model.actual</code> per call</td><td><span class="pill partial">partial</span></td></tr>
+            <tr><td>Evaluate</td><td>No platform path yet</td><td>Central harness, judges, CI gate; teams write cases only</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Build an agent</td><td>No registry, runtime management, or MCP catalog yet (all on the gap list)</td><td>Registry as deploy gate, managed runtime, MCP catalog subscribe</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Cache responses</td><td>No caching layer or ready-to-spin-up database yet (on the gap list)</td><td>Provider and exact-match caching on by default; the database one click away</td><td><span class="pill gap">gap</span></td></tr>
           </table>
           </div>
-          <p class="pull">The steps marked solid are the proof: <strong>engineers already forget they happen</strong>. The gaps are the steps they still talk about.</p>
+          <p class="pull">The steps marked solid are the proof: <strong>engineers already forget they happen</strong>. The gaps are the steps with no road yet.</p>
         </div>
 
         <div class="panel" data-tab="measure" data-label="Measuring DevEx">
