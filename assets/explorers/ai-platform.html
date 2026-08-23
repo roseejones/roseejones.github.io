@@ -133,6 +133,7 @@
     color: var(--red); min-width: 1.6rem; text-align: right;
   }
   .flow .ft { font-weight: 600; font-size: clamp(.95rem, 1.7vw, 1.1rem); min-width: 11rem; max-width: 14rem; }
+  .flow.timed .fno { min-width: 3.2rem; font-size: clamp(.95rem, 1.6vw, 1.1rem); white-space: nowrap; }
   .flow .fd { color: var(--ink-2); font-size: clamp(.88rem, 1.6vw, 1rem); line-height: 1.45; }
 
   table { width: 100%; border-collapse: collapse; border-top: 1px solid var(--ink); margin-top: .6rem; }
@@ -371,7 +372,7 @@
     <header class="grid-head">
       <div class="label">Rose Jones · Enterprise AI platform</div>
       <h1>The invisible platform</h1>
-      <p class="sub">The best enterprise AI platform is the one engineers stop noticing. Every account, model call, guardrail, trace, and dollar is handled before anyone asks, and the whole organization builds on it without thinking about it. Twelve topics, each with why it matters, the target state, and where we are today.</p>
+      <p class="sub">The best enterprise AI platform is the one engineers stop noticing. Every account, model call, guardrail, trace, and dollar is handled before anyone asks, and the whole organization builds on it without thinking about it. Thirteen topics, each with why it matters, the target state, and where we are today.</p>
       <p class="hint">Pick a topic. Inside a topic, arrow keys move between topics and Esc returns here.</p>
     </header>
     <nav class="grid" id="grid" aria-label="Topics"></nav>
@@ -1083,10 +1084,126 @@
         </div>
       </section>
 
-      <!-- 09 · Governance -->
-      <section class="topic" id="t-governance" data-id="governance" data-no="09" data-title="Governance without friction" data-hook="Most use cases need zero human review, because the platform's defaults are the approval." hidden>
+      <!-- 09 · Onboarding -->
+      <section class="topic" id="t-onboarding" data-id="onboarding" data-no="09" data-title="Onboarding, from the engineer's seat" data-hook="Day one on the paved road: from &quot;I want to add AI to my service&quot; to a traced, governed, budgeted call before lunch, with no ticket and no human in the loop." hidden>
         <header class="topic-head">
-          <div class="label"><span class="no">09</span> · Governance and risk</div>
+          <div class="label"><span class="no">09</span> · Developer experience</div>
+          <h2 class="topic-title" tabindex="-1">Onboarding, from the engineer's seat</h2>
+          <p class="sub">Everything else in this explorer describes the platform from the architect's seat. This topic walks the same platform as the engineer meets it: what they do, what they see, and what happens invisibly on their behalf.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="journey" data-label="The first hour">
+          <div class="prose"><p>The benchmark is the design test from the golden-paths topic: idea to a traced, governed, cost-attributed deployment before lunch. Here is the hour, minute by minute, for an engineer adding a refund assistant to an existing service.</p></div>
+          <div class="flow timed">
+            <div class="frow"><span class="fno">0:00</span><span class="ft">Discover</span><span class="fd">Opens the developer portal and picks the golden path "add AI to an existing service". The model catalog shows the aliases (<code>chat-default</code>, <code>extract-cheap</code>, <code>reason-deep</code>) with latency, cost per thousand tokens, and the risk tier each is cleared for. No provider names, no keys, no approval form.</span></div>
+            <div class="frow"><span class="fno">0:05</span><span class="ft">Scaffold</span><span class="fd"><code>platform new ai-service refund-assistant</code>. The repo arrives with the gateway client, guardrails middleware, OpenTelemetry, workload identity, a CI pipeline with an eval gate and image scan, and a Dockerfile on the golden image. A registry entry already exists with the engineer as owner and the team's cost center.</span></div>
+            <div class="frow"><span class="fno">0:10</span><span class="ft">First call</span><span class="fd">Runs the service locally and calls <code>chat-default</code>. The virtual key was issued at scaffold time; the gateway authenticates, checks the budget, runs guardrails, and routes. The response returns in 0.4 seconds and the trace is already on the default dashboard with its cost.</span></div>
+            <div class="frow"><span class="fno">0:25</span><span class="ft">Evaluate</span><span class="fd">Writes fifteen cases into <code>evals/core.jsonl</code> from real tickets. <code>platform eval</code> runs the harness with the platform's judges and prints a scorecard. The CI gate now fails any change that regresses those cases.</span></div>
+            <div class="frow"><span class="fno">0:40</span><span class="ft">Deploy</span><span class="fd"><code>git push</code>. The pipeline scans the image, runs the evals, and deploys to the cluster. A URL comes back; the scorecard reads evals present, costs tagged, guardrails on, image current.</span></div>
+            <div class="frow"><span class="fno">0:55</span><span class="ft">Observe</span><span class="fd">The dashboard shows latency, tokens, cost, cache hits, and guardrail events per route. A budget alert is wired to the team channel at 80%. Nothing was configured.</span></div>
+            <div class="frow"><span class="fno">day 2</span><span class="ft">Add a tool</span><span class="fd">Browses the MCP catalog and subscribes to <code>com.enterprise.orders/lookup</code>. The registry records the grant, the agent's identity gets a scoped token for it, and the audit log starts on the first call. Still no ticket.</span></div>
+          </div>
+          <div class="fig mermaid-fig" id="seqmap" data-src="ai-platform-onboarding.svg" aria-busy="true"></div>
+          <p class="fig-caption">The first AI call as a sequence: one engineer action per step, and everything between the portal and the provider handled by the platform. Rendered from <code>ai-platform-onboarding.mmd</code>.</p>
+          <p class="pull"><span class="lead">Under an hour, no ticket, no human.</span> That is the number the whole platform is measured by: <strong>time to first AI call</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="seat" data-label="Engineer vs platform">
+          <div class="prose"><p>The invisible exoskeleton, made visible once. Every row on the left is a thing the engineer does; every row on the right is what happens without them asking.</p></div>
+          <table class="lens">
+            <tr><th>The engineer does</th><th>The platform does, invisibly</th></tr>
+            <tr><td>Picks a golden path in the portal</td><td>Shows only aliases cleared for the engineer's risk tier; hides provider names, keys, and pricing.</td></tr>
+            <tr><td>Runs the scaffolder</td><td>Creates the repo from the template, the registry entry, the virtual key, the workload identity and IAM role, the secrets binding, the CI pipeline, and the default dashboards.</td></tr>
+            <tr><td>Calls an alias</td><td>Authenticates, checks the budget, masks PII, checks the cache, resolves the alias to a pinned version, fails over on a 429, restores masked values, emits a span with cost and <code>model.actual</code>.</td></tr>
+            <tr><td>Writes eval cases</td><td>Stores and versions them, runs the judge pool, gates CI on a statistically meaningful delta, promotes failing production traces into the regression set weekly.</td></tr>
+            <tr><td>Pushes to main</td><td>Scans the golden image, runs the evals, deploys, registers the route in the inventory, updates the scorecard, starts the budget meter.</td></tr>
+            <tr><td>Subscribes to a tool</td><td>Checks the allowlist against the agent's identity, issues scoped tokens per user, hash-pins the tool definition, writes the audit log.</td></tr>
+            <tr><td>Reads the dashboard</td><td>Joins gateway spans, runtime compute, and cache savings into one cost-per-task number per route, with an anomaly alert for runaway agents.</td></tr>
+          </table>
+          <div class="specimen">
+            <div class="srow"><div class="sk">platform.yaml</div><div class="sv"><code>service: refund-assistant</code> · <code>owner: support-eng</code> · <code>cost_center: 4410</code> · <code>risk_tier: 1</code> · <code>model: chat-default</code> · <code>budget_usd: 400</code></div></div>
+            <div class="srow"><div class="sk">evals/</div><div class="sv"><code>core.jsonl</code> (15 cases) · <code>regression.jsonl</code> (empty on day one; the platform fills it from production failures)</div></div>
+            <div class="srow"><div class="sk">Dockerfile</div><div class="sv"><code>FROM golden/python-ai:1.4</code>; risk assessment, certificates, telemetry agent, and guardrail client already inside</div></div>
+            <div class="srow"><div class="sk">CI</div><div class="sv">image scan · eval gate · deploy; nothing to edit</div></div>
+            <div class="srow"><div class="sk">Not in the repo</div><div class="sv">provider keys · logging config · IAM policy · dashboards · approval forms</div></div>
+          </div>
+          <p class="fig-caption">The scaffolded repo. One small declaration file is the engineer's entire contact surface with the platform.</p>
+        </div>
+
+        <div class="panel" data-tab="today" data-label="Today vs target">
+          <div class="prose"><p>The same hour against the current estate. Three platforms already deliver this feeling for deploys, model serving, and the model API; the rest of the hour is where tickets and wiki spelunking still live.</p></div>
+          <div class="table-scroll">
+          <table class="lens">
+            <tr><th>Step</th><th>Today</th><th>Target</th><th>Status</th></tr>
+            <tr><td>Discover</td><td>Ask in the platform channel, read a wiki page, work out which API to use</td><td>Portal with golden paths and a model catalog of aliases, latency, cost, risk tier</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Account and secrets</td><td>Service account, secrets, and IAM already easy and lifecycle-managed</td><td>Issued by the scaffolder as a side effect; never requested</td><td><span class="pill solid">solid</span></td></tr>
+            <tr><td>Model access</td><td>One org-controlled API with guardrails and telemetry by default</td><td>Same, plus a virtual key with a budget and aliases instead of model names</td><td><span class="pill partial">partial</span></td></tr>
+            <tr><td>Start the repo</td><td>Copy a neighbor's service, pick a base image, wire logging and packaging by hand</td><td>One command: template, golden image, Artifactory, CI pre-wired</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Deploy</td><td>Kubernetes deploy from account creation to URL with minimal friction</td><td>Unchanged; this is the benchmark</td><td><span class="pill solid">solid</span></td></tr>
+            <tr><td>Serve a custom model</td><td>A Terraform configuration is all it takes</td><td>Unchanged, plus a registry entry and model card generated from the build</td><td><span class="pill solid">solid</span></td></tr>
+            <tr><td>Observe</td><td>SignalFx and logging wired automatically</td><td>Plus OTel GenAI spans: tokens, cost, <code>model.actual</code> per call</td><td><span class="pill partial">partial</span></td></tr>
+            <tr><td>Evaluate</td><td>Each team builds its own harness, or ships on vibes</td><td>Central harness, judges, CI gate; teams write cases only</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Build an agent</td><td>Hand-wired framework, own registry, own tool plumbing</td><td>Registry as deploy gate, managed runtime, MCP catalog subscribe</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Cache responses</td><td>Stand up your own Redis and cache logic</td><td>Provider and exact-match caching on by default; the database one click away</td><td><span class="pill gap">gap</span></td></tr>
+          </table>
+          </div>
+          <p class="pull">The steps marked solid are the proof: <strong>engineers already forget they happen</strong>. The gaps are the steps they still talk about.</p>
+        </div>
+
+        <div class="panel" data-tab="measure" data-label="Measuring DevEx">
+          <div class="cols">
+            <div class="col">
+              <h3>The numbers</h3>
+              <ul>
+                <li><em>Time to first AI call</em>: minutes from intent to an authenticated, logged, budgeted call. Target under an hour, measured at the gateway, not in a survey.</li>
+                <li><em>Time to production</em>: scaffold to a deployed URL with evals and a green scorecard. Target one day.</li>
+                <li><em>Tickets per onboarding</em>: every ticket is a product bug in the platform. Target zero for tier 1.</li>
+                <li><em>Onboarding NPS and DX index</em>: quarterly, segmented by golden path.</li>
+                <li><em>Docs hit rate</em>: share of onboarding questions answered by the portal without a human.</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h3>How to get the signal</h3>
+              <ul>
+                <li>Shadow two onboardings a month and keep a friction log; each entry becomes a backlog item with the minutes it cost.</li>
+                <li>Instrument the scaffolder and the portal: where people stop is where the road ends.</li>
+                <li>Read the platform channel as a product inbox; a question asked twice becomes a doc or a default.</li>
+                <li>Distrust self-report: METR showed perception and reality diverge, so pair every survey with telemetry.</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h3>Anti-patterns</h3>
+              <ul>
+                <li>A mandate instead of a better road</li>
+                <li>A ticket anywhere in the tier-1 path</li>
+                <li>"Ask in the channel" as the onboarding doc</li>
+                <li>Docs that explain the platform's internals instead of the engineer's next step</li>
+                <li>Adoption counted in licensed seats rather than calls through the gateway</li>
+              </ul>
+            </div>
+          </div>
+          <p class="pull">DevEx is the product surface of the platform. <strong>If the first hour needs a human, the platform is not done.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Provisioning, serving, model API</td><td><span class="pill solid">solid</span></td><td>Already invisible. Protect them as the benchmark for every new step.</td></tr>
+            <tr><td>Portal and golden-path docs</td><td><span class="pill gap">gap</span></td><td>Start with two written golden paths and a model catalog page before any portal software.</td></tr>
+            <tr><td>Scaffolder</td><td><span class="pill gap">gap</span></td><td>"New AI service" template first; "new agent" once the registry exists.</td></tr>
+            <tr><td>Virtual keys and budgets</td><td><span class="pill gap">gap</span></td><td>Issued by the scaffolder; the first thing the gateway deepening delivers.</td></tr>
+            <tr><td>Eval harness</td><td><span class="pill gap">gap</span></td><td>v1 with the dataset registry and CI gate.</td></tr>
+            <tr><td>Onboarding telemetry</td><td><span class="pill gap">gap</span></td><td>Measure time to first AI call from gateway logs today, before anything else ships.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Now → Next</span> The measurement and the written golden paths cost nothing and start now; the scaffolder lands with the agent layer.</p>
+        </div>
+      </section>
+
+      <!-- 10 · Governance -->
+      <section class="topic" id="t-governance" data-id="governance" data-no="10" data-title="Governance without friction" data-hook="Most use cases need zero human review, because the platform's defaults are the approval." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">10</span> · Governance and risk</div>
           <h2 class="topic-title" tabindex="-1">Governance without friction</h2>
           <p class="sub">Governance succeeds as a platform capability and fails as a committee. The design goal: a fast lane by default, real scrutiny where the stakes are real, and the evidence generated as a by-product.</p>
         </header>
@@ -1191,10 +1308,10 @@
         </div>
       </section>
 
-      <!-- 10 · Telemetry -->
-      <section class="topic" id="t-telemetry" data-id="telemetry" data-no="10" data-title="Observability and FinOps" data-hook="Every call carries its tokens, model, latency, trace context, and cost, in a portable schema the organization does not own." hidden>
+      <!-- 11 · Telemetry -->
+      <section class="topic" id="t-telemetry" data-id="telemetry" data-no="11" data-title="Observability and FinOps" data-hook="Every call carries its tokens, model, latency, trace context, and cost, in a portable schema the organization does not own." hidden>
         <header class="topic-head">
-          <div class="label"><span class="no">10</span> · Observability and FinOps rail</div>
+          <div class="label"><span class="no">11</span> · Observability and FinOps rail</div>
           <h2 class="topic-title" tabindex="-1">Observability and FinOps</h2>
           <p class="sub">Enterprise AI needs structured data and an asynchronous control plane. The data plane auto-instruments every call; the control plane turns those spans into cost, quality, and adoption truth.</p>
         </header>
@@ -1260,10 +1377,10 @@
         </div>
       </section>
 
-      <!-- 11 · Operating model -->
-      <section class="topic" id="t-operating-model" data-id="operating-model" data-no="11" data-title="Operating model and advisory" data-hook="The platform succeeds or fails on organizational mechanics as much as architecture, and the leader is asked to defend the investment frames." hidden>
+      <!-- 12 · Operating model -->
+      <section class="topic" id="t-operating-model" data-id="operating-model" data-no="12" data-title="Operating model and advisory" data-hook="The platform succeeds or fails on organizational mechanics as much as architecture, and the leader is asked to defend the investment frames." hidden>
         <header class="topic-head">
-          <div class="label"><span class="no">11</span> · Operating model</div>
+          <div class="label"><span class="no">12</span> · Operating model</div>
           <h2 class="topic-title" tabindex="-1">Operating model and advisory frames</h2>
           <p class="sub">Team shape, funding, adoption as a program, and the decision frameworks a platform leader is asked to defend: build versus buy, model strategy, vendor management, portfolio discipline.</p>
         </header>
@@ -1319,10 +1436,10 @@
         </div>
       </section>
 
-      <!-- 12 · Roadmap -->
-      <section class="topic" id="t-roadmap" data-id="roadmap" data-no="12" data-title="Roadmap" data-hook="Sequenced by leverage: each phase makes the next one cheaper, and the named gaps map onto three horizons." hidden>
+      <!-- 13 · Roadmap -->
+      <section class="topic" id="t-roadmap" data-id="roadmap" data-no="13" data-title="Roadmap" data-hook="Sequenced by leverage: each phase makes the next one cheaper, and the named gaps map onto three horizons." hidden>
         <header class="topic-head">
-          <div class="label"><span class="no">12</span> · Three horizons</div>
+          <div class="label"><span class="no">13</span> · Three horizons</div>
           <h2 class="topic-title" tabindex="-1">Roadmap</h2>
           <p class="sub">Deepen the gateway, stand up the agent layer, then make the platform self-governing. Every item is a gap named in the capability map, placed where it has the most leverage.</p>
         </header>

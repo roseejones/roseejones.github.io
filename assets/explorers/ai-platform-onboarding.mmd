@@ -1,0 +1,26 @@
+%% v2 · First AI call on the paved road, from the engineer's seat (assets/explorers/ai-platform.html, topic "Onboarding").
+%% Re-render: python3 scripts/render-mermaid.py assets/explorers/ai-platform-onboarding.mmd assets/explorers/ai-platform-onboarding.svg --id pseq
+sequenceDiagram
+  autonumber
+  actor E as Engineer
+  participant P as Portal
+  participant S as Scaffolder
+  participant R as Registry
+  participant G as Gateway
+  participant M as Provider
+  participant O as Telemetry
+
+  E->>P: "add AI to my service"
+  P-->>E: golden path + model catalog
+  E->>S: platform new ai-service
+  S->>R: register owner, cost center, tier
+  R-->>S: virtual key + identity + budget
+  S-->>E: repo, everything pre-wired
+  E->>G: first call: chat-default
+  G->>G: auth · budget · guardrails · cache
+  G->>M: pinned model version
+  M-->>G: completion
+  G-->>O: span: tokens, cost, model.actual
+  G-->>E: response in 0.4 s, $0.0004
+  E->>O: default dashboard, already live
+  Note over E,O: time to first AI call: under an hour, no ticket, no human in the loop
