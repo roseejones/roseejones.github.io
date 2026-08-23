@@ -192,6 +192,15 @@
     max-width: 46rem;
   }
 
+  /* pre-rendered Mermaid system map, injected at load time */
+  .mermaid-fig { overflow-x: auto; -webkit-overflow-scrolling: touch; min-height: 6rem; }
+  .mermaid-fig svg { display: block; width: 100%; min-width: 1080px; max-width: 1400px; height: auto; }
+  .mermaid-fig svg .label,
+  .mermaid-fig svg .cluster-label { font-family: var(--sans); font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink); margin: 0; }
+  .mermaid-fig svg .cluster-label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+  .mermaid-fig svg .edgeLabel .label { font-size: 11px; }
+  .mermaid-fig .fig-fallback { font-family: var(--sans); font-size: .8rem; color: var(--ink-3); }
+
   .specimen { border: 1px solid var(--ink); margin: .8rem 0 .5rem; max-width: 46rem; }
   .specimen .srow { display: flex; border-bottom: 1px solid var(--rule); }
   .specimen .srow:last-child { border-bottom: none; }
@@ -313,6 +322,8 @@
       margin: 1.4rem 0 .6rem;
     }
     .fig svg { max-width: 70%; }
+    .mermaid-fig { overflow: visible; }
+    .mermaid-fig svg { min-width: 0; max-width: 100%; }
     table, .specimen, .fig, .frow { break-inside: avoid; }
     a { text-decoration: none; }
   }
@@ -481,6 +492,12 @@
             <p>The load-bearing decision is that <strong>layer three is a choke point on purpose</strong>. When every model call in the company flows through one org-controlled gateway, then guardrails, quotas, cost attribution, audit logging, caching, model migration, and regulatory evidence are each solved exactly once. Direct-to-provider calls from application VPCs are blocked at the network layer, which converts policy into physics.</p>
             <p>Uber, LinkedIn, and every serious 2026 reference architecture converge on this same shape. The existing centralized API is already this pattern's core, and most of the roadmap is deepening it.</p>
           </div>
+        </div>
+
+        <div class="panel" data-tab="map" data-label="System map">
+          <div class="prose"><p>The same platform as a system: how an engineer's work reaches a model or a tool, and which control points it passes on the way. Solid boxes exist today; dashed boxes are target state; the red outline is the gateway choke point. The three rails (identity, observability and FinOps, governance) apply to every box and are drawn on the first tab.</p></div>
+          <div class="fig mermaid-fig" id="sysmap" data-src="ai-platform-map.svg" aria-busy="true"></div>
+          <p class="fig-caption">Rendered from <code>ai-platform-map.mmd</code> (Mermaid). Edit the source and re-render to change the map; the explorer loads the SVG next to it.</p>
         </div>
 
         <div class="panel" data-tab="capmap" data-label="Capability map">
@@ -1580,6 +1597,20 @@
     } else if (state.i >= 0) {
       navigate(null);
     }
+  });
+
+  // Pre-rendered Mermaid figures: fetch the SVG next to this file so it shares the page fonts and prints inline.
+  Array.prototype.slice.call(document.querySelectorAll('.mermaid-fig[data-src]')).forEach(function (fig) {
+    var src = fig.getAttribute('data-src');
+    function fallback() {
+      fig.removeAttribute('aria-busy');
+      fig.innerHTML = '<p class="fig-fallback">The system map could not be loaded inline. <a href="' + src + '" target="_blank" rel="noopener">Open the SVG</a>.</p>';
+    }
+    if (!window.fetch) { fallback(); return; }
+    fetch(src).then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); }).then(function (svg) {
+      fig.innerHTML = svg;
+      fig.removeAttribute('aria-busy');
+    }).catch(fallback);
   });
 
   buildGrid();
