@@ -1076,16 +1076,13 @@
 
     function otelSpan() {
       var s = activeScenario();
-      return {
+      var span = {
         trace_id: '4fd0c9e1838b42a7b7110ac7e9134410',
-        span_name: 'gen_ai.chat ' + state.config.alias,
+        span_name: 'chat ' + state.config.alias,
         status: s.requestState === 'allowed' ? 'OK' : 'ERROR',
         attributes: {
+          'gen_ai.operation.name': 'chat',
           'gen_ai.request.model': state.config.alias,
-          'gen_ai.response.model.actual': s.actualModel,
-          'gen_ai.usage.input_tokens': s.inputTokens,
-          'gen_ai.usage.output_tokens': s.outputTokens,
-          'gen_ai.response.finish_reasons': s.requestState === 'allowed' ? ['stop'] : ['content_filter'],
           'enterprise.cost_usd': s.cost,
           'enterprise.identity.user': 'u-3381',
           'enterprise.identity.agent': serviceId(),
@@ -1095,6 +1092,18 @@
           'enterprise.risk_tier': Number(state.config.riskTier)
         }
       };
+      if (s.requestState === 'allowed') {
+        Object.assign(span.attributes, {
+          'gen_ai.provider.name': s.actualModel.split('/')[0],
+          'gen_ai.response.model': s.actualModel,
+          'gen_ai.usage.input_tokens': s.inputTokens,
+          'gen_ai.usage.output_tokens': s.outputTokens,
+          'gen_ai.response.finish_reasons': ['stop']
+        });
+      } else {
+        span.attributes['error.type'] = s.route === 'denied' ? 'budget_exhausted' : s.route === 'guardrail-block' ? 'guardrail_blocked' : 'invalid_configuration';
+      }
+      return span;
     }
 
     function auditEvents() {

@@ -825,7 +825,7 @@
           </svg></div>
           <p class="fig-caption">A silent fallback reads as a regression in the blended baseline. Hard-tagged provenance turns it into two clean series and one honest system view.</p>
           <div class="flow">
-            <div class="frow"><span class="fno">1</span><span class="ft">Hard-tag provenance</span><span class="fd">The gateway appends <code>gen_ai.response.model.actual</code> to the OpenTelemetry span, overriding the requested model name. No application can forget to do it.</span></div>
+            <div class="frow"><span class="fno">1</span><span class="ft">Hard-tag provenance</span><span class="fd">The gateway records the actual model in <code>gen_ai.response.model</code> on the OpenTelemetry span, preserving the requested alias separately in <code>gen_ai.request.model</code>. No application can forget to do it.</span></div>
             <div class="frow"><span class="fno">2</span><span class="ft">Partition the dashboards</span><span class="fd">Model-level evals filter strictly by the actual model, so degradation is isolated to one model. System-level evals grade the agent overall and track <em>acceptable degradation</em> during fallback events.</span></div>
             <div class="frow"><span class="fno">3</span><span class="ft">Baseline gateway test</span><span class="fd">Before a model is approved as a fallback, it runs through the same harness against the route's core and regression datasets and must clear the minimum thresholds.</span></div>
           </div>
@@ -1341,7 +1341,7 @@
           <div class="prose"><p>Standardize on the OpenTelemetry GenAI semantic conventions so every span is portable across SignalFx, Langfuse, Arize Phoenix, or whatever comes next. Specialized observability and evaluation platforms are bought, not built, and they all read this schema.</p></div>
           <div class="specimen">
             <div class="srow"><div class="sk">gen_ai.request.model</div><div class="sv"><code>chat-default</code> (the alias the app asked for)</div></div>
-            <div class="srow"><div class="sk">gen_ai.response.model.actual</div><div class="sv"><code>provider-b/model-x-2026-06</code> <span class="bad">fallback</span> (hard-tagged by the gateway, overrides the request)</div></div>
+            <div class="srow"><div class="sk">gen_ai.response.model</div><div class="sv"><code>provider-b/model-x-2026-06</code> <span class="bad">fallback</span> (the actual responding model; the requested alias is preserved separately)</div></div>
             <div class="srow"><div class="sk">gen_ai.usage.input_tokens</div><div class="sv">4,812 · <code>gen_ai.usage.output_tokens</code> 318 · cache read 3,900</div></div>
             <div class="srow"><div class="sk">gen_ai.response.finish_reasons</div><div class="sv"><code>["stop"]</code></div></div>
             <div class="srow"><div class="sk">enterprise.cost_usd</div><div class="sv">0.0142, from the versioned pricing table at request time</div></div>

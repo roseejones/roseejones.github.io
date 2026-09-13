@@ -101,6 +101,32 @@ test('aliases resolve to distinct primary models', () => {
   assert.equal(models.size, 3);
 });
 
+test('telemetry preserves requested aliases and standard actual-model attributes', () => {
+  const app = workbench();
+  Object.assign(app.state, {mode: 'sandbox', scenario: 'outage'});
+  const span = app.otelSpan();
+  assert.equal(span.attributes['gen_ai.request.model'], 'chat-default');
+  assert.equal(span.attributes['gen_ai.response.model'], 'provider-b/model-x-2026-06');
+  assert.equal(span.attributes['gen_ai.provider.name'], 'provider-b');
+  assert.equal(span.attributes['gen_ai.operation.name'], 'chat');
+  assert.equal(span.attributes['gen_ai.response.finish_reasons'][0], 'stop');
+  assert.ok(!('gen_ai.response.model.actual' in span.attributes));
+  const explorer = fs.readFileSync(path.join(__dirname, '../assets/explorers/ai-platform.html'), 'utf8');
+  assert.ok(!explorer.includes('gen_ai.response.model.actual'));
+});
+
+test('pre-provider denials record their cause without inventing model responses', () => {
+  for (const [scenario, error] of [['budget-exhausted', 'budget_exhausted'], ['guardrail', 'guardrail_blocked']]) {
+    const app = workbench();
+    Object.assign(app.state, {mode: 'sandbox', scenario});
+    const span = app.otelSpan();
+    assert.equal(span.status, 'ERROR');
+    assert.equal(span.attributes['error.type'], error);
+    assert.equal(span.attributes['enterprise.cost_usd'], 0);
+    assert.ok(!Object.keys(span.attributes).some(name => name.startsWith('gen_ai.response.') || name.startsWith('gen_ai.usage.')));
+  }
+});
+
 test('invalid declarations cannot generate artifacts or approve a release', () => {
   const invalid = {service: ['', 'Bad Name', '<b>test</b>', 'a'.repeat(64)], owner: ['', ' '], costCenter: [''], budget: ['', '0', '-1', 'NaN', 'Infinity', '1e309'], riskTier: ['5'], alias: ['unknown'], tool: ['unknown']};
   for (const [name, values] of Object.entries(invalid)) {
