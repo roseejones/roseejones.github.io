@@ -881,25 +881,30 @@
       return '$' + Number(value).toFixed(value < 1 ? 4 : 0);
     }
 
+    function yamlString(value) {
+      // JSON string literals are also quoted YAML scalars.
+      return JSON.stringify(String(value));
+    }
+
     function artifacts() {
       var c = state.config;
       var platformYaml = [
         'apiVersion: platform.enterprise/v1',
         'kind: AIService',
         'metadata:',
-        '  name: ' + c.service,
-        '  owner: ' + c.owner,
-        '  costCenter: "' + c.costCenter + '"',
+        '  name: ' + yamlString(c.service),
+        '  owner: ' + yamlString(c.owner),
+        '  costCenter: ' + yamlString(c.costCenter),
         'spec:',
         '  riskTier: ' + c.riskTier,
         '  model:',
-        '    alias: ' + c.alias,
+        '    alias: ' + yamlString(c.alias),
         '    fallback: approved-only',
         '  budget:',
         '    monthlyUSD: ' + c.budget,
         '    warnAtPercent: 80',
         '  tools:',
-        '    - name: ' + c.tool,
+        '    - name: ' + yamlString(c.tool),
         '      access: read-only',
         '  controls:',
         '    guardrails: inherited',
@@ -914,7 +919,7 @@
         'RUN pip install --no-cache-dir -r requirements.lock',
         'COPY src ./src',
         'USER 65532:65532',
-        'CMD ["python", "-m", "src.' + c.service.replace(/-/g, '_') + '"]'
+        'CMD ' + JSON.stringify(['python', '-m', 'src.' + c.service.replace(/-/g, '_')])
       ].join('\n');
 
       var ci = [
@@ -924,7 +929,7 @@
         '  verify-and-deploy:',
         '    uses: enterprise/platform-workflows/.github/workflows/ai-service.yml@v4',
         '    with:',
-        '      service: ' + c.service,
+        '      service: ' + yamlString(c.service),
         '      eval-set: evals/core.jsonl',
         '      rolling-baseline: required',
         '      provenance: required',
