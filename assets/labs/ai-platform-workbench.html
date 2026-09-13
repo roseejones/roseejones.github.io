@@ -205,6 +205,8 @@
 
     .scenario-bar[hidden] { display: none; }
 
+    .scenario-note { margin: 0.65rem 0 0; color: var(--muted); font-size: 0.83rem; line-height: 1.45; }
+
     .scenario-bar .label {
       display: block;
       margin-bottom: 0.65rem;
@@ -741,6 +743,7 @@
     <section class="scenario-bar" id="scenarioBar" aria-labelledby="scenarioLabel" hidden>
       <span class="label" id="scenarioLabel">Inject a deterministic operating condition</span>
       <div class="scenario-list" id="scenarioList"></div>
+      <p class="scenario-note">Budget presets set usage to 80% or 100% of your declared limit. Other presets start with $684 already spent.</p>
     </section>
 
     <nav class="stepper" id="stepper" aria-label="Paved road journey"></nav>
@@ -794,7 +797,7 @@
       'budget-warning': {
         label: 'Budget at 80%', short: 'Route to a cheaper tier', tone: 'warning',
         requestedAlias: 'chat-default', actualModel: 'provider-a/model-mini-2026-07', route: 'budget-policy',
-        inputTokens: 812, outputTokens: 112, cost: 0.0014, latency: 331, cache: 'miss', budgetUsed: 1008,
+        inputTokens: 812, outputTokens: 112, cost: 0.0014, latency: 331, cache: 'miss', budgetUsed: 960,
         requestState: 'allowed', requestMessage: 'Refund eligibility confirmed using the approved economy route.',
         evalScore: 0.90, baseline: 0.91, evalPassed: 15, evalFailures: 0,
         deployState: 'deployed', deployMessage: 'The budget policy selected a cheaper cleared model without changing application code.'
@@ -842,6 +845,7 @@
       scenario: 'healthy',
       evidenceTab: 'registry',
       artifact: 'platform.yaml',
+      reviewEvidence: defaultReview(),
       config: Object.assign({}, defaultConfig)
     };
 
@@ -861,7 +865,67 @@
     }
 
     function activeScenario() {
-      return scenarios[state.mode === 'guided' ? 'healthy' : state.scenario];
+      var key = state.mode === 'guided' ? 'healthy' : state.scenario;
+      var s = Object.assign({}, scenarios[key]);
+      var budget = Number(state.config.budget);
+      var invalid = Object.keys(configErrors()).length > 0;
+      var used = invalid ? 0 : key === 'budget-warning' ? budget * 0.8 : key === 'budget-exhausted' ? budget : s.budgetUsed;
+      var warning = !invalid && used >= budget * 0.8;
+
+      if (!invalid && used < budget && s.requestState === 'allowed') {
+        if (warning && key !== 'outage') {
+          s = Object.assign({}, scenarios['budget-warning']);
+        }
+        var economy = warning || state.config.alias === 'extract-cheap';
+        if (economy) {
+          s.actualModel = key === 'outage' ? 'provider-b/model-mini-2026-06' : 'provider-a/model-mini-2026-07';
+          s.cost = key === 'outage' ? 0.0012 : 0.0014;
+        } else if (state.config.alias === 'reason-deep') {
+          s.actualModel = key === 'outage' ? 'provider-b/model-reason-2026-06' : 'provider-a/model-reason-2026-07';
+          s.cost *= 2;
+        }
+        // A cheaper route does not erase the injected evaluation regression.
+        if (key === 'eval-regression') {
+          ['evalScore', 'evalPassed', 'evalFailures', 'requestMessage'].forEach(function (name) { s[name] = scenarios[key][name]; });
+        }
+      }
+
+      var budgetDenied = !invalid && (used >= budget || (s.requestState === 'allowed' && used + s.cost > budget));
+      if (invalid || budgetDenied) {
+        s = Object.assign({}, scenarios['budget-exhausted']);
+        s.requestMessage = invalid ? 'Complete valid workload declarations before sending a request.' : 'Request rejected with HTTP 429. The request would exceed the monthly budget.';
+        if (invalid) s.route = 'invalid-config';
+      }
+      s.budgetUsed = used;
+      s.budgetWarning = warning;
+      s.review = riskReview();
+      var blockers = [];
+      if (invalid) blockers.push('Complete valid workload declarations.');
+      else if (budgetDenied) blockers.push('The operating budget cannot fund this route.');
+      else if (s.evalScore === null || s.evalFailures > 0) blockers.push('The evaluation gate has not passed. Previous production remains active.');
+      if (!s.review.approved) blockers.push('Required review is pending: ' + s.review.requirements.join('; ') + '.');
+      s.deployState = blockers.length ? 'blocked' : 'deployed';
+      if (blockers.length) s.deployMessage = blockers.join(' ');
+      return s;
+    }
+
+    function defaultReview() {
+      return { contract: JSON.stringify(defaultConfig), id: 'review-demo-002', source: 'Seeded standard review for the default declaration' };
+    }
+
+    function riskReview() {
+      var tier = Number(state.config.riskTier);
+      var requirements = [];
+      if (tier >= 2) requirements.push('Security and legal review');
+      if (tier >= 3) requirements.push('Independent validation', 'Assigned human oversight');
+      if (tier >= 4) requirements.push('Executive sign-off', 'External audit');
+      var evidence = state.reviewEvidence;
+      var matches = evidence && evidence.contract === JSON.stringify(state.config);
+      return {
+        requirements: requirements,
+        approved: requirements.length === 0 || Boolean(matches),
+        evidence: requirements.length === 0 ? 'Tier 1: no human review required' : matches ? evidence.id + ' · ' + evidence.source + ' (simulated)' : 'No approval recorded for this declaration'
+      };
     }
 
     function configErrors() {
@@ -926,6 +990,11 @@
       return JSON.stringify(String(value));
     }
 
+    function yamlNumber(value) {
+      // Include a decimal point in exponent notation for YAML 1.1 readers too.
+      return String(Number(value)).replace(/^(\d+)e/, '$1.0e');
+    }
+
     function artifacts() {
       if (Object.keys(configErrors()).length) throw new Error('Complete the workload declarations before generating artifacts.');
       var c = state.config;
@@ -937,12 +1006,12 @@
         '  owner: ' + yamlString(c.owner),
         '  costCenter: ' + yamlString(c.costCenter),
         'spec:',
-        '  riskTier: ' + c.riskTier,
+        '  riskTier: ' + yamlNumber(c.riskTier),
         '  model:',
         '    alias: ' + yamlString(c.alias),
         '    fallback: approved-only',
         '  budget:',
-        '    monthlyUSD: ' + c.budget,
+        '    monthlyUSD: ' + yamlNumber(c.budget),
         '    warnAtPercent: 80',
         '  tools:',
         '    - name: ' + yamlString(c.tool),
@@ -1036,11 +1105,12 @@
         ['09:00:04', 'tool.granted', state.config.tool + ' · read-only']
       ];
       if (s.route === 'fallback') events.push(['09:10:12', 'route.fallback', 'Primary unavailable; approved fallback selected and tagged']);
-      if (s.route === 'budget-policy') events.push(['09:10:12', 'budget.warning', '80% threshold reached; economy route selected']);
-      if (s.route === 'denied') events.push(['09:10:12', 'budget.denied', 'Hard monthly limit reached; provider was not called']);
+      if (s.budgetWarning && s.requestState === 'allowed') events.push(['09:10:12', 'budget.warning', '80% threshold reached; economy route selected']);
+      if (s.route === 'denied') events.push(['09:10:12', 'budget.denied', 'Request would exceed the monthly limit; provider was not called']);
       if (s.route === 'guardrail-block') events.push(['09:10:12', 'guardrail.blocked', 'Prompt injection signature matched; provider was not called']);
       if (s.requestState === 'allowed') events.push(['09:10:13', 'request.completed', s.actualModel + ' · ' + formatMoney(s.cost) + ' · ' + s.latency + ' ms']);
       events.push(['09:25:40', 'eval.completed', s.evalScore === null ? 'Not runnable under current policy state' : s.evalPassed + '/15 passed · score ' + s.evalScore.toFixed(2)]);
+      events.push(['09:35:00', s.review.approved ? 'review.satisfied' : 'review.pending', s.review.evidence + (s.review.requirements.length ? ' · ' + s.review.requirements.join('; ') : '')]);
       events.push(['09:40:05', s.deployState === 'deployed' ? 'deployment.approved' : 'deployment.blocked', s.deployMessage]);
       return events;
     }
@@ -1147,15 +1217,15 @@
         ['02', 'Registry and policy', 'Owner, tier, grants, and cost center loaded once', '3 ms', 'success']
       ];
       if (s.route === 'denied') {
-        items.push(['03', 'Budget', 'Hard limit reached at ' + formatMoney(state.config.budget) + '; stop before cache or provider', '11 ms', 'blocked']);
+        items.push(['03', 'Budget', 'Request cannot fit within ' + formatMoney(state.config.budget) + '; stop before cache or provider', '11 ms', 'blocked']);
       } else if (s.route === 'guardrail-block') {
         items.push(['03', 'Budget', formatMoney(s.budgetUsed) + ' of ' + formatMoney(state.config.budget) + ' used', '2 ms', 'success']);
         items.push(['04', 'Guardrails', 'Prompt injection matched; stop before cache or provider', '15 ms', 'blocked']);
       } else {
-        items.push(['03', 'Budget', formatMoney(s.budgetUsed) + ' of ' + formatMoney(state.config.budget) + ' used' + (s.route === 'budget-policy' ? '; economy route required' : ''), '2 ms', s.route === 'budget-policy' ? 'warning' : 'success']);
+        items.push(['03', 'Budget', formatMoney(s.budgetUsed) + ' of ' + formatMoney(state.config.budget) + ' used' + (s.budgetWarning ? '; economy route required' : ''), '2 ms', s.budgetWarning ? 'warning' : 'success']);
         items.push(['04', 'Guardrails', 'Input policy passed; no sensitive data or injection detected', '15 ms', 'success']);
         items.push(['05', 'Cache', 'Exact-match cache ' + s.cache, '3 ms', 'success']);
-        items.push(['06', 'Route', s.route === 'fallback' ? 'Primary unhealthy; approved fallback selected' : s.route === 'budget-policy' ? 'Budget policy selected cleared economy model' : 'Alias resolved to pinned primary', '5 ms', s.route === 'primary' ? 'success' : 'warning']);
+        items.push(['06', 'Route', s.route === 'fallback' ? (s.budgetWarning ? 'Primary unhealthy; approved economy fallback selected' : 'Primary unhealthy; approved fallback selected') : s.route === 'budget-policy' ? 'Budget policy selected cleared economy model' : 'Alias resolved to pinned primary', '5 ms', s.route === 'primary' ? 'success' : 'warning']);
         items.push(['07', 'Provider', s.actualModel + ' returned a completion', s.latency + ' ms', 'success']);
       }
       return items;
@@ -1217,6 +1287,8 @@
           summaryCard('Budget', formatMoney(s.budgetUsed) + ' / ' + formatMoney(state.config.budget), Math.round((s.budgetUsed / Number(state.config.budget)) * 100) + '% of the monthly allocation used.') +
           summaryCard('AI BOM', serviceId(), state.config.alias + ' → ' + s.actualModel) +
         '</div>' +
+        '<div class="callout" style="margin-top:1rem"><h3>Risk review</h3><p>' + escapeHtml(s.review.requirements.join('; ') || 'No human review required for Tier 1.') + '</p><p>' + escapeHtml(s.review.evidence) + '</p>' +
+          (s.review.approved ? '' : '<p>Attach simulated review evidence for this declaration. Budget and evaluation gates still apply.</p><button class="control" type="button" data-action="simulate-review">Complete simulated review</button>') + '</div>' +
         '<div class="callout" style="margin-top:1rem"><span class="section-label">Platform outcome</span><p style="margin-top:0.45rem">The application team supplied a service declaration and fifteen examples. The platform supplied the operating evidence, enforced the release decision, and left an audit trail without creating a ticket.</p></div>' +
         stageActions();
     }
@@ -1247,7 +1319,7 @@
       var budgetPercent = Number.isFinite(budget) && budget > 0 ? Math.min(100, Math.round((s.budgetUsed / budget) * 100)) : null;
       var budgetTone = budgetPercent >= 100 ? 'blocked' : budgetPercent >= 80 ? 'warning' : '';
       return '<div class="metric"><span class="metric-label">Budget consumption</span><span class="metric-value">' + (budgetPercent === null ? 'Set budget' : budgetPercent + '%') + '</span><div class="bar-track"><div class="bar-fill ' + budgetTone + '" style="width:' + (budgetPercent || 0) + '%"></div></div></div>' +
-        '<dl class="kv-list" style="margin-top:0.7rem">' + kv('Request', s.requestState) + kv('Route reason', s.route) + kv('Guardrail', s.route === 'guardrail-block' ? 'blocked before provider' : 'inherited and active') + kv('Fallback', s.route === 'fallback' ? 'approved and provenance-tagged' : 'not used') + kv('Eval gate', s.evalFailures === 0 && s.evalScore !== null ? 'pass' : 'block') + kv('Deploy gate', s.deployState) + '</dl>';
+        '<dl class="kv-list" style="margin-top:0.7rem">' + kv('Request', s.requestState) + kv('Route reason', s.route) + kv('Guardrail', s.route === 'guardrail-block' ? 'blocked before provider' : 'inherited and active') + kv('Fallback', s.route === 'fallback' ? 'approved and provenance-tagged' : 'not used') + kv('Eval gate', s.evalFailures === 0 && s.evalScore !== null ? 'pass' : 'block') + kv('Risk review', s.review.approved ? 'satisfied' : 'pending') + kv('Review evidence', s.review.evidence) + kv('Deploy gate', s.deployState) + '</dl>';
     }
 
     function auditPanel() {
@@ -1356,6 +1428,12 @@
       if (target.hasAttribute('data-step')) setStep(Number(target.getAttribute('data-step')), true);
       if (target.getAttribute('data-action') === 'previous') setStep(state.step - 1, true);
       if (target.getAttribute('data-action') === 'next') setStep(state.step + 1, true);
+      if (target.getAttribute('data-action') === 'simulate-review') {
+        if (!validateConfig()) return;
+        state.reviewEvidence = { contract: JSON.stringify(state.config), id: 'review-demo-tier-' + state.config.riskTier, source: 'Review completed in this workbench' };
+        setStep(state.step, true);
+        showToast('Simulated review evidence attached');
+      }
       if (target.getAttribute('data-action') === 'sandbox') {
         setMode('sandbox');
         scenarioBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1383,6 +1461,7 @@
     document.addEventListener('input', function (event) {
       if (!event.target.closest('#configForm')) return;
       state.config[event.target.name] = event.target.value;
+      state.reviewEvidence = null;
       state.completed = 0;
       renderStepper();
       if (!document.getElementById('configError').hidden) showConfigErrors(configErrors());
@@ -1398,7 +1477,7 @@
 
     document.getElementById('resetButton').addEventListener('click', function () {
       state = {
-        mode: 'guided', step: 0, completed: 0, scenario: 'healthy', evidenceTab: 'registry', artifact: 'platform.yaml', config: Object.assign({}, defaultConfig)
+        mode: 'guided', step: 0, completed: 0, scenario: 'healthy', evidenceTab: 'registry', artifact: 'platform.yaml', reviewEvidence: defaultReview(), config: Object.assign({}, defaultConfig)
       };
       render();
       showToast('Workbench reset');
