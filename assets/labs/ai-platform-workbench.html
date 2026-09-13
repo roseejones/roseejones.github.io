@@ -1158,7 +1158,7 @@
       var deployed = s.deployState === 'deployed';
       var score = s.evalScore === null ? 'not available' : s.evalScore.toFixed(2);
       return stageHeader('<span class="status-pill ' + (deployed ? 'success' : 'blocked') + '">' + escapeHtml(s.deployState) + '</span>', 'The deploy gate reads the same registry, policy, evaluation, provenance, and image evidence shown throughout the journey.') +
-        '<div class="deploy-state ' + (deployed ? '' : 'blocked') + '"><div class="deploy-icon">' + (deployed ? '✓' : '×') + '</div><div><h3>' + (deployed ? state.config.service + ' is live' : 'Release stopped before production') + '</h3><p>' + escapeHtml(s.deployMessage) + '</p></div></div>' +
+        '<div class="deploy-state ' + (deployed ? '' : 'blocked') + '"><div class="deploy-icon">' + (deployed ? '✓' : '×') + '</div><div><h3>' + (deployed ? escapeHtml(state.config.service) + ' is live' : 'Release stopped before production') + '</h3><p>' + escapeHtml(s.deployMessage) + '</p></div></div>' +
         '<div class="summary-grid">' +
           summaryCard('Deployment', deployed ? 'production/support/' + state.config.service : 'No production revision created', deployed ? 'Signed image and workload identity attached.' : 'Previous healthy revision remains active.') +
           summaryCard('Scorecard', 'eval ' + score + ' · image current', deployed ? 'Owner, cost, guardrails, traces, and evals are present.' : 'One or more required controls are not green.') +
