@@ -864,6 +864,45 @@
       return scenarios[state.mode === 'guided' ? 'healthy' : state.scenario];
     }
 
+    function configErrors() {
+      var c = state.config;
+      var errors = {};
+      if (c.service.length > 63 || !/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(c.service)) {
+        errors.service = 'Use a service name of at most 63 lowercase letters, numbers, and single hyphens, starting with a letter.';
+      }
+      if (!c.owner.trim()) errors.owner = 'Enter the owning team.';
+      if (!c.costCenter.trim()) errors.costCenter = 'Enter the cost center.';
+      if (['1', '2', '3', '4'].indexOf(c.riskTier) < 0) errors.riskTier = 'Select a risk tier.';
+      if (['chat-default', 'extract-cheap', 'reason-deep'].indexOf(c.alias) < 0) errors.alias = 'Select a model alias.';
+      if (!Number.isFinite(Number(c.budget)) || Number(c.budget) <= 0) errors.budget = 'Enter a positive, finite monthly budget.';
+      if (['com.enterprise.orders/lookup', 'com.enterprise.refunds/status'].indexOf(c.tool) < 0) errors.tool = 'Select an allowed tool.';
+      return errors;
+    }
+
+    function showConfigErrors(errors) {
+      Object.keys(state.config).forEach(function (name) {
+        var input = document.getElementById(name);
+        input.setCustomValidity(errors[name] || '');
+        input.setAttribute('aria-invalid', String(Boolean(errors[name])));
+      });
+      var summary = document.getElementById('configError');
+      summary.textContent = Object.keys(errors).map(function (name) { return errors[name]; }).join(' ');
+      summary.hidden = Object.keys(errors).length === 0;
+    }
+
+    function validateConfig() {
+      var errors = configErrors();
+      if (Object.keys(errors).length === 0) return true;
+      if (state.step !== 0) {
+        state.step = 0;
+        state.completed = 0;
+        render();
+      }
+      showConfigErrors(errors);
+      document.getElementById('configForm').reportValidity();
+      return false;
+    }
+
     function riskLabel() {
       return {
         '1': 'Tier 1 · internal assist',
@@ -878,7 +917,8 @@
     }
 
     function formatMoney(value) {
-      return '$' + Number(value).toFixed(value < 1 ? 4 : 0);
+      var amount = Number(value);
+      return '$' + amount.toFixed(amount < 1 ? 4 : Number.isInteger(amount) ? 0 : 2);
     }
 
     function yamlString(value) {
@@ -887,6 +927,7 @@
     }
 
     function artifacts() {
+      if (Object.keys(configErrors()).length) throw new Error('Complete the workload declarations before generating artifacts.');
       var c = state.config;
       var platformYaml = [
         'apiVersion: platform.enterprise/v1',
@@ -1053,7 +1094,7 @@
 
     function renderConfigure() {
       var c = state.config;
-      return stageHeader('<span class="status-pill info">6 declarations</span>', 'Define ownership, risk, cost, and authority once. Every downstream control reads the same contract.') +
+      return stageHeader('<span class="status-pill info">7 declarations</span>', 'Define ownership, risk, cost, and authority once. Every downstream control reads the same contract.') +
         '<form id="configForm" class="form-grid">' +
           field('service', 'Service name', c.service, 'The stable workload identifier.', 'text') +
           field('owner', 'Owning team', c.owner, 'Receives operational and budget alerts.', 'text') +
@@ -1069,12 +1110,13 @@
             option('com.enterprise.orders/lookup', 'com.enterprise.orders/lookup · read-only', c.tool) + option('com.enterprise.refunds/status', 'com.enterprise.refunds/status · read-only', c.tool) +
           '</select><small>The agent identity receives only this catalog grant.</small></div>' +
         '</form>' +
+        '<p id="configError" class="callout" role="alert" hidden></p>' +
         '<div class="contract-preview"><div class="terminal-head"><span>Registry identity</span><span>generated as you type</span></div><pre id="contractPreview">' + escapeHtml(contractPreview()) + '</pre></div>' +
         stageActions();
     }
 
     function field(name, label, value, help, type) {
-      return '<div class="field"><label for="' + name + '">' + label + '</label><input id="' + name + '" name="' + name + '" type="' + type + '" value="' + escapeHtml(value) + '" required><small>' + help + '</small></div>';
+      return '<div class="field"><label for="' + name + '">' + label + '</label><input id="' + name + '" name="' + name + '" type="' + type + '" value="' + escapeHtml(value) + '"' + (type === 'number' ? ' min="0" step="any"' : '') + ' required><small>' + help + '</small></div>';
     }
 
     function option(value, label, selected) {
@@ -1201,9 +1243,10 @@
 
     function policyPanel() {
       var s = activeScenario();
-      var budgetPercent = Math.min(100, Math.round((s.budgetUsed / Number(state.config.budget)) * 100));
+      var budget = Number(state.config.budget);
+      var budgetPercent = Number.isFinite(budget) && budget > 0 ? Math.min(100, Math.round((s.budgetUsed / budget) * 100)) : null;
       var budgetTone = budgetPercent >= 100 ? 'blocked' : budgetPercent >= 80 ? 'warning' : '';
-      return '<div class="metric"><span class="metric-label">Budget consumption</span><span class="metric-value">' + budgetPercent + '%</span><div class="bar-track"><div class="bar-fill ' + budgetTone + '" style="width:' + budgetPercent + '%"></div></div></div>' +
+      return '<div class="metric"><span class="metric-label">Budget consumption</span><span class="metric-value">' + (budgetPercent === null ? 'Set budget' : budgetPercent + '%') + '</span><div class="bar-track"><div class="bar-fill ' + budgetTone + '" style="width:' + (budgetPercent || 0) + '%"></div></div></div>' +
         '<dl class="kv-list" style="margin-top:0.7rem">' + kv('Request', s.requestState) + kv('Route reason', s.route) + kv('Guardrail', s.route === 'guardrail-block' ? 'blocked before provider' : 'inherited and active') + kv('Fallback', s.route === 'fallback' ? 'approved and provenance-tagged' : 'not used') + kv('Eval gate', s.evalFailures === 0 && s.evalScore !== null ? 'pass' : 'block') + kv('Deploy gate', s.deployState) + '</dl>';
     }
 
@@ -1241,6 +1284,7 @@
     }
 
     function setStep(nextStep, focusStage) {
+      if (nextStep > 0 && !validateConfig()) return false;
       state.step = Math.max(0, Math.min(steps.length - 1, nextStep));
       state.completed = Math.max(state.completed, state.step);
       if (state.step === 1) state.evidenceTab = 'registry';
@@ -1253,6 +1297,7 @@
         heading.setAttribute('tabindex', '-1');
         heading.focus();
       }
+      return true;
     }
 
     function setMode(mode) {
@@ -1284,6 +1329,7 @@
     }
 
     function downloadArtifact(name) {
+      if (!validateConfig()) return;
       var content = artifacts()[name];
       var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
       var url = URL.createObjectURL(blob);
@@ -1320,12 +1366,14 @@
         document.getElementById('tab-' + state.evidenceTab).focus();
       }
       if (target.hasAttribute('data-view-artifact')) {
+        if (!validateConfig()) return;
         state.artifact = target.getAttribute('data-view-artifact');
         document.getElementById('artifactTitle').textContent = state.artifact;
         document.getElementById('artifactPreview').textContent = artifacts()[state.artifact];
         document.getElementById('artifactPreview').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
       if (target.hasAttribute('data-copy-artifact')) {
+        if (!validateConfig()) return;
         var copyName = target.getAttribute('data-copy-artifact');
         copyText(artifacts()[copyName], copyName + ' copied');
       }
@@ -1335,8 +1383,17 @@
     document.addEventListener('input', function (event) {
       if (!event.target.closest('#configForm')) return;
       state.config[event.target.name] = event.target.value;
+      state.completed = 0;
+      renderStepper();
+      if (!document.getElementById('configError').hidden) showConfigErrors(configErrors());
       document.getElementById('contractPreview').textContent = contractPreview();
       renderEvidence();
+    });
+
+    document.addEventListener('submit', function (event) {
+      if (event.target.id !== 'configForm') return;
+      event.preventDefault();
+      setStep(1, true);
     });
 
     document.getElementById('resetButton').addEventListener('click', function () {
@@ -1350,7 +1407,7 @@
     stepper.addEventListener('keydown', function (event) {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault();
-      setStep(state.step + (event.key === 'ArrowRight' ? 1 : -1), false);
+      if (!setStep(state.step + (event.key === 'ArrowRight' ? 1 : -1), false)) return;
       stepper.querySelector('[aria-current="step"]').focus();
     });
 
