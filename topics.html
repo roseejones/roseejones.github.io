@@ -14,7 +14,7 @@ layout: not_homepage
             <span class="tile-no">0{{ forloop.index }}</span> <span class="tile-tag">/ topic</span>
             <h2 class="tile-title">{{ topic.title }}</h2>
             <p class="tile-desc">{{ topic.description }}</p>
-            <span class="tile-link">view slides + resources -&gt;</span>
+            <span class="tile-link">{{ topic.cta | default: "view slides + resources" }} -&gt;</span>
         </a>
         {% endfor %}
     </div>

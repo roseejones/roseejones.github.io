@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Invisible Platform: an enterprise AI platform explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #ffffff;
+    --ink: #1c1c1c;
+    --ink-2: #4a4a4a;
+    --ink-3: #8a8a8a;
+    --rule: #dcdcd6;
+    --red: #a02c1e;
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    overflow: hidden;
+  }
+  [hidden] { display: none !important; }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--red); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .86em; color: var(--ink); }
+  em { font-style: italic; }
+
+  /* ---- app shell: fills the iframe or the viewport ---- */
+  .app { height: 100%; display: flex; flex-direction: column; }
+  .view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--red); width: 0; transition: width .3s ease; z-index: 6; }
+
+  /* ---- shared editorial components ---- */
+  .label {
+    font-family: var(--sans);
+    font-size: clamp(.66rem, 1.2vw, .76rem);
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: .9rem;
+  }
+  .label .no { color: var(--red); }
+  h1 {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+  h2 {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    max-width: 46rem;
+  }
+  h2:focus { outline: none; }
+  .sub {
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    color: var(--ink-2);
+    line-height: 1.55;
+    max-width: 44rem;
+    margin-top: .9rem;
+  }
+  .prose p { font-size: clamp(.95rem, 1.6vw, 1.08rem); color: var(--ink-2); line-height: 1.6; max-width: 46rem; margin-bottom: 1rem; }
+  .prose p strong { color: var(--ink); font-weight: 600; }
+  .prose h3 {
+    font-family: var(--sans);
+    font-size: clamp(.68rem, 1.2vw, .78rem);
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 1.6rem 0 .7rem;
+  }
+  .prose h3:first-child { margin-top: 0; }
+
+  .cols { display: flex; gap: 0; border-top: 1px solid var(--rule); margin-top: .6rem; }
+  .col { flex: 1; padding: 1.2rem 2rem 0 0; min-width: 0; }
+  .col + .col { border-left: 1px solid var(--rule); padding-left: 2rem; }
+  .col h3 {
+    font-family: var(--sans);
+    font-size: clamp(.68rem, 1.2vw, .78rem);
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: .8rem;
+  }
+  .col p, .col li {
+    font-size: clamp(.92rem, 1.6vw, 1.04rem);
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+  .col p { margin-bottom: .6rem; }
+  .col ul { list-style: none; }
+  .col li { margin-bottom: .5rem; padding-left: 1rem; text-indent: -1rem; }
+  .col li::before { content: "·\2002"; color: var(--red); }
+  .col .big {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: .5rem;
+  }
+  .col .big.bad { color: var(--red); }
+  .col .src { font-family: var(--sans); font-size: clamp(.62rem, 1vw, .7rem); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-top: .4rem; }
+
+  .pull {
+    margin-top: 1.6rem;
+    font-size: clamp(1.02rem, 2vw, 1.32rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 46rem;
+  }
+  .pull strong { font-style: normal; font-weight: 600; }
+  .pull .lead { color: var(--red); font-style: normal; font-weight: 600; }
+
+  .flow { border-top: 1px solid var(--rule); margin-top: .6rem; }
+  .flow .frow { display: flex; align-items: baseline; gap: 1.3rem; padding: .8rem 0; border-bottom: 1px solid var(--rule); }
+  .flow .fno {
+    font-family: var(--serif); font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: var(--red); min-width: 1.6rem; text-align: right;
+  }
+  .flow .ft { font-weight: 600; font-size: clamp(.95rem, 1.7vw, 1.1rem); min-width: 11rem; max-width: 14rem; }
+  .flow.timed .fno { min-width: 3.2rem; font-size: clamp(.95rem, 1.6vw, 1.1rem); white-space: nowrap; }
+  .flow .fd { color: var(--ink-2); font-size: clamp(.88rem, 1.6vw, 1rem); line-height: 1.45; }
+
+  table { width: 100%; border-collapse: collapse; border-top: 1px solid var(--ink); margin-top: .6rem; }
+  th, td { text-align: left; padding: clamp(.5rem, 1.2vw, .8rem) 1.4rem clamp(.5rem, 1.2vw, .8rem) 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
+  th {
+    font-family: var(--sans); font-size: clamp(.66rem, 1.1vw, .76rem);
+    font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3);
+  }
+  td:first-child { font-weight: 600; white-space: nowrap; font-size: clamp(.9rem, 1.7vw, 1.05rem); }
+  td { color: var(--ink-2); font-size: clamp(.86rem, 1.6vw, 1rem); line-height: 1.5; }
+  td em { color: var(--ink); }
+  table.lens th, table.lens td { padding-top: clamp(.4rem, 1vw, .6rem); padding-bottom: clamp(.4rem, 1vw, .6rem); }
+  table.lens td { font-size: clamp(.8rem, 1.5vw, .95rem); }
+  table.lens td:first-child { font-size: clamp(.82rem, 1.6vw, .98rem); }
+  .cat {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: clamp(.58rem, 1vw, .64rem);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-top: .15rem;
+  }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll table { min-width: 38rem; }
+  tr.grp td { font-family: var(--sans); font-size: clamp(.62rem, 1.1vw, .7rem); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); padding-top: 1rem; white-space: normal; }
+
+  .pill {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: .6rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    line-height: 1;
+    padding: .24rem .5rem;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .pill.solid { color: var(--ink); }
+  .pill.partial { color: var(--ink-3); border-style: dashed; }
+  .pill.gap { color: var(--red); }
+  .horizon { margin-top: 1.4rem; font-family: var(--sans); font-size: clamp(.66rem, 1.1vw, .74rem); color: var(--ink-3); letter-spacing: .04em; }
+  .horizon .pill { margin-right: .5rem; }
+
+  .fig { margin: .6rem 0 1rem; }
+  .fig svg { display: block; width: 100%; height: auto; max-width: 760px; }
+  .fig-caption {
+    font-family: var(--sans);
+    font-size: clamp(.68rem, 1.2vw, .76rem);
+    color: var(--ink-3);
+    margin-top: .4rem;
+    margin-bottom: 1rem;
+    letter-spacing: .02em;
+    max-width: 46rem;
+  }
+
+  /* pre-rendered Mermaid system map, injected at load time */
+  .mermaid-fig { overflow-x: auto; -webkit-overflow-scrolling: touch; min-height: 6rem; }
+  .mermaid-fig svg { display: block; width: 100%; min-width: 1080px; max-width: 1400px; height: auto; }
+  .mermaid-fig svg .label,
+  .mermaid-fig svg .cluster-label { font-family: var(--sans); font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink); margin: 0; }
+  .mermaid-fig svg .cluster-label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+  .mermaid-fig svg .edgeLabel .label { font-size: 11px; }
+  .mermaid-fig.narrow { overflow: visible; }
+  .mermaid-fig.narrow svg { min-width: 0; max-width: 720px; margin: 0 auto; }
+  .mermaid-fig .fig-fallback { font-family: var(--sans); font-size: .8rem; color: var(--ink-3); }
+
+  .specimen { border: 1px solid var(--ink); margin: .8rem 0 .5rem; max-width: 46rem; }
+  .specimen .srow { display: flex; border-bottom: 1px solid var(--rule); }
+  .specimen .srow:last-child { border-bottom: none; }
+  .specimen .sk {
+    flex: 0 0 10rem;
+    min-width: 0; overflow-wrap: anywhere;
+    font-family: var(--sans);
+    font-size: clamp(.62rem, 1.1vw, .7rem);
+    font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--red);
+    padding: .7rem .9rem;
+    border-right: 1px solid var(--rule);
+  }
+  .specimen .sv {
+    flex: 1;
+    font-size: clamp(.85rem, 1.6vw, .98rem);
+    color: var(--ink-2);
+    line-height: 1.5;
+    padding: .7rem .9rem;
+  }
+  .specimen .sv q { font-style: italic; color: var(--ink); }
+  .specimen .sv .bad { color: var(--red); font-weight: 600; }
+
+  /* ---- grid view ---- */
+  #gridView { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 2.2rem 6vw 3rem; }
+  .grid-head { max-width: 1080px; margin: 0 auto 1.8rem; }
+  .grid-head .hint { font-family: var(--sans); font-size: clamp(.68rem, 1.2vw, .76rem); color: var(--ink-3); margin-top: 1rem; letter-spacing: .02em; }
+  .grid {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    column-gap: 2rem;
+    border-top: 1px solid var(--ink);
+  }
+  .card {
+    display: block;
+    padding: 1.1rem 0 1.3rem;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    color: inherit;
+  }
+  .card .no { display: block; font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--red); margin-bottom: .35rem; }
+  .card-title { display: block; font-size: clamp(1.08rem, 1.8vw, 1.22rem); font-weight: 500; line-height: 1.2; margin-bottom: .45rem; transition: color .15s ease; }
+  .card-hook { display: block; font-size: clamp(.86rem, 1.5vw, .94rem); color: var(--ink-2); line-height: 1.45; }
+  .card:hover .card-title, .card:focus-visible .card-title { color: var(--red); }
+  .card:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+
+  /* ---- topic view ---- */
+  .bar {
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .55rem 1.4rem;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: .78rem; color: var(--ink-3);
+    background: var(--paper);
+    user-select: none;
+  }
+  .bar button {
+    background: none; border: none;
+    color: var(--ink-2);
+    font: inherit; letter-spacing: .08em; text-transform: uppercase;
+    cursor: pointer; padding: .4rem .2rem;
+  }
+  .bar button:hover { color: var(--red); }
+  .bar button[disabled] { color: var(--rule); cursor: default; }
+  .bar button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .bar .count { letter-spacing: .15em; }
+  .bar .nav { display: flex; gap: 1.2rem; }
+
+  .scroller { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 1.4rem 6vw 3rem; }
+  .topic { max-width: 1080px; margin: 0 auto; }
+  .topic-head .label { margin-bottom: .6rem; }
+  .topic-head .sub { margin-top: .6rem; }
+
+  .tabs {
+    display: flex; gap: 1.6rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid var(--rule);
+    margin: 1rem 0 1.4rem;
+    position: sticky; top: -1.4rem;
+    background: var(--paper);
+    z-index: 2;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    background: none; border: 0;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    padding: .7rem 0 .6rem;
+    font-family: var(--sans); font-size: .7rem; font-weight: 500; line-height: 1;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-3);
+    cursor: pointer; white-space: nowrap;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--red); }
+  .tab:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .panel > :last-child { margin-bottom: 0; }
+  .panel .pull:last-child { margin-bottom: .5rem; }
+
+  /* ---- print: one document, every topic and panel, chrome hidden ---- */
+  @page { size: A4; margin: 16mm 14mm; }
+  @media print {
+    html, body { height: auto; overflow: visible; }
+    .app, .view, .scroller { display: block; height: auto; overflow: visible; padding: 0; }
+    #gridView, .bar, .progress, .tabs, .grid-head .hint { display: none !important; }
+    #topicView, .topic, .panel { display: block !important; }
+    .topic { break-before: page; page-break-before: always; max-width: none; }
+    .topic:first-of-type { break-before: auto; page-break-before: auto; }
+    .panel::before {
+      content: attr(data-label);
+      display: block;
+      font-family: var(--sans); font-size: .68rem; font-weight: 600;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--red);
+      margin: 1.4rem 0 .6rem;
+    }
+    .fig svg { max-width: 70%; }
+    .mermaid-fig { overflow: visible; }
+    .mermaid-fig svg { min-width: 0; max-width: 100%; }
+    table, .specimen, .fig, .frow { break-inside: avoid; }
+    a { text-decoration: none; }
+  }
+
+  /* ---- phone ---- */
+  @media (max-width: 700px) {
+    #gridView { padding: 1.6rem 5vw 3rem; }
+    .scroller { padding: 1rem 5vw 3rem; }
+    .tabs { top: -1rem; gap: 1.1rem; }
+    .bar { padding: .45rem .9rem; }
+    .cols { flex-direction: column; }
+    .col { padding-right: 0; }
+    .col + .col { border-left: none; border-top: 1px solid var(--rule); padding-left: 0; margin-top: 1.1rem; padding-top: 1.1rem; }
+    .flow .frow { flex-wrap: wrap; gap: .3rem .9rem; }
+    .flow .ft { min-width: 0; max-width: none; }
+    .flow .fd { flex-basis: 100%; padding-left: 2.5rem; }
+    td:first-child { white-space: normal; }
+    .specimen .srow { flex-direction: column; }
+    .specimen .sk { flex-basis: auto; border-right: none; padding-bottom: .15rem; }
+    .specimen .sv { padding-top: 0; }
+  }
+  @media (max-width: 480px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  /* short viewports (the 560px site embed): compact hero so the first cards are visible */
+  @media (max-height: 640px) and (min-width: 701px) {
+    #gridView { padding-top: 1.4rem; }
+    .grid-head { margin-bottom: 1.1rem; }
+    .grid-head .label { margin-bottom: .5rem; }
+    .grid-head h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); }
+    .grid-head .sub { font-size: .95rem; line-height: 1.45; margin-top: .5rem; max-width: 52rem; }
+    .grid-head .hint { margin-top: .5rem; }
+    .card { padding: .8rem 0 .9rem; }
+    .card .no { font-size: .95rem; margin-bottom: .2rem; }
+    .topic-head .sub { font-size: .95rem; line-height: 1.45; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="app">
+
+  <!-- ================================================== grid view -->
+  <div class="view" id="gridView">
+    <header class="grid-head">
+      <div class="label">Rose Jones · Enterprise AI platform</div>
+      <h1>The invisible platform</h1>
+      <p class="sub">The best enterprise AI platform is the one engineers stop noticing. Every account, model call, guardrail, trace, and dollar is handled before anyone asks, and the whole organization builds on it without thinking about it. Thirteen topics, each with why it matters, the target state, and where we are today.</p>
+      <p class="hint">Pick a topic. Inside a topic, arrow keys move between topics and Esc returns here.</p>
+    </header>
+    <nav class="grid" id="grid" aria-label="Topics"></nav>
+  </div>
+
+  <!-- ================================================== topic view -->
+  <div class="view" id="topicView" hidden>
+    <div class="bar">
+      <button id="backBtn" aria-label="Back to topics">← Topics</button>
+      <span class="count" id="count" aria-live="polite"></span>
+      <span class="nav">
+        <button id="prevBtn" aria-label="Previous topic">← Prev</button>
+        <button id="nextBtn" aria-label="Next topic">Next →</button>
+      </span>
+    </div>
+    <div class="scroller" id="scroller">
+
+      <!-- 01 · Why now -->
+      <section class="topic" id="t-why-now" data-id="why-now" data-no="01" data-title="Why this matters now" data-hook="AI investment pays off almost only where the internal platform is good. The platform is not a supporting function of the AI strategy; it is the AI strategy." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">01</span> · The mandate</div>
+          <h2 class="topic-title" tabindex="-1">Why this matters now</h2>
+          <p class="sub">The evidence from 2025 and 2026 is unusually consistent: AI pays off in organizations with high-quality internal platforms and fails almost everywhere else.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="why" data-label="The evidence">
+          <div class="cols">
+            <div class="col"><div class="big bad">95%</div><p>of enterprise GenAI pilots showed no measurable P&amp;L impact; the differentiator was workflow integration, never model quality.</p><p class="src">MIT NANDA 2025</p></div>
+            <div class="col"><div class="big">90%</div><p>of developers use AI at work. AI amplifies what the organization already is, and platform quality predicts whether usage converts to value.</p><p class="src">DORA 2025</p></div>
+            <div class="col"><div class="big bad">&gt;40%</div><p>of agentic AI projects are predicted to be canceled by end-2027: cost, unclear value, and weak risk controls a platform absorbs.</p><p class="src">Gartner 2025</p></div>
+            <div class="col"><div class="big">99%</div><p>voluntary internal adoption of Spotify's platform in about a year; onboarding cut from 60 days to 20.</p><p class="src">Spotify / Backstage</p></div>
+          </div>
+          <div class="prose" style="margin-top:1.4rem">
+            <p>Two more numbers frame the mandate. Shadow AI is the default state: over 90% of workers use personal AI tools regardless of policy, so restrictive governance does not stop usage, it only makes usage invisible. And the METR randomized trial found experienced developers were 19% <em>slower</em> with AI on familiar codebases while believing they were 20% faster, so any adoption program that measures by self-report is measuring vibes.</p>
+          </div>
+          <p class="pull"><span class="lead">The platform answer to both is the same.</span> Make the sanctioned path measurably better than the shadow path, and <strong>instrument it so you know the truth</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="principles" data-label="Seven principles">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">The paved road is the easiest road</span><span class="fd">Never a mandate. Spotify hit 99% voluntary adoption; Netflix lets teams go off-road if they own the consequences. If engineers route around the platform, the platform is wrong, not the engineers.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Compliance is inherited</span><span class="fd">Guardrails, audit logs, risk assessment, data residency, and cost attribution are properties of the road, applied once at the platform layer. An app team should not be able to be non-compliant by accident.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Self-service is the bar for done</span><span class="fd">A capability that requires a ticket is not shipped. Collaboration mode is time-boxed for incubating new capabilities, then hardened into X-as-a-Service.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">One control plane per concern</span><span class="fd">One gateway for model traffic, one registry for agents, one catalog for tools, one inventory for models. Every duplicate control point is a governance gap and a reconciliation project waiting to happen.</span></div>
+            <div class="frow"><span class="fno">5</span><span class="ft">Buy the primitives, build the thin control plane</span><span class="fd">Runtimes, gateways, and observability are commodities with strong vendors. What vendors cannot ship is your policy: the registry, risk tiers, and cost model. Build that thin, on open standards.</span></div>
+            <div class="frow"><span class="fno">6</span><span class="ft">Platform as product</span><span class="fd">A platform PM, user research on internal engineers, a published roadmap, internal marketing. Thoughtworks saw adoption take off only after 14 months of sustained promotion: the marketing is part of the engineering.</span></div>
+            <div class="frow"><span class="fno">7</span><span class="ft">Measure honestly, including costs</span><span class="fd">Track voluntary adoption, time-to-first-AI-call, and shadow-AI rate, and pair every velocity metric with a counter-metric. METR proved perception and reality diverge; only telemetry plus controlled comparisons settle it.</span></div>
+          </div>
+          <p class="pull">Everything in the other eleven topics is an application of these seven. <strong>Each one is testable.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="positions" data-label="Positions to defend">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">The platform is the AI strategy</span><span class="fd">DORA 2025: platform quality directly predicts whether AI investment converts to value; AI amplifies what the organization already is.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Adoption is won on merit</span><span class="fd">A mandate is an admission the product lost. Spotify reached 99% voluntarily; most Backstage adopters stall at 10% because engineers see no personal benefit.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Centralize the choke points, free everything else</span><span class="fd">One gateway, one agent registry, one tool catalog, one inventory. Compliance becomes an inherited property and teams keep full freedom above the platform line.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Buy runtimes, standardize protocols, build the thin control plane</span><span class="fd">Vendors ship infrastructure, not your policy. MIT's 67% versus 33% success gap favors buying commodities; the registry, risk tiers, and cost model are what differentiate.</span></div>
+            <div class="frow"><span class="fno">5</span><span class="ft">Governance is a fast lane, not a gate</span><span class="fd">Risk tiering sends most use cases through zero human review while high-stakes cases get real scrutiny. The alternative is a review board engineers route around, invisibly.</span></div>
+            <div class="frow"><span class="fno">6</span><span class="ft">Agents need their own identity class</span><span class="fd">Prompt filtering is not an enforcement boundary. Tool allowlists bound to attested agent identities, with auditable delegation chains, are.</span></div>
+            <div class="frow"><span class="fno">7</span><span class="ft">Measure with telemetry, never self-report</span><span class="fd">METR: minus 19% actual versus plus 20% perceived. Pair every velocity metric with a quality counter-metric and pre-register pilot thresholds.</span></div>
+            <div class="frow"><span class="fno">8</span><span class="ft">Cost visibility precedes cost accountability</span><span class="fd">Showback from day one via gateway tagging; chargeback only at maturity, because premature chargeback suppresses adoption of a young platform.</span></div>
+          </div>
+          <p class="pull">Eight claims a platform leader should be able to state in one breath and <strong>defend under cross-examination</strong>.</p>
+        </div>
+      </section>
+
+      <!-- 02 · Architecture -->
+      <section class="topic" id="t-architecture" data-id="architecture" data-no="02" data-title="Reference architecture" data-hook="Five horizontal layers, three rails that cross all of them, and one choke point on purpose." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">02</span> · The shape</div>
+          <h2 class="topic-title" tabindex="-1">Reference architecture</h2>
+          <p class="sub">Each layer consumes the one below. The existing estate (engine platform, ML build platform, AI platform) maps cleanly onto the bottom three; the frontier work is layers four and five plus extending the rails to agents.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="shape" data-label="Layers and rails">
+          <div class="fig"><svg viewBox="0 0 640 270" role="img" aria-label="Five stacked platform layers crossed by three vertical rails; layer three, the model gateway, is highlighted">
+            <g font-family="Inter,sans-serif" font-size="11" fill="#1c1c1c">
+              <g fill="none" stroke="#8a8a8a" stroke-width="1.1" stroke-dasharray="5 4">
+                <rect x="20" y="14" width="420" height="40"/>
+              </g>
+              <text x="32" y="32">L5 · Experience</text>
+              <text x="32" y="46" font-size="9" fill="#8a8a8a">golden paths · catalog · scorecards · scaffolder</text>
+              <g fill="none" stroke="#8a8a8a" stroke-width="1.1" stroke-dasharray="5 4">
+                <rect x="20" y="62" width="420" height="40"/>
+              </g>
+              <text x="32" y="80">L4 · Agent platform</text>
+              <text x="32" y="94" font-size="9" fill="#8a8a8a">registry · runtime · tool catalog · agent identity · memory</text>
+              <g fill="none" stroke="#a02c1e" stroke-width="1.6">
+                <rect x="20" y="110" width="420" height="40"/>
+              </g>
+              <text x="32" y="128">L3 · Foundation model services</text>
+              <text x="32" y="142" font-size="9" fill="#8a8a8a">the gateway: every model call · guardrails · aliases · cache · cost · evals</text>
+              <g fill="none" stroke="#1c1c1c" stroke-width="1.2">
+                <rect x="20" y="158" width="420" height="40"/>
+                <rect x="20" y="206" width="420" height="40"/>
+              </g>
+              <text x="32" y="176">L2 · ML build platform</text>
+              <text x="32" y="190" font-size="9" fill="#8a8a8a">terraform to serving · bring your own training · model registry</text>
+              <text x="32" y="224">L1 · Engine platform</text>
+              <text x="32" y="238" font-size="9" fill="#8a8a8a">kubernetes · account to URL · base images · packaging</text>
+            </g>
+            <g fill="none" stroke="#4a4a4a" stroke-width="1.1" stroke-dasharray="3 3">
+              <rect x="462" y="14" width="50" height="232"/>
+              <rect x="520" y="14" width="50" height="232"/>
+              <rect x="578" y="14" width="50" height="232"/>
+            </g>
+            <g font-family="Inter,sans-serif" font-size="9" fill="#1c1c1c" text-anchor="middle">
+              <text transform="translate(490,130) rotate(-90)">Identity &amp; secrets</text>
+              <text transform="translate(548,130) rotate(-90)">Observability &amp; FinOps</text>
+              <text transform="translate(606,130) rotate(-90)">Governance &amp; risk</text>
+            </g>
+            <text x="448" y="264" font-family="Newsreader,Georgia,serif" font-style="italic" font-size="11" fill="#a02c1e" text-anchor="end">every model call flows through L3</text>
+          </svg></div>
+          <p class="fig-caption">Solid outline: exists today. Dashed: target state. The three rails apply to every layer, and the frontier is extending them to agents.</p>
+          <div class="prose">
+            <p>The load-bearing decision is that <strong>layer three is a choke point on purpose</strong>. When every model call in the company flows through one org-controlled gateway, then guardrails, quotas, cost attribution, audit logging, caching, model migration, and regulatory evidence are each solved exactly once. Direct-to-provider calls from application VPCs are blocked at the network layer, which converts policy into physics.</p>
+            <p>Uber, LinkedIn, and every serious 2026 reference architecture converge on this same shape. The existing centralized API is already this pattern's core, and most of the roadmap is deepening it.</p>
+          </div>
+        </div>
+
+        <div class="panel" data-tab="map" data-label="System map">
+          <div class="prose"><p>The same platform as a system: how an engineer's work reaches a model or a tool, and which control points it passes on the way. Solid boxes exist today; dashed boxes are target state; the red outline is the gateway choke point. The three rails (identity, observability and FinOps, governance) apply to every box and are drawn on the first tab.</p></div>
+          <div class="fig mermaid-fig" id="sysmap" data-src="ai-platform-map.svg" aria-busy="true"></div>
+          <p class="fig-caption">Rendered from <code>ai-platform-map.mmd</code> (Mermaid). Edit the source and re-render to change the map; the explorer loads the SVG next to it.</p>
+        </div>
+
+        <div class="panel" data-tab="capmap" data-label="Capability map">
+          <div class="prose"><p>Every capability an engineer should inherit for free, with honest status. <strong>Solid</strong> means engineers already take it for granted; <strong>partial</strong> means it exists but still requires thought; <strong>gap</strong> means teams are solving it themselves today, which is the definition of platform debt.</p></div>
+          <div class="table-scroll">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Target state</th></tr>
+            <tr class="grp"><td colspan="3">L1 to L2 · Engine and ML build</td></tr>
+            <tr><td>Service provisioning and deploy</td><td><span class="pill solid">solid</span></td><td>Account creation to running service in one flow. The benchmark every new capability is measured against.</td></tr>
+            <tr><td>Model serving via Terraform</td><td><span class="pill solid">solid</span></td><td>Config-only deployment of trained models. Extend with autoscaling GPU profiles and canary rollout as defaults.</td></tr>
+            <tr><td>Hardened base images</td><td><span class="pill gap">gap</span></td><td>Minimal, signed, SBOM-emitting containers with risk assessment pre-applied and the guardrail and telemetry clients baked in.</td></tr>
+            <tr><td>Packaging and artifact flow</td><td><span class="pill gap">gap</span></td><td>One-command packaging with Artifactory wired: publish, version, and consume internal libraries and model artifacts without setup.</td></tr>
+            <tr><td>Model registry and cards</td><td><span class="pill gap">gap</span></td><td>Every trained or consumed model registered with owner, version, eval results, and intended use. Generated, never hand-maintained.</td></tr>
+            <tr class="grp"><td colspan="3">L3 · Foundation model services</td></tr>
+            <tr><td>Centralized model API</td><td><span class="pill solid">solid</span></td><td>Already the single front door. Target: OpenAI-compatible surface so every SDK and framework works unchanged.</td></tr>
+            <tr><td>Guardrails by default</td><td><span class="pill solid">solid</span></td><td>Keep central config; add tiered enforcement (block, flag, log) per route risk and output-side scanning.</td></tr>
+            <tr><td>Telemetry and logging</td><td><span class="pill partial">partial</span></td><td>SignalFx is wired; adopt OpenTelemetry GenAI conventions so every call carries tokens, model, latency, and trace context.</td></tr>
+            <tr><td>Model aliases and version pinning</td><td><span class="pill gap">gap</span></td><td>Apps request <code>chat-default</code>; the platform maps aliases to pinned provider versions. Deprecations become config changes.</td></tr>
+            <tr><td>Prompt and response caching</td><td><span class="pill gap">gap</span></td><td>Provider prompt caching on by default, exact-match response cache, scoped semantic cache as per-route opt-in.</td></tr>
+            <tr><td>Cost attribution and budgets</td><td><span class="pill gap">gap</span></td><td>Virtual keys per team and app; every request tagged; soft alert at 80%, hard stop at 100%; showback from day one.</td></tr>
+            <tr><td>Evaluation as a service</td><td><span class="pill gap">gap</span></td><td>Central eval harness, judge pool, and a registry of core and regression datasets; regressions gate CI.</td></tr>
+            <tr class="grp"><td colspan="3">L4 · Agent platform</td></tr>
+            <tr><td>Agent registry</td><td><span class="pill gap">gap</span></td><td>Registration is a deploy gate: no production credentials without an owner and cost center. Usage and billing per agent.</td></tr>
+            <tr><td>Agent runtime</td><td><span class="pill gap">gap</span></td><td>Session-isolated, long-running, checkpointed execution with managed memory and sandboxed code and browser harnesses.</td></tr>
+            <tr><td>MCP catalog and gateway</td><td><span class="pill gap">gap</span></td><td>Private subregistry of vetted servers; gateway enforces allowlists, per-user OAuth, audit logs; tool definitions hash-pinned.</td></tr>
+            <tr><td>Agent identity and delegation</td><td><span class="pill gap">gap</span></td><td>Workload attestation, short-lived scoped tokens, explicit delegation chains that policy engines can evaluate.</td></tr>
+            <tr><td>Action-level guardrails and HITL</td><td><span class="pill gap">gap</span></td><td>Tool allowlists per agent identity, policy-as-code on tool calls, human approval for high-impact actions.</td></tr>
+            <tr class="grp"><td colspan="3">L5 · Experience layer and rails</td></tr>
+            <tr><td>Golden-path scaffolder</td><td><span class="pill gap">gap</span></td><td>One-click "new AI service" and "new agent" templates with gateway client, guardrails, telemetry, identity, and CI pre-wired.</td></tr>
+            <tr><td>Scorecards</td><td><span class="pill gap">gap</span></td><td>Standards continuously evaluated per service, keeping teams on the road without gates or review meetings.</td></tr>
+            <tr><td>Identity, secrets, IAM</td><td><span class="pill solid">solid</span></td><td>Already frictionless for services; extend the same experience to agent identities and provider-key custody.</td></tr>
+            <tr><td>Model inventory / AI BOM</td><td><span class="pill gap">gap</span></td><td>Auto-generated from gateway and registries: the audit-ready answer to "which apps use the affected model?"</td></tr>
+          </table>
+          </div>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <div class="cols">
+            <div class="col">
+              <h3>Solid today</h3>
+              <ul>
+                <li>Engine platform: Kubernetes-backed, from AWS account creation to a deployed service with minimal friction</li>
+                <li>ML build platform: a Terraform configuration is all it takes to serve a model; training stays free-form</li>
+                <li>AI platform: one org-controlled API with guardrails applied by default, telemetry and SignalFx wired automatically, easy service accounts, secrets, and IAM across the lifecycle</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h3>Open, in leverage order</h3>
+              <ul>
+                <li>L3 depth: aliases, caching with a ready-to-spin-up database, cost attribution, the eval harness</li>
+                <li>L1 polish: standardized base images with risk assessment pre-applied; packaging with Artifactory wired</li>
+                <li>L4, mostly greenfield: an agent-core style registry, MCP server catalog, runtime management, agent identity</li>
+                <li>L5: the scaffolder and scorecards that manufacture "taken for granted"</li>
+              </ul>
+            </div>
+          </div>
+          <p class="horizon"><span class="pill solid">3 of 5 layers solid</span> The next two horizons are L3 depth, then L4.</p>
+          <p class="pull">Three platforms engineers already take for granted are the proof the model works. <strong>The job is to extend the same feeling upward.</strong></p>
+        </div>
+      </section>
+
+      <!-- 03 · Gateway -->
+      <section class="topic" id="t-gateway" data-id="gateway" data-no="03" data-title="The model gateway" data-hook="Stand in the request path exactly once, and cost, safety, migration, caching, and evidence are each solved once." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">03</span> · Foundation model services</div>
+          <h2 class="topic-title" tabindex="-1">The model gateway</h2>
+          <p class="sub">The highest-leverage component in the whole architecture: a centralized, highly available proxy, deployed natively in the cluster, that every inference call in the company flows through.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="why" data-label="Why it matters">
+          <div class="prose">
+            <p>Instead of teams managing their own provider keys, all traffic flows through one gateway that speaks the OpenAI-compatible schema every SDK and framework already understands. Because it stands in the request path, every other concern becomes a feature of the road: quotas, guardrails, attribution, caching, model migration, and the audit trail regulators ask for.</p>
+            <p>The existing centralized API with guardrails by default is already this pattern's core. What remains is depth: aliases, caching, cost attribution, and evaluation, each of which keys off the gateway's position.</p>
+          </div>
+          <div class="cols">
+            <div class="col"><h3>Solved once</h3><ul><li>Authentication, quotas, rate limits by provisioned tier</li><li>Guardrails and data loss prevention</li><li>Cost attribution and budgets</li><li>Audit logging and regulatory evidence</li></ul></div>
+            <div class="col"><h3>Changed once</h3><ul><li>Provider deprecations, via aliases</li><li>Fallback and failover policy</li><li>Caching strategy per route</li><li>Data residency, as a routing rule</li></ul></div>
+          </div>
+          <p class="pull">Blocking direct-to-provider calls at the network layer turns policy into physics: <strong>the sanctioned path is the only path that works</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="path" data-label="Request path">
+          <div class="fig"><svg viewBox="0 0 660 240" role="img" aria-label="An application calls the gateway, which runs pre-flight checks, routes to a pinned provider model with a dashed fallback, and post-flight tagging before returning">
+            <defs>
+              <marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#a02c1e"/>
+              </marker>
+            </defs>
+            <g fill="none" stroke="#1c1c1c" stroke-width="1.2">
+              <rect x="14" y="80" width="90" height="44"/>
+              <rect x="190" y="18" width="240" height="168"/>
+              <rect x="540" y="44" width="106" height="40"/>
+            </g>
+            <g fill="none" stroke="#8a8a8a" stroke-width="1.1" stroke-dasharray="5 4">
+              <rect x="540" y="134" width="106" height="40"/>
+            </g>
+            <g fill="none" stroke="#dcdcd6" stroke-width="1">
+              <path d="M190,74 L430,74"/>
+              <path d="M190,130 L430,130"/>
+            </g>
+            <g font-family="Inter,sans-serif" font-size="12" fill="#1c1c1c" text-anchor="middle">
+              <text x="59" y="106">App</text>
+              <text x="593" y="68">Provider A</text>
+              <text x="593" y="158" fill="#4a4a4a">Provider B</text>
+            </g>
+            <g font-family="Inter,sans-serif" font-size="10" fill="#1c1c1c">
+              <text x="200" y="36" font-weight="600">Pre-flight</text>
+              <text x="200" y="50" font-size="9" fill="#8a8a8a">OIDC auth · quota · budget check before spend</text>
+              <text x="200" y="63" font-size="9" fill="#8a8a8a">input guardrails + DLP masking · cache lookup</text>
+              <text x="200" y="92" font-weight="600">Route</text>
+              <text x="200" y="106" font-size="9" fill="#8a8a8a">alias to pinned version · priority load balance</text>
+              <text x="200" y="119" font-size="9" fill="#8a8a8a">circuit breaker per provider and model</text>
+              <text x="200" y="148" font-weight="600">Post-flight</text>
+              <text x="200" y="162" font-size="9" fill="#8a8a8a">output guardrails · restore masked values</text>
+              <text x="200" y="175" font-size="9" fill="#8a8a8a">OTel GenAI span with cost · async showback</text>
+            </g>
+            <g fill="none" stroke="#4a4a4a" stroke-width="1.1">
+              <path d="M104,96 L187,96" marker-end="url(#ah1)"/>
+              <path d="M430,64 L537,64" marker-end="url(#ah1)"/>
+              <path d="M537,76 L433,76" marker-end="url(#ah1)"/>
+              <path d="M187,110 L107,110" marker-end="url(#ah1)"/>
+            </g>
+            <g fill="none" stroke="#a02c1e" stroke-width="1.2" stroke-dasharray="5 4">
+              <path d="M430,110 L537,154" marker-end="url(#ah1)"/>
+            </g>
+            <g font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a">
+              <text x="146" y="90" text-anchor="middle">virtual key</text>
+              <text x="146" y="122" text-anchor="middle">response</text>
+              <text x="484" y="56" text-anchor="middle">pinned model</text>
+              <text x="540" y="212" text-anchor="end">fallback on outage or 429: cross-region Bedrock or self-hosted vLLM</text>
+            </g>
+            <text x="310" y="226" font-family="Newsreader,Georgia,serif" font-style="italic" font-size="11" fill="#a02c1e" text-anchor="middle">every response is tagged with the model that actually answered</text>
+          </svg></div>
+          <p class="fig-caption">One request, three stages. The dashed red path is the fallback; the tag on the way out is what keeps evaluation honest (see the fallback dilemma under Evaluation).</p>
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Pre-flight</span><span class="fd">Validate the OIDC token, apply tier quotas and rate limits, reject over-budget requests before spending a token, run input guardrails with reversible PII masking, and check the cache.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Route</span><span class="fd">The alias resolves to a pinned provider version. Prepaid capacity is served first; each provider-and-model pair has its own circuit breaker. Transient errors, content-policy rejections, and context overflow each fall back differently.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Post-flight</span><span class="fd">Output guardrails, masked values restored, an OpenTelemetry span with per-trace cost, and an async rollup into showback dashboards. Shadow and canary routing live here too.</span></div>
+          </div>
+        </div>
+
+        <div class="panel" data-tab="guardrails" data-label="Guardrails and DLP">
+          <div class="cols">
+            <div class="col">
+              <h3>Data loss prevention in transit</h3>
+              <p>An active middleware layer scans every prompt with lightweight NER and regex for secrets, PII, and internal credentials. Matches are masked in transit and restored on return, so the provider never sees the original and the application never notices the substitution.</p>
+              <p>The same scanner runs on the way out: PII re-leaked in a completion and secrets in generated code are the two output-side failures worth catching centrally.</p>
+            </div>
+            <div class="col">
+              <h3>Tiered enforcement</h3>
+              <ul>
+                <li><em>Block</em> for high-risk routes: the request never leaves the gateway</li>
+                <li><em>Flag</em> for moderate routes: the request proceeds, the span is marked, a reviewer is queued</li>
+                <li><em>Log</em> for low-risk routes: nothing interrupts the engineer; the evidence exists</li>
+                <li>Configured centrally per route risk tier, so no team tunes guardrails by hand</li>
+              </ul>
+            </div>
+          </div>
+          <p class="pull">Prompt-level filtering is necessary and not sufficient. For agents, <strong>the enforcement boundary is the tool call</strong>, which is why the agent platform adds action-level allowlists on top.</p>
+        </div>
+
+        <div class="panel" data-tab="industry" data-label="What converged">
+          <table class="lens">
+            <tr><th>Option</th><th>Where it fits</th></tr>
+            <tr><td>LiteLLM<span class="cat">open source</span></td><td>The default on-ramp: OpenAI-compatible proxy, virtual keys, budgets, and broad provider coverage. Adopt and extend rather than write from scratch.</td></tr>
+            <tr><td>Envoy AI Gateway<span class="cat">open source · v1.0</span></td><td>Kubernetes-native and vendor-neutral: token-based rate limiting, quota-aware routing, MCP routing. The infrastructure tier of a two-tier design.</td></tr>
+            <tr><td>Kong / MLflow AI Gateway<span class="cat">open source</span></td><td>Good fits where the API gateway or MLflow is already the house standard; the same adopt-and-extend stance applies.</td></tr>
+            <tr><td>Portkey<span class="cat">managed</span></td><td>Deepest AI-native feature set (caching, guardrails, routing) for teams that would rather not operate the layer themselves.</td></tr>
+            <tr><td>Bedrock · Azure APIM · Vertex<span class="cat">hyperscaler</span></td><td>Win in single-cloud shops; cross-region inference is the natural fallback target.</td></tr>
+            <tr><td>Uber's in-house gateway<span class="cat">reference</span></td><td>30 teams, 16M queries a month, and an exact mirror of the OpenAI API so every framework works unchanged. Copy the compatibility decision regardless of vendor.</td></tr>
+          </table>
+          <p class="pull">A common production pattern is two tiers: an infrastructure gateway for traffic policy plus an AI-native layer for model semantics. <strong>Do not write the gateway from scratch.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Centralized model API</td><td><span class="pill solid">solid</span></td><td>Confirm an OpenAI-compatible surface so frameworks work unchanged.</td></tr>
+            <tr><td>Guardrails by default</td><td><span class="pill solid">solid</span></td><td>Add tiered block / flag / log per route and output-side scanning.</td></tr>
+            <tr><td>Authentication and secrets</td><td><span class="pill partial">partial</span></td><td>Teams never hold raw provider keys: virtual keys issued per app, custody stays in the platform.</td></tr>
+            <tr><td>Model aliases and pinning</td><td><span class="pill gap">gap</span></td><td>Aliases by task tier, pinned versions, shadow and canary routing.</td></tr>
+            <tr><td>Caching</td><td><span class="pill gap">gap</span></td><td>Provider prompt cache on by default; exact-match cache; database primitives ready to provision.</td></tr>
+            <tr><td>Cost attribution</td><td><span class="pill gap">gap</span></td><td>Virtual keys, per-request tagging, budgets with soft and hard limits, showback dashboards.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Now</span> 0 to 2 quarters. Deepening the gateway is the first phase of the roadmap because every later phase keys off it.</p>
+        </div>
+      </section>
+
+      <!-- 04 · Routing -->
+      <section class="topic" id="t-routing" data-id="routing" data-no="04" data-title="Caching, aliases, fallback" data-hook="Cache honestly, pin versions centrally, and fail over without fooling yourself about what answered." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">04</span> · Foundation model services</div>
+          <h2 class="topic-title" tabindex="-1">Caching, aliases, and fallback</h2>
+          <p class="sub">Three gateway features that look like optimizations and are actually how the platform absorbs provider churn, cost pressure, and outages on behalf of every team.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="caching" data-label="Caching, honestly">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Provider prompt caching</span><span class="fd">Deterministic and default-on. Long shared prefixes (system prompts, tool schemas, retrieved corpora) often cut input cost in half. The gateway passes it through; teams never configure it.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Exact-match response cache</span><span class="fd">Captures the roughly 18% of traffic that is literally duplicated. Redis-class storage, ready to spin up, with TTLs per route.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Semantic cache</span><span class="fd">Prompt embeddings above a cosine similarity threshold (0.95 is the usual starting knob) return a cached completion. Real hit rates run 20 to 45% by workload, not the marketed 95%. Scope per user or session, and remember an embedding-model upgrade silently invalidates the whole cache.</span></div>
+          </div>
+          <div class="prose" style="margin-top:1.2rem"><p>The platform ships all three with sane defaults and per-route controls, plus the database primitives (a Redis-class store and a vector store) as attached services that need no manual provisioning.</p></div>
+          <p class="pull">Order the layers by certainty: <strong>deterministic first, probabilistic last, and opt-in where the hit rate has to earn its keep</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="aliases" data-label="Aliases and pinning">
+          <div class="cols">
+            <div class="col">
+              <h3>What an app asks for</h3>
+              <p>Apps request <code>chat-default</code>, <code>extract-cheap</code>, or <code>reason-deep</code>. The platform maps each alias to a pinned provider model version.</p>
+              <p>A provider deprecation becomes a platform config change instead of forty team migrations, and the swap is validated against mirrored production traffic before any team sees it.</p>
+            </div>
+            <div class="col">
+              <h3>What the platform keeps behind the alias</h3>
+              <ul>
+                <li>Two providers warm per tier, for failover and negotiation leverage</li>
+                <li>A challenger continuously benchmarked via shadow traffic</li>
+                <li>Data residency expressed as a routing policy, not a per-team project</li>
+                <li>Contractual version pinning so provider updates are change-management events</li>
+              </ul>
+            </div>
+          </div>
+          <p class="pull">Provider churn is a certainty; enterprise share shifted dramatically between 2023 and 2026. <strong>Aliases make churn a config change.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="fallback" data-label="Fallback routing">
+          <div class="prose">
+            <p>During a primary model outage or a burst of 429s, the gateway silently routes payloads to a secondary model: cross-region Bedrock, or a self-hosted vLLM deployment, with no application code change. Three failure classes deserve three different fallbacks: transient errors retry on the same tier, content-policy rejections route to a model with different filters, and context overflow routes to a longer-context model or a summarizing pre-step.</p>
+            <p>What a fallback must never do is pretend. Every response carries the model that actually answered, because a silent swap corrupts every quality baseline downstream. That is the fallback evaluation dilemma, and it has a clean fix: see <a href="#evaluation/dilemma" class="xlink">Evaluation as a service, the fallback dilemma</a>.</p>
+          </div>
+          <table class="lens">
+            <tr><th>Failure</th><th>Fallback</th></tr>
+            <tr><td>Outage or 429</td><td>Cross-region Bedrock first, self-hosted vLLM second; per-provider circuit breakers decide when to trip.</td></tr>
+            <tr><td>Content-policy rejection</td><td>A model with different filter behavior, flagged on the span so the route owner sees the pattern.</td></tr>
+            <tr><td>Context overflow</td><td>A longer-context model, or a summarizing pre-step, rather than a truncated prompt.</td></tr>
+          </table>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Prompt and response caching</td><td><span class="pill gap">gap</span></td><td>The identified roadmap item: caching plus a ready-to-spin-up database. Start with provider prompt cache and exact match.</td></tr>
+            <tr><td>Model aliases and pinning</td><td><span class="pill gap">gap</span></td><td>Define the task tiers, map aliases, pin versions, enable shadow routing.</td></tr>
+            <tr><td>Fallback routing</td><td><span class="pill gap">gap</span></td><td>A gateway policy with provenance tagging on every response; the fallback model must pass the baseline gateway test first.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Now</span> 0 to 2 quarters, alongside cost attribution; all three are gateway configuration once the gateway owns the request path.</p>
+        </div>
+      </section>
+
+      <!-- 05 · Evaluation -->
+      <section class="topic" id="t-evaluation" data-id="evaluation" data-no="05" data-title="Evaluation as a service" data-hook="Your eval suite is the CI gate, the production canary, and the exit clause from any vendor." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">05</span> · Foundation model services</div>
+          <h2 class="topic-title" tabindex="-1">Evaluation as a service</h2>
+          <p class="sub">Traditional monitoring cannot detect hallucinations or semantic regressions. The platform owns the harness, the judges, and the dataset registry; teams own their datasets.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="why" data-label="Why it matters">
+          <div class="cols">
+            <div class="col"><div class="big bad">~52%</div><p>of organizations run offline evaluations at all. Dashboards are table stakes; evals are the differentiator and where reliability is actually won.</p><p class="src">industry surveys, 2025 to 2026</p></div>
+            <div class="col"><h3>Three jobs, one suite</h3><ul><li>CI gate: no prompt or model change ships below the rolling baseline</li><li>Production canary: the same rubrics score sampled traffic, with auto-rollback</li><li>Exit clause: portable prompts and evals make switching models a weekend instead of a quarter</li></ul></div>
+          </div>
+          <p class="pull">Continuous evaluation is a control plane, not a dashboard: <strong>sample production traces, route them to an evaluation cluster, and act on the deltas</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="target" data-label="Target state">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Core dataset per route</span><span class="fd">100 to 200 examples: roughly 60% happy path, 20% edge cases, 10% refusals, 10% historical failures. Teams write them; the platform stores, versions, and runs them.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Regression dataset, grown weekly</span><span class="fd">Failing production traces are promoted into the regression set on a schedule, so every fixed failure becomes a permanent test.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Tiered scoring cascade</span><span class="fd">Deterministic checks first, then classifiers, then an LLM judge only on disagreement: about ten times cheaper than judging everything.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Calibrated, pinned judges</span><span class="fd">Judge models are version-pinned and audited against human labels before anyone trusts them at scale.</span></div>
+            <div class="frow"><span class="fno">5</span><span class="ft">Statistical gates</span><span class="fd">CI gates on meaningful deltas versus a rolling baseline across repeated runs, never a single-run point score, because agents are nondeterministic.</span></div>
+            <div class="frow"><span class="fno">6</span><span class="ft">Canary in production</span><span class="fd">The same rubrics score canary traffic and roll back automatically on drift, ungrounded answers, or policy violations.</span></div>
+          </div>
+          <p class="pull">Teams write their datasets. <strong>The platform owns everything else.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="dilemma" data-label="The fallback dilemma">
+          <div class="fig"><svg viewBox="0 0 660 230" role="img" aria-label="Left: one blended quality line drops when a fallback model engages. Right: provenance tags split the stream into two flat lines, one per actual model">
+            <defs>
+              <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#a02c1e"/>
+              </marker>
+            </defs>
+            <g fill="none" stroke="#1c1c1c" stroke-width="1.2">
+              <path d="M30,30 L30,160 L280,160"/>
+              <path d="M400,30 L400,160 L650,160"/>
+            </g>
+            <g font-family="Inter,sans-serif" font-size="11" fill="#1c1c1c">
+              <text x="30" y="20">One blended eval</text>
+              <text x="400" y="20">Partitioned by model.actual</text>
+            </g>
+            <path d="M35,62 L150,60 L150,108 L275,110" fill="none" stroke="#4a4a4a" stroke-width="1.6"/>
+            <path d="M150,34 L150,160" stroke="#a02c1e" stroke-width="1" stroke-dasharray="3 3"/>
+            <g font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a">
+              <text x="154" y="44">fallback engaged</text>
+            </g>
+            <text x="160" y="132" font-family="Newsreader,Georgia,serif" font-style="italic" font-size="11" fill="#a02c1e">format drift · tone drift · token economics</text>
+            <text x="36" y="176" font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a">the baseline looks like a regression that no one can localize</text>
+            <path d="M405,62 L645,60" fill="none" stroke="#1c1c1c" stroke-width="1.6"/>
+            <path d="M520,108 L645,108" fill="none" stroke="#8a8a8a" stroke-width="1.6" stroke-dasharray="6 4"/>
+            <g font-family="Inter,sans-serif" font-size="9" fill="#4a4a4a">
+              <text x="405" y="54">model.actual = primary</text>
+              <text x="520" y="100">model.actual = fallback</text>
+            </g>
+            <text x="406" y="176" font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a">each model against its own baseline; the blend stays on the system dashboard</text>
+            <g fill="none" stroke="#1c1c1c" stroke-width="1.2">
+              <rect x="300" y="78" width="80" height="34"/>
+            </g>
+            <text x="340" y="92" font-family="Inter,sans-serif" font-size="9" fill="#1c1c1c" text-anchor="middle">provenance tag</text>
+            <text x="340" y="104" font-family="Inter,sans-serif" font-size="8" fill="#8a8a8a" text-anchor="middle">on every span</text>
+            <g fill="none" stroke="#4a4a4a" stroke-width="1.1">
+              <path d="M282,95 L297,95" marker-end="url(#ah2)"/>
+              <path d="M380,90 L402,66" marker-end="url(#ah2)"/>
+              <path d="M380,100 L517,108" marker-end="url(#ah2)"/>
+            </g>
+            <text x="330" y="222" font-family="Newsreader,Georgia,serif" font-style="italic" font-size="11" fill="#a02c1e" text-anchor="middle">fallbacks break continuous evaluation unless every span says which model actually answered</text>
+          </svg></div>
+          <p class="fig-caption">A silent fallback reads as a regression in the blended baseline. Hard-tagged provenance turns it into two clean series and one honest system view.</p>
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Hard-tag provenance</span><span class="fd">The gateway records the actual model in <code>gen_ai.response.model</code> on the OpenTelemetry span, preserving the requested alias separately in <code>gen_ai.request.model</code>. No application can forget to do it.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Partition the dashboards</span><span class="fd">Model-level evals filter strictly by the actual model, so degradation is isolated to one model. System-level evals grade the agent overall and track <em>acceptable degradation</em> during fallback events.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Baseline gateway test</span><span class="fd">Before a model is approved as a fallback, it runs through the same harness against the route's core and regression datasets and must clear the minimum thresholds.</span></div>
+          </div>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Evaluation as a service</td><td><span class="pill gap">gap</span></td><td>Eval harness v1: dataset registry, judge pool, CI gate on the highest-traffic routes.</td></tr>
+            <tr><td>Provenance on spans</td><td><span class="pill gap">gap</span></td><td>Ships with the gateway's OTel adoption; a one-line attribute with outsized value.</td></tr>
+            <tr><td>Production sampling</td><td><span class="pill gap">gap</span></td><td>Sample traces into an evaluation cluster; promote failures into regression sets weekly.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Now</span> 0 to 2 quarters for v1. For the mental model behind core and regression datasets, judges, and reading a run, see the <a href="/evaluation" target="_top">Agent Evaluation walkthrough</a>.</p>
+        </div>
+      </section>
+
+      <!-- 06 · Agents -->
+      <section class="topic" id="t-agents" data-id="agents" data-no="06" data-title="The agent platform" data-hook="Agents run for hours, hold state, execute code, and act with authority. Serving infrastructure assumed none of that." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">06</span> · Agent platform</div>
+          <h2 class="topic-title" tabindex="-1">The agent platform</h2>
+          <p class="sub">Between 2025 and 2026 the answer consolidated into a recognizable stack. The strategic move is clear: buy the runtime primitives, standardize the protocols, and build the thin control plane that encodes your governance.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="why" data-label="Why it matters">
+          <div class="cols">
+            <div class="col"><h3>What broke</h3><ul><li>Requests became sessions that last hours and need checkpoints</li><li>Stateless services became stateful workloads with memory</li><li>Text generation became code execution and tool calls with real authority</li><li>One identity per service became a delegation chain per action</li></ul></div>
+            <div class="col"><h3>What the platform must add</h3><ul><li>A registry so every agent has an owner, a cost center, and a bill</li><li>A runtime with per-session isolation and managed memory</li><li>A tool catalog and gateway (next topic)</li><li>An identity class built for agents (next topic)</li></ul></div>
+          </div>
+          <p class="pull">Agents are first-class workloads now. <strong>The gaps the team has already named (an agent-core style registry, an MCP catalog, runtime management) are this layer.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="registry" data-label="Registry first">
+          <div class="prose">
+            <p>The registry is the org's agent control plane and the correct first build, because everything else keys off it. Identity issuance requires a registry entry. Gateway virtual keys tie to a registry entry and a cost center. Billing joins model spend (metered at the gateway) with compute (billed by the runtime), so usage and cost are recognized per agent from the first day it runs.</p>
+            <p>Registration as a deploy gate means "what agents exist, who owns them, what can they do, and what do they cost" is always answerable. There is no cross-vendor registry standard yet: A2A defines the agent-card descriptor, not the registry API. A thin internal registry that exports A2A cards avoids lock-in to any vendor's schema.</p>
+          </div>
+          <div class="specimen">
+            <div class="srow"><div class="sk">Agent</div><div class="sv"><code>com.enterprise.support/refund-assistant</code> · owner: support-eng · cost center 4410</div></div>
+            <div class="srow"><div class="sk">Grants</div><div class="sv">alias <code>chat-default</code> · tools <code>orders/lookup</code>, <code>refunds/status</code> · no write tools without approval</div></div>
+            <div class="srow"><div class="sk">Budget</div><div class="sv">$1,200 per month, soft alert at 80%, hard stop at 100%</div></div>
+            <div class="srow"><div class="sk">Evals</div><div class="sv">core set v7 (140 cases) · regression set (23 cases) · gate: no regression failures</div></div>
+            <div class="srow"><div class="sk">Risk tier</div><div class="sv">2 · customer-facing assist · SLA review complete</div></div>
+          </div>
+          <p class="fig-caption">One registry entry. Every other control plane reads from it: identity, the gateway, billing, evals, and the inventory.</p>
+        </div>
+
+        <div class="panel" data-tab="runtime" data-label="Runtime and sandbox">
+          <div class="cols">
+            <div class="col">
+              <h3>Buy the isolation</h3>
+              <p>Per-session microVM isolation, checkpointed long-running execution, and sandboxed code-execution and browser harnesses are now vendor primitives: AWS Bedrock AgentCore (sessions up to eight hours, framework-agnostic), Microsoft Foundry Agent Service, Google's agent stack, or self-hosted LangGraph Platform where data residency demands it.</p>
+              <p>Expect platform overhead around 1.15 to 1.4 times model spend. Building this in-house is a multi-quarter project with no differentiation.</p>
+            </div>
+            <div class="col">
+              <h3>Sandboxing for code-generating agents</h3>
+              <ul>
+                <li>Execution routed to ephemeral micro-VMs (Firecracker-class) or strict gVisor sandboxes, never the host network</li>
+                <li>Egress allowlisted; internal network reachable only through the tool gateway</li>
+                <li>Frameworks stay raw (LangGraph, LlamaIndex, and peers) behind opinionated enterprise wrappers that wire auth, telemetry, and the registry</li>
+              </ul>
+            </div>
+          </div>
+          <p class="pull">The differentiation is in the policy layer above the runtime. <strong>Nobody wins by operating their own microVM fleet.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="memory" data-label="Memory service">
+          <div class="prose">
+            <p>Standardized memory is an attached service requiring zero manual provisioning: ephemeral session memory on a Redis-class store, and long-term semantic memory on a managed vector database (Milvus or Qdrant class, or the cloud's serverless vector store). The runtime exposes short-term, long-term, and procedural memory through one interface so teams never build their own persistence.</p>
+          </div>
+          <table class="lens">
+            <tr><th>Memory</th><th>Backing store</th><th>Owned by</th></tr>
+            <tr><td>Short-term (session)</td><td>Redis-class, TTL per session, checkpointed by the runtime</td><td>Platform</td></tr>
+            <tr><td>Long-term (semantic)</td><td>Managed vector store; embeddings versioned so a model upgrade re-indexes rather than silently degrades</td><td>Platform, with per-agent namespaces</td></tr>
+            <tr><td>Procedural (skills and tools)</td><td>The tool catalog and prompt registry, versioned and hash-pinned</td><td>Platform</td></tr>
+            <tr><td>Feature and vector stores for custom models</td><td>The ML build platform's gap: same primitives, exposed through Terraform</td><td>Platform</td></tr>
+          </table>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Agent registry</td><td><span class="pill gap">gap</span></td><td>Thin internal registry as a deploy gate; usage and billing per agent; A2A card export.</td></tr>
+            <tr><td>Agent runtime</td><td><span class="pill gap">gap</span></td><td>Buy the isolation primitive; wire it to the registry, identity, and gateway.</td></tr>
+            <tr><td>Memory service</td><td><span class="pill gap">gap</span></td><td>Redis and vector store as attached services with per-agent namespaces.</td></tr>
+            <tr><td>Action-level guardrails and HITL</td><td><span class="pill gap">gap</span></td><td>Tool allowlists per agent identity; human approval gates for high-impact actions.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Next</span> 2 to 4 quarters. The registry comes first; the runtime, memory, and catalog plug into it.</p>
+        </div>
+      </section>
+
+      <!-- 07 · Tools and identity -->
+      <section class="topic" id="t-tools" data-id="tools" data-no="07" data-title="Tools and identity" data-hook="One catalog for tools, one gateway for tool calls, and an identity class built for agents rather than borrowed from users or services." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">07</span> · Agent platform</div>
+          <h2 class="topic-title" tabindex="-1">Tools and identity</h2>
+          <p class="sub">MCP won the tool-integration war. The enterprise problems are now catalog, auth, and supply chain, and all three resolve to the same question: which identity is calling which tool, on whose behalf?</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="why" data-label="Why it matters">
+          <div class="prose">
+            <p>Agents are only as powerful as the tools they can execute safely. The Model Context Protocol standardizes the interface and decouples orchestration logic from tool execution, which is exactly what lets the platform put one control point between every agent and every tool.</p>
+          </div>
+          <div class="cols">
+            <div class="col"><h3>Catalog</h3><p>Where tools are published, discovered, reviewed, and versioned. Consume or register, self-serve.</p></div>
+            <div class="col"><h3>Auth</h3><p>Per-user OAuth through the gateway; never a shared service account, which recreates the confused-deputy problem at scale.</p></div>
+            <div class="col"><h3>Supply chain</h3><p>Tool descriptions are an injection surface. Hash-pin definitions at approval; scan for tool poisoning at registration.</p></div>
+          </div>
+          <p class="pull">A tool allowlist is only as strong as the identity it binds to. <strong>Catalog, gateway, and identity are one design.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="catalog" data-label="Catalog and namespacing">
+          <div class="prose"><p>A centralized metadata catalog where teams publish MCP servers using reverse-domain namespacing, consuming the official MCP Registry's schema so nothing is bespoke. Agentic frameworks discover and subscribe to tools programmatically; virtual servers expose role-scoped subsets of the catalog.</p></div>
+          <div class="specimen">
+            <div class="srow"><div class="sk">Name</div><div class="sv"><code>com.enterprise.hr/pto-query</code></div></div>
+            <div class="srow"><div class="sk">Namespace</div><div class="sv"><code>com.enterprise</code> the organization · <code>hr</code> the owning domain · <code>pto-query</code> the tool</div></div>
+            <div class="srow"><div class="sk">Transport</div><div class="sv">Streamable HTTP or SSE, authenticated with a session-scoped OIDC token</div></div>
+            <div class="srow"><div class="sk">Review</div><div class="sv">Policy-as-code at publication; definition hash pinned, so a changed description re-enters review</div></div>
+            <div class="srow"><div class="sk">Exposure</div><div class="sv">Virtual server <code>hr-assistant</code> exposes this tool read-only; <code>hr-admin</code> adds <code>pto-approve</code></div></div>
+          </div>
+          <p class="fig-caption">One catalog entry. Reverse-domain names make ownership and discovery unambiguous across hundreds of servers.</p>
+        </div>
+
+        <div class="panel" data-tab="supply" data-label="Gateway and supply chain">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Per-user OAuth</span><span class="fd">The MCP gateway exchanges the user's token for a short-lived, tool-scoped token on every call. Shared service accounts are banned because they erase who asked.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Allowlists per agent identity</span><span class="fd">Each registered agent declares the tools it may call; the gateway enforces the list regardless of what the model decides.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Audit log</span><span class="fd">Every tool call carries user, agent, sub-agent, tool, arguments, and outcome, joined to the model span by trace id.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Hash-pinned definitions</span><span class="fd">Tool descriptions are prompts. Pin the hash at approval so an upstream change re-enters review instead of silently reprogramming every agent.</span></div>
+            <div class="frow"><span class="fno">5</span><span class="ft">Poisoning scan</span><span class="fd">Registration runs a scanner over descriptions and schemas for hidden instructions, and the OWASP MCP checklist for the rest.</span></div>
+          </div>
+        </div>
+
+        <div class="panel" data-tab="identity" data-label="Identity and delegation">
+          <div class="fig"><svg viewBox="0 0 640 130" role="img" aria-label="A delegation chain from user to agent to sub-agent to tool, each hop carrying a short-lived scoped token">
+            <defs>
+              <marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#a02c1e"/>
+              </marker>
+            </defs>
+            <g fill="none" stroke="#1c1c1c" stroke-width="1.2">
+              <rect x="14" y="34" width="100" height="40"/>
+              <rect x="184" y="34" width="100" height="40"/>
+              <rect x="354" y="34" width="100" height="40"/>
+              <rect x="524" y="34" width="100" height="40"/>
+            </g>
+            <g font-family="Inter,sans-serif" font-size="12" fill="#1c1c1c" text-anchor="middle">
+              <text x="64" y="58">User</text>
+              <text x="234" y="58">Agent</text>
+              <text x="404" y="58">Sub-agent</text>
+              <text x="574" y="58">Tool</text>
+            </g>
+            <g fill="none" stroke="#4a4a4a" stroke-width="1.1">
+              <path d="M114,54 L181,54" marker-end="url(#ah3)"/>
+              <path d="M284,54 L351,54" marker-end="url(#ah3)"/>
+              <path d="M454,54 L521,54" marker-end="url(#ah3)"/>
+            </g>
+            <g font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a" text-anchor="middle">
+              <text x="148" y="28">token exchange</text>
+              <text x="318" y="28">token exchange</text>
+              <text x="488" y="28">token exchange</text>
+              <text x="148" y="88">scoped · minutes</text>
+              <text x="318" y="88">scoped · minutes</text>
+              <text x="488" y="88">scoped · minutes</text>
+            </g>
+            <text x="320" y="118" font-family="Newsreader,Georgia,serif" font-style="italic" font-size="11" fill="#a02c1e" text-anchor="middle">act: user → agent → sub-agent, recorded in the token, evaluated by policy at the tool</text>
+          </svg></div>
+          <p class="fig-caption">RFC 8693 token exchange at every hop; the delegation chain rides in the token so the policy engine sees the whole lineage.</p>
+          <div class="prose">
+            <p>Agents are neither users nor classic service accounts; they are a third identity class. Each agent gets its own identity with workload attestation (SPIFFE is the reference), short-lived scoped tokens via OAuth token exchange, and an explicit delegation chain recorded in the token. Federated identity means the MCP server authenticates the session-scoped OIDC token directly, so data access governance is enforced where the data lives.</p>
+            <p>Secrets follow the token-vault pattern: agents hold no long-lived credentials, ever. This rail is what makes action-level guardrails enforceable.</p>
+          </div>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Identity, secrets, IAM for services</td><td><span class="pill solid">solid</span></td><td>Service accounts, secret management, and lifecycle already frictionless. Extend the same experience to agents.</td></tr>
+            <tr><td>MCP catalog and gateway</td><td><span class="pill gap">gap</span></td><td>The named roadmap item: consume or register. Private subregistry, per-user OAuth, hash-pinned tools, audit logs.</td></tr>
+            <tr><td>Agent identity and delegation</td><td><span class="pill gap">gap</span></td><td>Workload attestation, token vault, delegation chains; no static secrets.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Next</span> 2 to 4 quarters, in step with the registry, because identity issuance requires a registry entry.</p>
+        </div>
+      </section>
+
+      <!-- 08 · Paved road -->
+      <section class="topic" id="t-paved-road" data-id="paved-road" data-no="08" data-title="Golden paths and base images" data-hook="The compliant, observable, cost-attributed application is the default output of one command." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">08</span> · Experience layer</div>
+          <h2 class="topic-title" tabindex="-1">Golden paths and base images</h2>
+          <p class="sub">The experience layer is where "taken for granted" is actually manufactured. Engineers adopt the platform when it is the path of least resistance, so the unit of delivery is a scaffolded template.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="why" data-label="Why it matters">
+          <div class="prose">
+            <p>The highest compliment an infrastructure or platform engineer can receive is that their work is completely taken for granted. When a platform is built right, developers do not think about risk compliance, IAM roles, or cluster provisioning; they write code and ship features. The strategy shifts from providing APIs to building an invisible exoskeleton around the engineer's code that handles security, cost, caching, and model routing automatically.</p>
+          </div>
+          <div class="cols">
+            <div class="col"><h3>Principle 1</h3><p>The paved road is the easiest road, never a mandate. Adoption is won on merit.</p></div>
+            <div class="col"><h3>Principle 3</h3><p>Self-service is the bar for done. A capability that requires a ticket is not shipped.</p></div>
+          </div>
+          <p class="pull"><span class="lead">Design test.</span> Can an engineer who has never spoken to the platform team go from idea to a traced, governed, cost-attributed deployment before lunch? <strong>If it needs a meeting, a ticket, or a wiki spelunk, it is not done.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="target" data-label="Target state">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Golden base images</span><span class="fd">Minimal, signed, SBOM-emitting containers pre-baked with the frameworks, enterprise certificates, the guardrail client, and injected telemetry agents. Risk assessment and CVE scanning happen once per image, not once per team. Off-image builds are allowed, and off the road.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">One-click infrastructure</span><span class="fd">Engineers declare resources in the existing Kubernetes and Terraform flow; the platform provisions IAM roles, secrets, and deployment pipelines automatically.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Packaging with Artifactory wired</span><span class="fd">One command to publish, version, and consume internal libraries and model artifacts with no setup.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">"New AI service" and "new agent" templates</span><span class="fd">Gateway client only (so attribution and budgets are automatic), guardrails as middleware, OTel telemetry with day-one dashboards, workload identity with no static secrets, the MCP client pointed at the internal catalog only, and CI with eval gates and image scanning pre-wired.</span></div>
+            <div class="frow"><span class="fno">5</span><span class="ft">Attached memory and data services</span><span class="fd">Redis and a vector store as attached services the template can request, provisioned with the deployment.</span></div>
+          </div>
+          <p class="pull">The hardened image underneath is cleared once; <strong>security review happens per image, not per team</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="stay" data-label="Staying on the road">
+          <div class="cols">
+            <div class="col">
+              <h3>Scorecards</h3>
+              <p>Continuously evaluate every service against the standards: evals present, costs tagged, guardrails on, base image current. Drift becomes visible without a single review meeting.</p>
+            </div>
+            <div class="col">
+              <h3>The escape hatch</h3>
+              <p>Teams can leave the road and own the consequences. Their off-road pain is the platform's best product-discovery signal; treat it as a backlog, not a violation.</p>
+            </div>
+            <div class="col">
+              <h3>Inner-source</h3>
+              <p>Anyone can contribute a template, an MCP server, or an eval rubric; the platform team curates. Users become co-owners, and golden paths are embedded in onboarding so the paved road is the first road every new engineer learns.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" data-tab="endgame" data-label="The end game">
+          <div class="prose">
+            <p>Treat the platform like an internal product, with an internal developer portal (Backstage-class) as its storefront. Engineers see the model catalog with latency and cost per alias, register agents and MCP tools, grab boilerplates, and read the scorecards, all in one place. Solve the systemic barriers there, and engineers focus entirely on applying AI to business logic.</p>
+          </div>
+          <div class="cols">
+            <div class="col"><div class="big">99%</div><p>voluntary adoption at Spotify, with onboarding cut from 60 days to 20, once golden paths lived in the portal and in onboarding.</p><p class="src">Spotify / Backstage</p></div>
+            <div class="col"><div class="big bad">10%</div><p>where most Backstage adopters stall, because the portal shipped without the product work: no paved road worth finding, no marketing, no scorecards.</p><p class="src">industry reports</p></div>
+          </div>
+          <p class="pull">The portal is the shop window. <strong>The golden paths behind it are the product.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Service provisioning and deploy</td><td><span class="pill solid">solid</span></td><td>Already the benchmark. Keep it that way.</td></tr>
+            <tr><td>Hardened base images</td><td><span class="pill gap">gap</span></td><td>Standardized images with risk assessment pre-applied: the named roadmap item.</td></tr>
+            <tr><td>Packaging and Artifactory flow</td><td><span class="pill gap">gap</span></td><td>One-command publish and consume.</td></tr>
+            <tr><td>Golden-path scaffolder</td><td><span class="pill gap">gap</span></td><td>"New AI service" and "new agent" templates with everything pre-wired.</td></tr>
+            <tr><td>Scorecards</td><td><span class="pill gap">gap</span></td><td>Standards evaluated continuously; no review meetings.</td></tr>
+            <tr><td>Developer portal</td><td><span class="pill gap">gap</span></td><td>Catalog, scaffolder, scorecards, docs in one place.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Now → Later</span> Images and packaging now; the scaffolder next; scorecards and the portal once there is a road worth scoring.</p>
+        </div>
+      </section>
+
+      <!-- 09 · Onboarding -->
+      <section class="topic" id="t-onboarding" data-id="onboarding" data-no="09" data-title="Onboarding, from the engineer's seat" data-hook="Day one on the paved road: from &quot;I want to add AI to my service&quot; to a traced, governed, budgeted call before lunch, with no ticket and no human in the loop." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">09</span> · Developer experience</div>
+          <h2 class="topic-title" tabindex="-1">Onboarding, from the engineer's seat</h2>
+          <p class="sub">Everything else in this explorer describes the platform from the architect's seat. This topic walks the same platform as the engineer meets it: what they do, what they see, and what happens invisibly on their behalf.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="journey" data-label="The first hour">
+          <div class="prose"><p>The benchmark is the design test from the golden-paths topic: idea to a traced, governed, cost-attributed deployment before lunch. Here is the hour, minute by minute, for an engineer adding a refund assistant to an existing service.</p></div>
+          <div class="flow timed">
+            <div class="frow"><span class="fno">0:00</span><span class="ft">Discover</span><span class="fd">Opens the developer portal and picks the golden path "add AI to an existing service". The model catalog shows the aliases (<code>chat-default</code>, <code>extract-cheap</code>, <code>reason-deep</code>) with latency, cost per thousand tokens, and the risk tier each is cleared for. No provider names, no keys, no approval form.</span></div>
+            <div class="frow"><span class="fno">0:05</span><span class="ft">Scaffold</span><span class="fd"><code>platform new ai-service refund-assistant</code>. The repo arrives with the gateway client, guardrails middleware, OpenTelemetry, workload identity, a CI pipeline with an eval gate and image scan, and a Dockerfile on the golden image. A registry entry already exists with the engineer as owner and the team's cost center.</span></div>
+            <div class="frow"><span class="fno">0:10</span><span class="ft">First call</span><span class="fd">Runs the service locally and calls <code>chat-default</code>. The virtual key was issued at scaffold time; the gateway authenticates, checks the budget, runs guardrails, and routes. The response returns in 0.4 seconds and the trace is already on the default dashboard with its cost.</span></div>
+            <div class="frow"><span class="fno">0:25</span><span class="ft">Evaluate</span><span class="fd">Writes fifteen cases into <code>evals/core.jsonl</code> from real tickets. <code>platform eval</code> runs the harness with the platform's judges and prints a scorecard. The CI gate now fails any change that regresses those cases.</span></div>
+            <div class="frow"><span class="fno">0:40</span><span class="ft">Deploy</span><span class="fd"><code>git push</code>. The pipeline scans the image, runs the evals, and deploys to the cluster. A URL comes back; the scorecard reads evals present, costs tagged, guardrails on, image current.</span></div>
+            <div class="frow"><span class="fno">0:55</span><span class="ft">Observe</span><span class="fd">The dashboard shows latency, tokens, cost, cache hits, and guardrail events per route. A budget alert is wired to the team channel at 80%. Nothing was configured.</span></div>
+            <div class="frow"><span class="fno">day 2</span><span class="ft">Add a tool</span><span class="fd">Browses the MCP catalog and subscribes to <code>com.enterprise.orders/lookup</code>. The registry records the grant, the agent's identity gets a scoped token for it, and the audit log starts on the first call. Still no ticket.</span></div>
+          </div>
+          <div class="fig mermaid-fig" id="seqmap" data-src="ai-platform-onboarding.svg" aria-busy="true"></div>
+          <p class="fig-caption">The first AI call as a sequence: one engineer action per step, and everything between the portal and the provider handled by the platform. Rendered from <code>ai-platform-onboarding.mmd</code>.</p>
+          <p class="pull"><span class="lead">Under an hour, no ticket, no human.</span> That is the number the whole platform is measured by: <strong>time to first AI call</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="flow" data-label="Activity flow">
+          <div class="prose"><p>The same hour as the decisions the engineer actually makes. Diamonds are the only places a human chooses; everything between them is the platform. The tier-1 branch is the whole point: <strong>for most use cases there is no review box on the path at all</strong>, and the two loops (eval gate, scorecard) replace review meetings with signals.</p></div>
+          <div class="fig mermaid-fig narrow" id="actmap" data-src="ai-platform-activity.svg" aria-busy="true"></div>
+          <p class="fig-caption">Activity flow for onboarding. Solid: exists today. Dashed: target state. Red outline: the first gateway call, the moment the time-to-first-AI-call clock stops. Rendered from <code>ai-platform-activity.mmd</code>.</p>
+          <p class="pull">Count the diamonds: <strong>four decisions, zero tickets</strong>. If a sixth box appears that says "wait for a person", that box is the next roadmap item.</p>
+        </div>
+
+        <div class="panel" data-tab="seat" data-label="Engineer vs platform">
+          <div class="prose"><p>The invisible exoskeleton, made visible once. Every row on the left is a thing the engineer does; every row on the right is what happens without them asking.</p></div>
+          <table class="lens">
+            <tr><th>The engineer does</th><th>The platform does, invisibly</th></tr>
+            <tr><td>Picks a golden path in the portal</td><td>Shows only aliases cleared for the engineer's risk tier; hides provider names, keys, and pricing.</td></tr>
+            <tr><td>Runs the scaffolder</td><td>Creates the repo from the template, the registry entry, the virtual key, the workload identity and IAM role, the secrets binding, the CI pipeline, and the default dashboards.</td></tr>
+            <tr><td>Calls an alias</td><td>Authenticates, checks the budget, masks PII, checks the cache, resolves the alias to a pinned version, fails over on a 429, restores masked values, emits a span with cost and <code>model.actual</code>.</td></tr>
+            <tr><td>Writes eval cases</td><td>Stores and versions them, runs the judge pool, gates CI on a statistically meaningful delta, promotes failing production traces into the regression set weekly.</td></tr>
+            <tr><td>Pushes to main</td><td>Scans the golden image, runs the evals, deploys, registers the route in the inventory, updates the scorecard, starts the budget meter.</td></tr>
+            <tr><td>Subscribes to a tool</td><td>Checks the allowlist against the agent's identity, issues scoped tokens per user, hash-pins the tool definition, writes the audit log.</td></tr>
+            <tr><td>Reads the dashboard</td><td>Joins gateway spans, runtime compute, and cache savings into one cost-per-task number per route, with an anomaly alert for runaway agents.</td></tr>
+          </table>
+          <div class="specimen">
+            <div class="srow"><div class="sk">platform.yaml</div><div class="sv"><code>service: refund-assistant</code> · <code>owner: support-eng</code> · <code>cost_center: 4410</code> · <code>risk_tier: 1</code> · <code>model: chat-default</code> · <code>budget_usd: 400</code></div></div>
+            <div class="srow"><div class="sk">evals/</div><div class="sv"><code>core.jsonl</code> (15 cases) · <code>regression.jsonl</code> (empty on day one; the platform fills it from production failures)</div></div>
+            <div class="srow"><div class="sk">Dockerfile</div><div class="sv"><code>FROM golden/python-ai:1.4</code>; risk assessment, certificates, telemetry agent, and guardrail client already inside</div></div>
+            <div class="srow"><div class="sk">CI</div><div class="sv">image scan · eval gate · deploy; nothing to edit</div></div>
+            <div class="srow"><div class="sk">Not in the repo</div><div class="sv">provider keys · logging config · IAM policy · dashboards · approval forms</div></div>
+          </div>
+          <p class="fig-caption">The scaffolded repo. One small declaration file is the engineer's entire contact surface with the platform.</p>
+        </div>
+
+        <div class="panel" data-tab="steps" data-label="Step by step">
+          <div class="prose"><p>The same hour against the current estate, step by step. The middle column holds only what the platform provides today; where there is no platform path yet, it says so rather than guessing how teams cope.</p></div>
+          <div class="table-scroll">
+          <table class="lens">
+            <tr><th>Step</th><th>Platform path today</th><th>Target</th><th>Status</th></tr>
+            <tr><td>Discover</td><td>No platform path yet</td><td>Portal with golden paths and a model catalog of aliases, latency, cost, and risk tier</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Account and secrets</td><td>Service account creation, secret management, and identity and access are already easy across the lifecycle</td><td>Issued by the scaffolder as a side effect; never requested</td><td><span class="pill solid">solid</span></td></tr>
+            <tr><td>Model access</td><td>One organization-controlled API with risk assessment and guardrails applied by default</td><td>Same, plus a virtual key with a budget and aliases instead of model names</td><td><span class="pill partial">partial</span></td></tr>
+            <tr><td>Start the repo</td><td>No standardized base image or packaging flow yet (both on the gap list)</td><td>One command: template, golden image with risk assessment pre-applied, Artifactory wired, CI pre-wired</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Deploy</td><td>Engine platform: Kubernetes-backed, from AWS account creation to a deployed service with minimal friction</td><td>Unchanged; this is the benchmark</td><td><span class="pill solid">solid</span></td></tr>
+            <tr><td>Serve a custom model</td><td>ML build platform: a Terraform configuration is all it takes; training stays free-form</td><td>Unchanged, plus a registry entry and model card generated from the build</td><td><span class="pill solid">solid</span></td></tr>
+            <tr><td>Observe</td><td>Telemetry and SignalFx set up automatically, no per-team logging setup</td><td>Plus OTel GenAI spans: tokens, cost, <code>model.actual</code> per call</td><td><span class="pill partial">partial</span></td></tr>
+            <tr><td>Evaluate</td><td>No platform path yet</td><td>Central harness, judges, CI gate; teams write cases only</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Build an agent</td><td>No registry, runtime management, or MCP catalog yet (all on the gap list)</td><td>Registry as deploy gate, managed runtime, MCP catalog subscribe</td><td><span class="pill gap">gap</span></td></tr>
+            <tr><td>Cache responses</td><td>No caching layer or ready-to-spin-up database yet (on the gap list)</td><td>Provider and exact-match caching on by default; the database one click away</td><td><span class="pill gap">gap</span></td></tr>
+          </table>
+          </div>
+          <p class="pull">The steps marked solid are the proof: <strong>engineers already forget they happen</strong>. The gaps are the steps with no road yet.</p>
+        </div>
+
+        <div class="panel" data-tab="measure" data-label="Measuring DevEx">
+          <div class="cols">
+            <div class="col">
+              <h3>The numbers</h3>
+              <ul>
+                <li><em>Time to first AI call</em>: minutes from intent to an authenticated, logged, budgeted call. Target under an hour, measured at the gateway, not in a survey.</li>
+                <li><em>Time to production</em>: scaffold to a deployed URL with evals and a green scorecard. Target one day.</li>
+                <li><em>Tickets per onboarding</em>: every ticket is a product bug in the platform. Target zero for tier 1.</li>
+                <li><em>Onboarding NPS and DX index</em>: quarterly, segmented by golden path.</li>
+                <li><em>Docs hit rate</em>: share of onboarding questions answered by the portal without a human.</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h3>How to get the signal</h3>
+              <ul>
+                <li>Shadow two onboardings a month and keep a friction log; each entry becomes a backlog item with the minutes it cost.</li>
+                <li>Instrument the scaffolder and the portal: where people stop is where the road ends.</li>
+                <li>Read the platform channel as a product inbox; a question asked twice becomes a doc or a default.</li>
+                <li>Distrust self-report: METR showed perception and reality diverge, so pair every survey with telemetry.</li>
+              </ul>
+            </div>
+            <div class="col">
+              <h3>Anti-patterns</h3>
+              <ul>
+                <li>A mandate instead of a better road</li>
+                <li>A ticket anywhere in the tier-1 path</li>
+                <li>"Ask in the channel" as the onboarding doc</li>
+                <li>Docs that explain the platform's internals instead of the engineer's next step</li>
+                <li>Adoption counted in licensed seats rather than calls through the gateway</li>
+              </ul>
+            </div>
+          </div>
+          <p class="pull">DevEx is the product surface of the platform. <strong>If the first hour needs a human, the platform is not done.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Provisioning, serving, model API</td><td><span class="pill solid">solid</span></td><td>Already invisible. Protect them as the benchmark for every new step.</td></tr>
+            <tr><td>Portal and golden-path docs</td><td><span class="pill gap">gap</span></td><td>Start with two written golden paths and a model catalog page before any portal software.</td></tr>
+            <tr><td>Scaffolder</td><td><span class="pill gap">gap</span></td><td>"New AI service" template first; "new agent" once the registry exists.</td></tr>
+            <tr><td>Virtual keys and budgets</td><td><span class="pill gap">gap</span></td><td>Issued by the scaffolder; the first thing the gateway deepening delivers.</td></tr>
+            <tr><td>Eval harness</td><td><span class="pill gap">gap</span></td><td>v1 with the dataset registry and CI gate.</td></tr>
+            <tr><td>Onboarding telemetry</td><td><span class="pill gap">gap</span></td><td>Measure time to first AI call from gateway logs today, before anything else ships.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Now → Next</span> The measurement and the written golden paths cost nothing and start now; the scaffolder lands with the agent layer.</p>
+        </div>
+      </section>
+
+      <!-- 10 · Governance -->
+      <section class="topic" id="t-governance" data-id="governance" data-no="10" data-title="Governance without friction" data-hook="Most use cases need zero human review, because the platform's defaults are the approval." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">10</span> · Governance and risk</div>
+          <h2 class="topic-title" tabindex="-1">Governance without friction</h2>
+          <p class="sub">Governance succeeds as a platform capability and fails as a committee. The design goal: a fast lane by default, real scrutiny where the stakes are real, and the evidence generated as a by-product.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="why" data-label="Why it matters">
+          <div class="cols">
+            <div class="col"><h3>The committee failure</h3><ul><li>Review boards scale linearly with demand and become the bottleneck</li><li>Engineers route around slow approval, invisibly, into shadow AI</li><li>The evidence regulators want is reconstructed after the fact</li></ul></div>
+            <div class="col"><h3>The platform answer</h3><ul><li>Risk tiering sends the majority of use cases through zero human review</li><li>Guardrails, logging, and inventory are inherited from the road</li><li>Evidence is a query over the gateway and the registries</li></ul></div>
+          </div>
+          <p class="pull">Governance is a fast lane, not a gate. <strong>The alternative is a review board engineers route around.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="tiers" data-label="Risk tiers">
+          <div class="fig"><svg viewBox="0 0 640 220" role="img" aria-label="Four risk-tier lanes of decreasing width; tier one runs straight through with no gates while tiers two to four pass one, two, and three gates">
+            <defs>
+              <marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#a02c1e"/>
+              </marker>
+            </defs>
+            <g fill="none" stroke="#dcdcd6" stroke-width="1">
+              <path d="M0,70 L640,70"/><path d="M0,120 L640,120"/><path d="M0,160 L640,160"/><path d="M0,195 L640,195"/>
+            </g>
+            <g font-family="Inter,sans-serif" font-size="11" fill="#1c1c1c">
+              <text x="14" y="34">Tier 1 · Low</text>
+              <text x="14" y="48" font-size="9" fill="#8a8a8a">drafting, summarization, code assist, internal search</text>
+              <text x="14" y="92" font-size="11">Tier 2 · Moderate</text>
+              <text x="14" y="106" font-size="9" fill="#8a8a8a">customer-facing assist, workflow automation</text>
+              <text x="14" y="137" font-size="11">Tier 3 · High</text>
+              <text x="14" y="151" font-size="9" fill="#8a8a8a">hiring, credit, compliance decisions</text>
+              <text x="14" y="176" font-size="11">Tier 4 · Critical</text>
+              <text x="14" y="190" font-size="9" fill="#8a8a8a">safety-critical, regulated decision support</text>
+            </g>
+            <g fill="none" stroke="#a02c1e" stroke-width="2.2">
+              <path d="M260,40 L600,40" marker-end="url(#ah4)"/>
+            </g>
+            <g fill="none" stroke="#4a4a4a" stroke-width="1.3">
+              <path d="M260,98 L600,98" marker-end="url(#ah4)"/>
+              <path d="M260,143 L600,143" marker-end="url(#ah4)"/>
+              <path d="M260,182 L600,182" marker-end="url(#ah4)"/>
+            </g>
+            <g stroke="#1c1c1c" stroke-width="1.6">
+              <path d="M420,90 L420,106"/>
+              <path d="M380,135 L380,151"/><path d="M460,135 L460,151"/>
+              <path d="M360,174 L360,190"/><path d="M430,174 L430,190"/><path d="M500,174 L500,190"/>
+            </g>
+            <g font-family="Inter,sans-serif" font-size="9" fill="#8a8a8a" text-anchor="middle">
+              <text x="430" y="30" fill="#a02c1e">self-serve · zero review · the defaults are the approval</text>
+              <text x="420" y="116">time-boxed SLA review</text>
+              <text x="420" y="161">independent validation · oversight assigned</text>
+              <text x="430" y="206">exec sign-off · external audit · rare by design</text>
+            </g>
+          </svg></div>
+          <p class="fig-caption">Lane width is volume. The majority of use cases live in tier 1 and never wait for a person; each gate further down is a real check, run in parallel rather than in sequence.</p>
+          <table class="lens">
+            <tr><th>Tier</th><th>Path</th></tr>
+            <tr><td>1 · Low</td><td>Self-serve on the paved road. No review: the platform defaults are the approval.</td></tr>
+            <tr><td>2 · Moderate</td><td>Standard eval bar plus a time-boxed SLA review (days, not weeks); security and legal in parallel, never sequential.</td></tr>
+            <tr><td>3 · High</td><td>Independent validation, human oversight assignment, enhanced logging; pre-approved patterns fast-track repeats.</td></tr>
+            <tr><td>4 · Critical</td><td>Executive sign-off and external audit. Rare by design.</td></tr>
+          </table>
+        </div>
+
+        <div class="panel" data-tab="floor" data-label="Regulatory floor">
+          <div class="prose">
+            <p>The EU AI Act's transparency obligations became enforceable in August 2026 (AI disclosure in chat surfaces, machine-readable labeling of generated content), with high-risk obligations following from late 2027: assigned human oversight, input-data control, automatic log retention of at least six months, and incident reporting. NIST AI RMF supplies the internal control vocabulary; ISO/IEC 42001 is the certifiable management system increasingly demanded in procurement.</p>
+          </div>
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Model inventory</span><span class="fd">Auto-generated, with risk classification, from the gateway and the registries.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Immutable usage logs</span><span class="fd">With retention. The gateway already produces the raw material.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Disclosure surfaces</span><span class="fd">UI components teams inherit from the template, so disclosure is never a per-app project.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Human-oversight hooks</span><span class="fd">Built into the agent runtime as approval gates for high-impact actions.</span></div>
+            <div class="frow"><span class="fno">5</span><span class="ft">AI-literacy evidence</span><span class="fd">Training records tied to the same identity system that issues platform access.</span></div>
+          </div>
+          <p class="pull">Teams inherit all of it by building on the road. <strong>Compliance is a property of the platform, not a project for each team.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="risk" data-label="Model risk and the AI BOM">
+          <div class="cols">
+            <div class="col">
+              <h3>SR 11-7, adapted</h3>
+              <p>The banking discipline maps well: inventory everything, validate proportionally to impact, and treat provider model updates as change-management events, which contractual version pinning makes possible.</p>
+            </div>
+            <div class="col">
+              <h3>The AI bill of materials</h3>
+              <p>Which models, versions, datasets, prompts, and consuming apps exist, with owner and risk tier, generated automatically from the gateway and registries. A hand-maintained inventory is stale on day one.</p>
+              <p>The inventory is also the incident-response index: when a provider ships a regression or a jailbreak, "which apps are affected" is one query.</p>
+            </div>
+          </div>
+          <p class="pull">Model cards and the AI BOM are outputs of the platform, <strong>never documents someone remembers to update</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Guardrails and risk assessment at the API</td><td><span class="pill solid">solid</span></td><td>Already applied by default. Add tiering so enforcement matches route risk.</td></tr>
+            <tr><td>Risk-tier fast lanes</td><td><span class="pill gap">gap</span></td><td>Define the four tiers; make tier 1 zero-review; pre-approve repeat patterns.</td></tr>
+            <tr><td>Model inventory / AI BOM</td><td><span class="pill gap">gap</span></td><td>Generate from the gateway and registries once they exist.</td></tr>
+            <tr><td>Policy-as-code</td><td><span class="pill gap">gap</span></td><td>Publication review for tools and templates expressed as policy, evaluated automatically.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Later</span> 4 to 8 quarters for the self-governing state; tiering itself can start as soon as the gateway carries route metadata.</p>
+        </div>
+      </section>
+
+      <!-- 11 · Telemetry -->
+      <section class="topic" id="t-telemetry" data-id="telemetry" data-no="11" data-title="Observability and FinOps" data-hook="Every call carries its tokens, model, latency, trace context, and cost, in a portable schema the organization does not own." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">11</span> · Observability and FinOps rail</div>
+          <h2 class="topic-title" tabindex="-1">Observability and FinOps</h2>
+          <p class="sub">Enterprise AI needs structured data and an asynchronous control plane. The data plane auto-instruments every call; the control plane turns those spans into cost, quality, and adoption truth.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="why" data-label="Why it matters">
+          <div class="prose">
+            <p>SignalFx and logging are already wired automatically, which is exactly the "taken for granted" bar. What is missing is the AI-specific schema: which model answered, how many tokens in and out, what it cost, and which user, agent, and tool were involved. Without that, cost attribution, evaluation, and adoption measurement are all estimates.</p>
+          </div>
+          <div class="cols">
+            <div class="col"><h3>Data plane</h3><p>Auto-instrumentation injects distributed trace headers and the GenAI attributes on every call, from the template and the gateway, with no per-team setup.</p></div>
+            <div class="col"><h3>Control plane</h3><p>Asynchronous rollups: showback by cost center, anomaly detection for runaway agents, sampled traces routed to evaluation.</p></div>
+          </div>
+          <p class="pull">Principle 7 applies: <strong>measure honestly, including the costs</strong>, and never by self-report.</p>
+        </div>
+
+        <div class="panel" data-tab="otel" data-label="OTel GenAI conventions">
+          <div class="prose"><p>Standardize on the OpenTelemetry GenAI semantic conventions so every span is portable across SignalFx, Langfuse, Arize Phoenix, or whatever comes next. Specialized observability and evaluation platforms are bought, not built, and they all read this schema.</p></div>
+          <div class="specimen">
+            <div class="srow"><div class="sk">gen_ai.request.model</div><div class="sv"><code>chat-default</code> (the alias the app asked for)</div></div>
+            <div class="srow"><div class="sk">gen_ai.response.model</div><div class="sv"><code>provider-b/model-x-2026-06</code> <span class="bad">fallback</span> (the actual responding model; the requested alias is preserved separately)</div></div>
+            <div class="srow"><div class="sk">gen_ai.usage.input_tokens</div><div class="sv">4,812 · <code>gen_ai.usage.output_tokens</code> 318 · cache read 3,900</div></div>
+            <div class="srow"><div class="sk">gen_ai.response.finish_reasons</div><div class="sv"><code>["stop"]</code></div></div>
+            <div class="srow"><div class="sk">enterprise.cost_usd</div><div class="sv">0.0142, from the versioned pricing table at request time</div></div>
+            <div class="srow"><div class="sk">enterprise.identity</div><div class="sv">user <code>u-3381</code> · agent <code>com.enterprise.support/refund-assistant</code> · cost center 4410</div></div>
+          </div>
+          <p class="fig-caption">One span. Cost, quality partitioning, chargeback, and the audit trail all read from these attributes.</p>
+        </div>
+
+        <div class="panel" data-tab="cost" data-label="Showback to chargeback">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Virtual keys</span><span class="fd">One per team and app, issued against the registry, so every request is tagged at the gateway without application code.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Per-trace cost</span><span class="fd">Token usage correlated with OIDC identity and priced from versioned tables, emitted as a billing metric.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Budgets</span><span class="fd">Soft alert at 80%, graceful degradation to a cheaper alias, hard 429 at 100%. Anomaly alerts catch runaway agents overnight.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Showback first</span><span class="fd">Daily dashboards by cost center from day one. Chargeback only at maturity, because premature chargeback suppresses adoption of a young platform.</span></div>
+          </div>
+          <p class="pull">Cost visibility precedes cost accountability. <strong>FinOps for AI is its own discipline now.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="scoreboard" data-label="Metrics that matter">
+          <table class="lens">
+            <tr><th>Metric</th><th>What it measures, and the bar</th></tr>
+            <tr><td>time_to_first_ai_call</td><td>Minutes from "team wants a model" to the first authenticated, logged, budgeted call. <em>Target: under an hour, no human involved.</em></td></tr>
+            <tr><td>voluntary_adoption</td><td>Share of AI workloads on the paved road with no mandate. Spotify's 99% is the existence proof; trend beats absolute.</td></tr>
+            <tr><td>shadow_ai_rate</td><td>Share of model traffic bypassing the gateway. The honest inverse of adoption; drive toward zero by being better, not by blocking.</td></tr>
+            <tr><td>eval_coverage</td><td>Share of production routes with core and regression datasets and CI gates. Only about 52% of organizations run offline evals.</td></tr>
+            <tr><td>cost_per_task</td><td>Attributed unit economics per team, app, and agent, including cache savings.</td></tr>
+            <tr><td>quality_counter_metrics</td><td>Bugs per developer, incidents per PR, review latency, PRs merged unreviewed. Velocity gains can ship a quality tax; watch both sides.</td></tr>
+            <tr><td>platform_nps / dxi</td><td>Quarterly internal survey plus a DX-style index. Satisfaction is the leading indicator of adoption.</td></tr>
+            <tr><td>consumer_dora</td><td>Deploy frequency, lead time, change-failure rate of consuming teams. The platform's success shows up in its customers' numbers.</td></tr>
+          </table>
+          <p class="pull">Distrust self-report (METR's minus 19% actual versus plus 20% perceived) and acceptance-rate vanity metrics. <strong>Pre-register success thresholds before pilots.</strong></p>
+        </div>
+
+        <div class="panel" data-tab="gaps" data-label="Where we are">
+          <table class="lens">
+            <tr><th>Capability</th><th>Status</th><th>Next step</th></tr>
+            <tr><td>Telemetry and SignalFx</td><td><span class="pill partial">partial</span></td><td>Wired automatically today; adopt the OTel GenAI attributes so spans carry model, tokens, and cost.</td></tr>
+            <tr><td>Cost attribution and budgets</td><td><span class="pill gap">gap</span></td><td>Virtual keys, per-trace cost, budgets, showback dashboards.</td></tr>
+            <tr><td>Per-agent usage and billing</td><td><span class="pill gap">gap</span></td><td>Follows from the registry plus gateway tagging; the named "usage and billing recognition quickly" goal.</td></tr>
+          </table>
+          <p class="horizon"><span class="pill solid">Horizon · Now</span> 0 to 2 quarters. Attribution is the first thing the gateway deepening delivers.</p>
+        </div>
+      </section>
+
+      <!-- 12 · Operating model -->
+      <section class="topic" id="t-operating-model" data-id="operating-model" data-no="12" data-title="Operating model and advisory" data-hook="The platform succeeds or fails on organizational mechanics as much as architecture, and the leader is asked to defend the investment frames." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">12</span> · Operating model</div>
+          <h2 class="topic-title" tabindex="-1">Operating model and advisory frames</h2>
+          <p class="sub">Team shape, funding, adoption as a program, and the decision frameworks a platform leader is asked to defend: build versus buy, model strategy, vendor management, portfolio discipline.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="team" data-label="Team and funding">
+          <div class="cols">
+            <div class="col">
+              <h3>Team shape</h3>
+              <p>A small central platform team owning the paved road, with federated contribution via inner-source. New capabilities incubate in collaboration mode with one or two pilot teams, then harden into X-as-a-Service for everyone.</p>
+              <p>Enabling work (embedded rotations, office hours, coaching) is explicitly temporary per engagement. That is how the team avoids becoming a ticket queue that scales linearly with adopters.</p>
+            </div>
+            <div class="col">
+              <h3>Funding</h3>
+              <p>Product-funded, not project-funded, with the roadmap defended by a platform PM. Cost flows through showback first and chargeback at maturity.</p>
+              <p>Internal marketing is engineering work: publish adoption numbers and wins quarterly, demo at all-hands, embed golden paths in onboarding. Platforms that skip this stall at 10% adoption even with superior technology.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" data-tab="adoption" data-label="Adoption as a program">
+          <div class="prose"><p>Organic uptake plateaus around 15 to 20% without enablement. The proven package has four parts, and champions programs roughly double adoption versus top-down rollout.</p></div>
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Executive demand signal</span><span class="fd">Shopify made reflexive AI use a baseline expectation, written into performance reviews.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Champions network</span><span class="fd">Drawn from measured power users. Moderna's top-100 prompt-contest winners ran local office hours; 750+ internal GPTs appeared within two months.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Structured training</span><span class="fd">Role-specific, short, and repeated; the AI-literacy evidence regulators now ask for falls out of it.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Reusable template library</span><span class="fd">Shared assets beat individual prompting skill. The golden paths and the prompt registry are this library.</span></div>
+          </div>
+        </div>
+
+        <div class="panel" data-tab="buildbuy" data-label="Build vs buy">
+          <table class="lens">
+            <tr><th>Capability</th><th>Stance</th><th>Rationale and selection</th></tr>
+            <tr><td>Foundation models</td><td>Buy (rent)</td><td>Commoditized. Managed services (Bedrock-class) for tier-1 models; fine-tune or self-host only for demonstrated scale, latency, sovereignty, or unit-economics cases. Self-hosting pencils out only past hundreds of millions of tokens a month.</td></tr>
+            <tr><td>Model gateway</td><td>Adopt and extend</td><td>Never from scratch. LiteLLM, Envoy AI Gateway, Kong, or MLflow AI Gateway, extended with the org's policy.</td></tr>
+            <tr><td>RAG and vector stores</td><td>Buy (managed)</td><td>Database maintenance is toil. Managed vector stores (cloud serverless or a managed Milvus / Qdrant / Pinecone class).</td></tr>
+            <tr><td>Agent runtime</td><td>Buy</td><td>AgentCore-class isolation and memory, or self-hosted LangGraph Platform where residency demands it.</td></tr>
+            <tr><td>Agentic frameworks</td><td>Build thin wrappers</td><td>Raw frameworks underneath; opinionated enterprise wrappers on top that hook into auth, the registry, and telemetry.</td></tr>
+            <tr><td>Evals and observability</td><td>Buy</td><td>Langfuse, Arize Phoenix, and peers, integrated through the existing OpenTelemetry pipeline.</td></tr>
+            <tr><td>Registry, risk tiers, cost model</td><td>Build</td><td>The thin control plane that encodes how the organization decides. No vendor can ship your policy.</td></tr>
+          </table>
+          <p class="pull">MIT's data: purchased solutions succeeded about 67% of the time versus 33% for internal builds. <strong>Buy the commodity horizontals; build the thin layer that differentiates.</strong> And keep the forgotten branch honest: many "AI" problems are classification or rules, and a non-LLM solution is cheaper and more reliable.</p>
+        </div>
+
+        <div class="panel" data-tab="frames" data-label="Decision frames">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">The capability ladder</span><span class="fd">Prompting first (hours to iterate, zero infrastructure). RAG when the problem is knowledge: fresh, proprietary, citable. Fine-tune when the problem is behavior: style, format reliability, or distilling to a smaller model for latency and cost, never for injecting facts. The common production end state is prompt plus RAG plus a small tuned model.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Model portfolio</span><span class="fd">Tier models by task and encode tiers as gateway aliases. Two providers warm per tier; a challenger benchmarked via shadow traffic. Open-weight enterprise share fell to roughly 11 to 13% despite capability parity, because licensing friction, TCO, and MLOps burden govern adoption, not benchmarks.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Vendor management</span><span class="fd">Blended committed rates with renewal caps, true-forward only, training opt-out by default, version-pinning rights, deprecation notice periods. Run parallel pilots so you negotiate with a documented alternative. Your eval suite is your exit clause.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Portfolio discipline</span><span class="fd">Venture-style: many cheap experiments, few funded scale-ups, stage gates with pre-registered thresholds, and kill criteria written at funding time (no metric owner, threshold missed twice, cost per outcome above the alternative, usage decaying after novelty). Gartner's 40% cancellation forecast is what happens without this.</span></div>
+          </div>
+          <p class="pull">Each frame compresses to a rule with a number behind it. <strong>MIT's finding that back-office automation out-earns the sales and marketing use cases that absorb most budget is the standing argument for central portfolio review.</strong></p>
+        </div>
+      </section>
+
+      <!-- 13 · Roadmap -->
+      <section class="topic" id="t-roadmap" data-id="roadmap" data-no="13" data-title="Roadmap" data-hook="Sequenced by leverage: each phase makes the next one cheaper, and the named gaps map onto three horizons." hidden>
+        <header class="topic-head">
+          <div class="label"><span class="no">13</span> · Three horizons</div>
+          <h2 class="topic-title" tabindex="-1">Roadmap</h2>
+          <p class="sub">Deepen the gateway, stand up the agent layer, then make the platform self-governing. Every item is a gap named in the capability map, placed where it has the most leverage.</p>
+        </header>
+        <div class="tabs" role="tablist" aria-label="Sections of this topic"></div>
+
+        <div class="panel" data-tab="now" data-label="Now · 0 to 2 quarters">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Virtual keys and cost attribution</span><span class="fd">Per-team showback from gateway tagging; budgets with soft and hard limits.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Model aliases and version pinning</span><span class="fd">Absorb provider churn centrally; enable shadow and canary routing.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Caching stack</span><span class="fd">Provider prompt cache on by default; exact-match cache; Redis and vector primitives ready to provision.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Hardened base images and Artifactory flow</span><span class="fd">Risk assessment once per image; one-command packaging.</span></div>
+            <div class="frow"><span class="fno">5</span><span class="ft">Eval harness v1</span><span class="fd">Registry of core and regression datasets, judge pool, CI gate on the highest-traffic routes, provenance tags on every span.</span></div>
+          </div>
+          <p class="pull"><span class="lead">Deepen the gateway.</span> Everything here is configuration of a control point that already exists, which is why it goes first.</p>
+        </div>
+
+        <div class="panel" data-tab="next" data-label="Next · 2 to 4 quarters">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Agent registry as deploy gate</span><span class="fd">Owner and cost center required; usage and billing per agent; A2A card export.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Agent identity rail</span><span class="fd">Workload attestation, token vault, delegation chains; no static secrets.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">MCP catalog and gateway</span><span class="fd">Vetted subregistry, per-user OAuth, hash-pinned tools, audit logs.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Managed agent runtime</span><span class="fd">Buy the isolation primitive; wire it to the registry, identity, and the gateway; attach memory services.</span></div>
+            <div class="frow"><span class="fno">5</span><span class="ft">Golden-path scaffolder</span><span class="fd">"New AI service" and "new agent" templates with everything pre-wired.</span></div>
+          </div>
+          <p class="pull"><span class="lead">Stand up the agent layer.</span> The registry comes first because identity, billing, and the catalog all key off it.</p>
+        </div>
+
+        <div class="panel" data-tab="later" data-label="Later · 4 to 8 quarters">
+          <div class="flow">
+            <div class="frow"><span class="fno">1</span><span class="ft">Scorecards and drift visibility</span><span class="fd">Standards continuously evaluated; no review meetings.</span></div>
+            <div class="frow"><span class="fno">2</span><span class="ft">Auto-generated inventory and AI BOM</span><span class="fd">Audit-ready evidence as a query, not a project.</span></div>
+            <div class="frow"><span class="fno">3</span><span class="ft">Risk-tier fast lanes</span><span class="fd">Tier 1 zero-review; pre-approved patterns fast-track repeats.</span></div>
+            <div class="frow"><span class="fno">4</span><span class="ft">Chargeback at maturity</span><span class="fd">Once attribution is trusted and adoption is sticky.</span></div>
+            <div class="frow"><span class="fno">5</span><span class="ft">Optimization loops</span><span class="fd">Production traces feed regression sets and suggested fixes; semantic caching where it earns its keep.</span></div>
+          </div>
+          <p class="pull"><span class="lead">Make it self-governing.</span> The platform answers the regulator, the CFO, and the incident commander <strong>without anyone assembling a document</strong>.</p>
+        </div>
+
+        <div class="panel" data-tab="sources" data-label="Sources">
+          <div class="cols">
+            <div class="col">
+              <h3>Load-bearing evidence</h3>
+              <ul>
+                <li><a href="https://dora.dev/dora-report-2025/" target="_blank" rel="noopener">DORA 2025: State of AI-assisted Software Development</a></li>
+                <li><a href="https://fortune.com/2025/08/18/mit-report-95-percent-generative-ai-pilots-at-companies-failing-cfo/" target="_blank" rel="noopener">MIT NANDA, State of AI in Business 2025</a></li>
+                <li><a href="https://metr.org/research/" target="_blank" rel="noopener">METR randomized trial on developer productivity with AI</a></li>
+                <li><a href="https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027" target="_blank" rel="noopener">Gartner: over 40% of agentic AI projects canceled by 2027</a></li>
+                <li><a href="https://thenewstack.io/how-spotify-achieved-a-voluntary-99-internal-platform-adoption-rate/" target="_blank" rel="noopener">Spotify's 99% voluntary platform adoption</a></li>
+                <li><a href="https://netflixtechblog.com/full-cycle-developers-at-netflix-a08c31f83249" target="_blank" rel="noopener">Netflix: full-cycle developers and the paved road</a></li>
+              </ul>
+            </div>
+            <div class="col">
+              <h3>Gateway, agents, governance</h3>
+              <ul>
+                <li><a href="https://www.uber.com/en-CA/blog/genai-gateway/" target="_blank" rel="noopener">Uber GenAI Gateway</a></li>
+                <li><a href="https://aigateway.envoyproxy.io/release-notes/" target="_blank" rel="noopener">Envoy AI Gateway release notes</a></li>
+                <li><a href="https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html" target="_blank" rel="noopener">AWS Bedrock AgentCore</a></li>
+                <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/MCP_Security_Cheat_Sheet.html" target="_blank" rel="noopener">OWASP MCP Security Cheat Sheet</a></li>
+                <li><a href="https://www.uber.com/us/en/blog/solving-the-agent-identity-crisis/" target="_blank" rel="noopener">Uber: solving the agent identity crisis</a></li>
+                <li><a href="https://artificialintelligenceact.eu/article/26/" target="_blank" rel="noopener">EU AI Act, Article 26</a> · <a href="https://www.federalreserve.gov/supervisionreg/srletters/sr1107.htm" target="_blank" rel="noopener">SR 11-7</a></li>
+              </ul>
+            </div>
+          </div>
+          <p class="fig-caption">Research compiled August 2026. Vendor-published figures are treated as directional.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var topics = Array.prototype.slice.call(document.querySelectorAll('.topic')).map(function (el, k) {
+    var panels = Array.prototype.slice.call(el.querySelectorAll('.panel'));
+    return {
+      index: k,
+      id: el.getAttribute('data-id'),
+      no: el.getAttribute('data-no'),
+      title: el.getAttribute('data-title'),
+      hook: el.getAttribute('data-hook'),
+      el: el,
+      title_el: el.querySelector('.topic-title'),
+      tablist: el.querySelector('.tabs'),
+      tabs: panels.map(function (p) {
+        return { id: p.getAttribute('data-tab'), label: p.getAttribute('data-label'), panel: p, btn: null };
+      })
+    };
+  });
+  var byId = {};
+  topics.forEach(function (t) { byId[t.id] = t; });
+
+  var grid = document.getElementById('grid');
+  var gridView = document.getElementById('gridView');
+  var topicView = document.getElementById('topicView');
+  var scroller = document.getElementById('scroller');
+  var count = document.getElementById('count');
+  var progress = document.getElementById('progress');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var backBtn = document.getElementById('backBtn');
+
+  var state = { i: -1, tab: null, lastId: null };
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  function buildGrid() {
+    topics.forEach(function (t) {
+      var a = document.createElement('a');
+      a.className = 'card';
+      a.href = '#' + t.id;
+      a.setAttribute('data-id', t.id);
+      var no = document.createElement('span'); no.className = 'no'; no.textContent = t.no;
+      var title = document.createElement('span'); title.className = 'card-title'; title.textContent = t.title;
+      var hook = document.createElement('span'); hook.className = 'card-hook'; hook.textContent = t.hook;
+      a.appendChild(no); a.appendChild(title); a.appendChild(hook);
+      grid.appendChild(a);
+    });
+  }
+
+  function buildTabs(t) {
+    t.tabs.forEach(function (tab) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tab';
+      b.setAttribute('role', 'tab');
+      b.id = 'tab-' + t.id + '-' + tab.id;
+      b.setAttribute('aria-controls', 'panel-' + t.id + '-' + tab.id);
+      b.setAttribute('data-tab', tab.id);
+      b.textContent = tab.label;
+      tab.panel.id = 'panel-' + t.id + '-' + tab.id;
+      tab.panel.setAttribute('role', 'tabpanel');
+      tab.panel.setAttribute('aria-labelledby', b.id);
+      tab.btn = b;
+      t.tablist.appendChild(b);
+    });
+  }
+
+  function parseHash() {
+    var h = location.hash.replace(/^#\/?/, '');
+    if (!h) return null;
+    var parts = h.split('/');
+    var t = byId[parts[0]];
+    if (!t) return null;
+    var tab = parts[1];
+    var ok = t.tabs.some(function (x) { return x.id === tab; });
+    return { id: t.id, tab: ok ? tab : t.tabs[0].id };
+  }
+
+  function navigate(id, tab, opts) {
+    opts = opts || {};
+    var t = id ? byId[id] : null;
+    var topicChanged;
+    if (!t) {
+      if (state.i >= 0) state.lastId = topics[state.i].id;
+      state.i = -1; state.tab = null;
+      history.replaceState(null, '', location.pathname + location.search);
+    } else {
+      topicChanged = state.i !== t.index;
+      state.i = t.index;
+      state.tab = tab && t.tabs.some(function (x) { return x.id === tab; }) ? tab : t.tabs[0].id;
+      history.replaceState(null, '', '#' + t.id + '/' + state.tab);
+    }
+    render({ topicChanged: topicChanged, focusTab: opts.focusTab });
+  }
+
+  function render(opts) {
+    var inTopic = state.i >= 0;
+    gridView.hidden = inTopic;
+    topicView.hidden = !inTopic;
+    topics.forEach(function (t, k) { t.el.hidden = k !== state.i; });
+    progress.style.width = inTopic ? ((state.i + 1) / topics.length * 100) + '%' : '0';
+
+    if (!inTopic) {
+      var target = state.lastId ? grid.querySelector('a[data-id="' + state.lastId + '"]') : null;
+      (target || grid.querySelector('a')).focus({ preventScroll: false });
+      return;
+    }
+    var t = topics[state.i];
+    t.tabs.forEach(function (tab) {
+      var on = tab.id === state.tab;
+      tab.btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      tab.btn.tabIndex = on ? 0 : -1;
+      tab.panel.hidden = !on;
+    });
+    count.textContent = pad(state.i + 1) + ' / ' + pad(topics.length);
+    prevBtn.disabled = state.i === 0;
+    nextBtn.disabled = state.i === topics.length - 1;
+    if (opts.topicChanged) scroller.scrollTop = 0;
+    if (opts.focusTab) {
+      t.tabs.forEach(function (tab) { if (tab.id === state.tab) tab.btn.focus(); });
+    } else if (opts.topicChanged) {
+      t.title_el.focus({ preventScroll: true });
+    }
+  }
+
+  function goTopic(delta) {
+    var n = state.i + delta;
+    if (n < 0 || n >= topics.length) return;
+    navigate(topics[n].id, null);
+  }
+
+  grid.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('a.card') : null;
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    navigate(a.getAttribute('data-id'), null);
+  });
+
+  topics.forEach(function (t) {
+    t.tablist.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.tab') : null;
+      if (!b) return;
+      navigate(t.id, b.getAttribute('data-tab'), { focusTab: true });
+    });
+    t.tablist.addEventListener('keydown', function (e) {
+      var ids = t.tabs.map(function (x) { return x.id; });
+      var k = ids.indexOf(state.tab);
+      var next = null;
+      if (e.key === 'ArrowRight') next = ids[(k + 1) % ids.length];
+      else if (e.key === 'ArrowLeft') next = ids[(k - 1 + ids.length) % ids.length];
+      else if (e.key === 'Home') next = ids[0];
+      else if (e.key === 'End') next = ids[ids.length - 1];
+      if (next === null) return;
+      e.preventDefault();
+      e.stopPropagation();
+      navigate(t.id, next, { focusTab: true });
+    });
+  });
+
+  backBtn.addEventListener('click', function () { navigate(null); });
+  prevBtn.addEventListener('click', function () { goTopic(-1); });
+  nextBtn.addEventListener('click', function () { goTopic(1); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (state.i < 0) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTopic(1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goTopic(-1); }
+    else if (e.key === 'Home') { e.preventDefault(); navigate(topics[0].id, null); }
+    else if (e.key === 'End') { e.preventDefault(); navigate(topics[topics.length - 1].id, null); }
+    else if (e.key === 'Escape') { e.preventDefault(); navigate(null); }
+  });
+
+  var x0 = null, y0 = null;
+  topicView.addEventListener('touchstart', function (e) {
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+  }, { passive: true });
+  topicView.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    var dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > 1.5 * Math.abs(dy)) goTopic(dx < 0 ? 1 : -1);
+    x0 = null; y0 = null;
+  }, { passive: true });
+
+  // in-content cross links like #evaluation/dilemma
+  scroller.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('a.xlink') : null;
+    if (!a) return;
+    var h = a.getAttribute('href').replace(/^#\/?/, '').split('/');
+    if (!byId[h[0]]) return;
+    e.preventDefault();
+    navigate(h[0], h[1] || null);
+  });
+
+  window.addEventListener('hashchange', function () {
+    var h = parseHash();
+    if (h) {
+      // re-navigate even when the state matches, so a sloppy hash is rewritten to its canonical form
+      navigate(h.id, h.tab);
+    } else if (state.i >= 0) {
+      navigate(null);
+    }
+  });
+
+  // Pre-rendered Mermaid figures: fetch the SVG next to this file so it shares the page fonts and prints inline.
+  Array.prototype.slice.call(document.querySelectorAll('.mermaid-fig[data-src]')).forEach(function (fig) {
+    var src = fig.getAttribute('data-src');
+    function fallback() {
+      fig.removeAttribute('aria-busy');
+      fig.innerHTML = '<p class="fig-fallback">The system map could not be loaded inline. <a href="' + src + '" target="_blank" rel="noopener">Open the SVG</a>.</p>';
+    }
+    if (!window.fetch) { fallback(); return; }
+    fetch(src).then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); }).then(function (svg) {
+      fig.innerHTML = svg;
+      fig.removeAttribute('aria-busy');
+    }).catch(fallback);
+  });
+
+  buildGrid();
+  topics.forEach(buildTabs);
+  var start = parseHash();
+  if (start) {
+    navigate(start.id, start.tab);
+  } else {
+    gridView.hidden = false;
+    topicView.hidden = true;
+  }
+})();
+</script>
+</body>
+</html>

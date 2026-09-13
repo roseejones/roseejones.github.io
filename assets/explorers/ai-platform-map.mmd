@@ -1,0 +1,55 @@
+%% v5 · System map for the enterprise AI platform explorer (assets/explorers/ai-platform.html, topic 02, "System map" tab).
+%% Solid boxes exist today; dashed boxes are target state. The red outline marks the gateway choke point.
+%% Re-render after editing: paste into https://mermaid.live and export SVG (theme "base", htmlLabels off,
+%% themeVariables: fontFamily Inter, primaryColor/clusterBkg #ffffff, primaryBorderColor #1c1c1c, lineColor #4a4a4a,
+%% clusterBorder #dcdcd6), or run: npx -y @mermaid-js/mermaid-cli -i ai-platform-map.mmd -o ai-platform-map.svg
+%% Then replace assets/explorers/ai-platform-map.svg; the explorer fetches it at load time.
+flowchart TB
+  eng([Engineer])
+
+  subgraph L5["L5 · Experience layer"]
+    portal["Developer portal<br/>catalog · scorecards"]
+    scaffold["Golden-path scaffolder<br/>new service · new agent"]
+  end
+
+  app["AI service or agent<br/>gateway client · telemetry · identity pre-wired"]
+
+  subgraph L4["L4 · Agent platform"]
+    registry["Agent registry<br/>owner · cost center · grants"]
+    runtime["Agent runtime<br/>microVM sessions · memory · sandbox"]
+    mcp["MCP catalog + gateway<br/>allowlists · per-user OAuth"]
+  end
+
+  subgraph L3["L3 · Foundation model services"]
+    gw["Model gateway<br/>auth · guardrails + DLP · aliases · cache · cost"]
+    evals["Eval harness<br/>core + regression sets · judges"]
+  end
+
+  subgraph L12["L1 to L2 · Engine and ML build"]
+    k8s["Kubernetes deploys<br/>base images · Artifactory"]
+    serve["Terraform-to-serving<br/>custom models"]
+  end
+
+  providers[("Model providers<br/>Bedrock · cross-region · vLLM")]
+  tools[("Internal tools<br/>and data")]
+
+  eng --> portal --> scaffold --> app
+  app -. "must be registered" .-> registry
+  app --> gw
+  app --> runtime
+  app --> k8s
+  runtime --> mcp
+  mcp --> tools
+  gw --> providers
+  gw --> serve
+  gw -. "sampled traces" .-> evals
+
+  classDef solid fill:#ffffff,stroke:#1c1c1c,stroke-width:1.2px,color:#1c1c1c
+  classDef gap fill:#ffffff,stroke:#8a8a8a,stroke-width:1.2px,stroke-dasharray:5 4,color:#4a4a4a
+  classDef key fill:#ffffff,stroke:#a02c1e,stroke-width:2px,color:#1c1c1c
+  classDef ext fill:#ffffff,stroke:#4a4a4a,stroke-width:1.2px,color:#4a4a4a
+
+  class eng,serve,k8s solid
+  class gw key
+  class portal,scaffold,app,registry,runtime,mcp,evals gap
+  class providers,tools ext

@@ -1,5 +1,6 @@
 _site/
 .claude/
+AGENTS.md
 .idea
 .sass-cache
 .jekyll-metadata

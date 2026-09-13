@@ -1,0 +1,48 @@
+%% v2 · Onboarding activity flow: the engineer's decisions and loops on the paved road (assets/explorers/ai-platform.html, topic "Onboarding").
+%% Re-render: python3 scripts/render-mermaid.py assets/explorers/ai-platform-activity.mmd assets/explorers/ai-platform-activity.svg --id pact --rank-spacing 24 --node-spacing 36
+flowchart TB
+  start(["Engineer wants AI in a product<br/>new service or existing, the portal has a golden path for both"])
+  tools{"Needs tools or<br/>long-running sessions?"}
+  svc["platform new ai-service<br/>gateway client · guardrails · OTel · CI"]
+  agent["platform new agent<br/>plus registry entry · runtime · MCP client"]
+  tier{"Risk tier?"}
+  review["Time-boxed SLA review<br/>security and legal in parallel"]
+  firstcall["First call through the gateway<br/>virtual key · alias · budget · trace"]
+  evals["Write core cases<br/>platform eval"]
+  pass{"Eval gate<br/>passes?"}
+  fix["Fix prompt or retrieval<br/>failing traces join the regression set"]
+  deploy["git push<br/>image scan · evals · deploy"]
+  score{"Scorecard<br/>green?"}
+  drift["Drift is visible on the scorecard<br/>no review meeting"]
+  live([Live: traced, governed, budgeted])
+  tool["Subscribe to a tool<br/>from the MCP catalog"]
+
+  start --> tools
+  tools -- no --> svc
+  tools -- yes --> agent
+  svc --> tier
+  agent --> tier
+  tier -- "1 · low" --> firstcall
+  tier -- "2 and up" --> review
+  review --> firstcall
+  firstcall --> evals
+  evals --> pass
+  pass -- no --> fix
+  fix --> evals
+  pass -- yes --> deploy
+  deploy --> score
+  score -- no --> drift
+  drift --> deploy
+  score -- yes --> live
+  live -. later .-> tool
+  tool -.-> live
+
+  classDef solid fill:#ffffff,stroke:#1c1c1c,stroke-width:1.2px,color:#1c1c1c
+  classDef gap fill:#ffffff,stroke:#8a8a8a,stroke-width:1.2px,stroke-dasharray:5 4,color:#4a4a4a
+  classDef key fill:#ffffff,stroke:#a02c1e,stroke-width:2px,color:#1c1c1c
+  classDef decision fill:#ffffff,stroke:#1c1c1c,stroke-width:1.2px,color:#1c1c1c
+
+  class start,live,deploy solid
+  class tools,tier,pass,score decision
+  class firstcall key
+  class svc,agent,review,evals,fix,drift,tool gap
