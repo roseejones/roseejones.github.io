@@ -1046,6 +1046,11 @@
         '</div>';
     }
 
+    function contractPreview() {
+      var c = state.config;
+      return serviceId() + '\nowner: ' + c.owner + '\ncost center: ' + c.costCenter + '\nrisk: ' + riskLabel() + '\nmodel: ' + c.alias + '\ntool: ' + c.tool + ' (read-only)';
+    }
+
     function renderConfigure() {
       var c = state.config;
       return stageHeader('<span class="status-pill info">6 declarations</span>', 'Define ownership, risk, cost, and authority once. Every downstream control reads the same contract.') +
@@ -1064,7 +1069,7 @@
             option('com.enterprise.orders/lookup', 'com.enterprise.orders/lookup · read-only', c.tool) + option('com.enterprise.refunds/status', 'com.enterprise.refunds/status · read-only', c.tool) +
           '</select><small>The agent identity receives only this catalog grant.</small></div>' +
         '</form>' +
-        '<div class="contract-preview"><div class="terminal-head"><span>Registry identity</span><span>generated as you type</span></div><pre>' + escapeHtml(serviceId()) + '\nowner: ' + escapeHtml(c.owner) + '\ncost center: ' + escapeHtml(c.costCenter) + '\nrisk: ' + escapeHtml(riskLabel()) + '\nmodel: ' + escapeHtml(c.alias) + '\ntool: ' + escapeHtml(c.tool) + ' (read-only)</pre></div>' +
+        '<div class="contract-preview"><div class="terminal-head"><span>Registry identity</span><span>generated as you type</span></div><pre id="contractPreview">' + escapeHtml(contractPreview()) + '</pre></div>' +
         stageActions();
     }
 
@@ -1330,16 +1335,8 @@
     document.addEventListener('input', function (event) {
       if (!event.target.closest('#configForm')) return;
       state.config[event.target.name] = event.target.value;
-      renderStage();
+      document.getElementById('contractPreview').textContent = contractPreview();
       renderEvidence();
-      var fieldToRestore = document.getElementById(event.target.name);
-      if (fieldToRestore) {
-        fieldToRestore.focus();
-        if (typeof fieldToRestore.setSelectionRange === 'function') {
-          var end = fieldToRestore.value.length;
-          fieldToRestore.setSelectionRange(end, end);
-        }
-      }
     });
 
     document.getElementById('resetButton').addEventListener('click', function () {
